@@ -5,6 +5,8 @@
 
 
 -- Tabelle Person
+
+/*
 create table person(
     id BIGSERIAL NOT NULL PRIMARY KEY,
     firstName VARCHAR(50) NOT NULL,
@@ -95,12 +97,10 @@ create table comment(
     content TEXT, -- Achtung, hier soll Null erlaubt sein
     length INT NOT NULL
 );
+*/
 
--- bisherige Implementierung wurde getested, Postgres nimmt das so an.
 
 -- Als nächstes kümmern wir uns um die verschiedenen Beziehungen
-
-
 
 /* Forum_containerOf_Post würde ich als 1:n sehen und daher den Fremdschlüssel des Forums in den Post reinpacken. UNIQUE brauchen wir nicht, da mehrere Posts zu einem Forum gehören können
 
@@ -391,16 +391,37 @@ create table country(
 ---  RESULTIERENDE TABELLEN:
 ---
 ---
-/*
 
 
 
+-- Tabelle Tag
+create table tag(
+    id BIGSERIAL NOT NULL PRIMARY KEY,
+    name VARCHAR(50) NOT NULL
+);
 
 
 -- Tabelle TagClass 
 create table tagclass(
     id BIGSERIAL NOT NULL PRIMARY KEY,
     name VARCHAR(50) NOT NULL
+);
+
+
+-- Tabelle Continent
+create table continent(
+    id BIGSERIAL NOT NULL PRIMARY KEY,
+    name VARCHAR(50) NOT NULL
+
+    -- UNIQUE(name) einfach weil wir es können
+);
+
+
+-- Tabelle Country
+create table country(
+    id BIGSERIAL NOT NULL PRIMARY KEY,
+    name VARCHAR(50) NOT NULL,
+    continent_id BIGINT NOT NULL REFERENCES continent(id)
 );
 
 
@@ -412,56 +433,20 @@ create table city(
 );
 
 
--- Tabelle Country
-create table country(
+-- Tabelle Person
+create table person(
     id BIGSERIAL NOT NULL PRIMARY KEY,
-    name VARCHAR(50) NOT NULL,
-    continent_id BIGINT NOT NULL REFERENCES continent(id)
-);
+    firstName VARCHAR(50) NOT NULL,
+    lastName VARCHAR(100) NOT NULL,
+    gender VARCHAR(7) NOT NULL,
+    birthday Date NOT NULL,
+    email VARCHAR[] NOT NULL, -- ArrayType bc [1..*]
+    speaks VARCHAR[] NOT NULL, -- ArrayType bc [1..*]
+    browserUsed VARCHAR(20) NOT NULL,
+    locationIP VARCHAR(15) NOT NULL,
+    city_id BIGINT NOT NULL REFERENCES city(id),
 
--- Tabelle Continent
-create table continent(
-    id BIGSERIAL NOT NULL PRIMARY KEY,
-    name VARCHAR(50) NOT NULL
-);
-
-
--- Tabelle Forum
-create table forum(
-    id BIGSERIAL NOT NULL PRIMARY KEY,
-    title VARCHAR(100) NOT NULL,
-    creationDate TIMESTAMP NOT NULL, -- erstmal ohne Zeitzone, Daten müssen entsprechend geparsed werden
-    moderator BIGINT NOT NULL REFERENCES person(id),
-    UNIQUE (moderator) -- eine Person kann nur in einem oder keinem Forum Moderator sein
-);
-
-
--- Tabelle Forum_hasMember_Person
-create table forum_hasMember_person( -- muss mindestens ein Member drin sein, sonst ist das kein gültiges Forum
-    person_id BIGINT NOT NULL REFERENCES person(id),
-    forum_id BIGINT  NOT NULL REFERENCES forum(id),
-    joinDate TIMESTAMP NOT NULL
-);
-
-
--- Tabelle Forum_hasTag_Tag
-create table forum_hasTag_tag(
-    forum_id BIGINT NOT NULL REFERENCES forum(id),
-    tag_id BIGINT NOT NULL REFERENCES tag(id)
-);
-
-
--- Tabelle Tag_hasType_TagClass
-create table tag_hasType_tagclass(
-    tag_id BIGINT NOT NULL REFERENCES tag(id),
-    tagclass_id BIGINT NOT NULL REFERENCES tagclass(id),
-);
-
-
--- Tabelle TagClass_isSubclassOf_TagClass
-create table tagclass_isSubclassOf_tagclass(
-    tag_parent_id BIGINT NOT NULL REFERENCES tag(id),
-    tag_child_id BIGINT NOT NULL REFERENCES tag(id)
+    CONSTRAINT birthday_not_in_future CHECK (birthday <= NOW()::DATE)
 );
 
 
@@ -481,6 +466,16 @@ create table university(
 );
 
 
+-- Tabelle Forum
+create table forum(
+    id BIGSERIAL NOT NULL PRIMARY KEY,
+    title VARCHAR(100) NOT NULL,
+    creationDate TIMESTAMP NOT NULL, -- erstmal ohne Zeitzone, Daten müssen entsprechend geparsed werden
+    moderator BIGINT NOT NULL REFERENCES person(id),
+    UNIQUE (moderator) -- eine Person kann nur in einem oder keinem Forum Moderator sein
+);
+
+
 -- Tabelle Post
 create table post(
     id BIGSERIAL NOT NULL PRIMARY KEY,
@@ -497,13 +492,6 @@ create table post(
 );
 
 
--- Tabelle Post_hasTag_Tag
-create table post_hasTag_tag(
-    post_id BIGINT NOT NULL REFERENCES post(id),
-    tag_id BIGINT NOT NULL REFERENCES tag(id)
-);
-
-
 -- Tabelle Comment
 create table comment(
     id BIGSERIAL NOT NULL PRIMARY KEY,
@@ -516,7 +504,44 @@ create table comment(
     country_id BIGINT NOT NULL REFERENCES country(id),
     reply_to_post_id BIGINT REFERENCES post(id),
     reply_to_comment_id BIGINT REFERENCES comment(id),
-    CHECK (reply_to_comment_id NOT NULL) OR (reply_to_post_id NOT NULL) -- noch schauen ob das so geht
+
+    CONSTRAINT message_or_post CHECK ((reply_to_comment_id IS NOT NULL) OR (reply_to_post_id IS NOT NULL)) -- noch schauen ob das so geht
+);
+
+
+-- Tabelle Forum_hasMember_Person
+create table forum_hasMember_person( -- muss mindestens ein Member drin sein, sonst ist das kein gültiges Forum
+    person_id BIGINT NOT NULL REFERENCES person(id),
+    forum_id BIGINT NOT NULL REFERENCES forum(id),
+    joinDate TIMESTAMP NOT NULL
+);
+
+
+-- Tabelle Forum_hasTag_Tag
+create table forum_hasTag_tag(
+    forum_id BIGINT NOT NULL REFERENCES forum(id),
+    tag_id BIGINT NOT NULL REFERENCES tag(id)
+);
+
+
+-- Tabelle Tag_hasType_TagClass
+create table tag_hasType_tagclass(
+    tag_id BIGINT NOT NULL REFERENCES tag(id),
+    tagclass_id BIGINT NOT NULL REFERENCES tagclass(id)
+);
+
+
+-- Tabelle TagClass_isSubclassOf_TagClass
+create table tagclass_isSubclassOf_tagclass(
+    tag_parent_id BIGINT NOT NULL REFERENCES tag(id),
+    tag_child_id BIGINT NOT NULL REFERENCES tag(id)
+);
+
+
+-- Tabelle Post_hasTag_Tag
+create table post_hasTag_tag(
+    post_id BIGINT NOT NULL REFERENCES post(id),
+    tag_id BIGINT NOT NULL REFERENCES tag(id)
 );
 
 
@@ -524,21 +549,6 @@ create table comment(
 create table comment_hasTag_tag(
     comment_id BIGINT NOT NULL REFERENCES comment(id),
     tag_id BIGINT NOT NULL REFERENCES tag(id)
-);
-
-
--- Tabelle Person
-create table person(
-    id BIGSERIAL NOT NULL PRIMARY KEY,
-    firstName VARCHAR(50) NOT NULL,
-    lastname VARCHAR(100) NOT NULL,
-    gender VARCHAR(7) NOT NULL,
-    birthday Date NOT NULL,
-    email VARCHAR[] NOT NULL, -- ArrayType bc [1..*]
-    speaks VARCHAR[] NOT NULL, -- ArrayType bc [1..*]
-    browserUsed VARCHAR(20) NOT NULL,
-    locationIP VARCHAR(15) NOT NULL,
-    city_id BIGINT NOT NULL REFERENCES city(id)
 );
 
 
@@ -552,15 +562,15 @@ create table person_knows_person(
 
 -- Tabelle Person_studyAt_University
 create table person_studyAt_university(
-    person_id BIGINIT NOT NULL REFERENCES person(id),
-    university_id BIGINIT NOT NULL REFERENCES university(id),
+    person_id BIGINT NOT NULL REFERENCES person(id),
+    university_id BIGINT NOT NULL REFERENCES university(id),
     classYear INT NOT NULL
 );
 
 
 -- Tabelle Person_workAt_Company
 create table person_workAt_company(
-    person_id BIGINIT NOT NULL REFERENCES person(id),
+    person_id BIGINT NOT NULL REFERENCES person(id),
     company_id BIGINT NOT NULL REFERENCES company(id),
     workFrom INT NOT NULL
 );
@@ -574,10 +584,10 @@ create table person_likes_post(
 );
 
 
--- Tabelle Person_likes_Message
+-- Tabelle Person_likes_Comment
 create table person_likes_message(
     person_id BIGINT NOT NULL REFERENCES person(id),
-    message_id BIGINT NOT NULL REFERENCES message(id),
+    comment_id BIGINT NOT NULL REFERENCES comment(id),
     creationDate TIMESTAMP NOT NULL
 );
 
@@ -587,4 +597,10 @@ create table person_hasInterest_Tag(
     person_id BIGINT NOT NULL REFERENCES person(id),
     tag_id BIGINT NOT NULL REFERENCES tag(id)
 );
-*/
+
+
+
+
+
+-- bisherige Implementierung wurde getested, Postgres nimmt das so an.
+-- Todo: Update- und Löschregeln, Schlüsselconstraints, Datentypen prüen und Email-Adresse checken
