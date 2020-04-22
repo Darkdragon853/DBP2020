@@ -45,6 +45,8 @@ JDBC Driver:
 Now you can use "import java.sql.*" to get Access to Database-Related Functions
 Here`s how you Initialize the Connection:
 
+Connection connection = DriverManager.getConnection("jdbc:postgres:databasename" , "Username", "Password");
 
+After that you can start to write Database Statements:
         
         
