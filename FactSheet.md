@@ -36,5 +36,15 @@ Now Profit.
 - How the fuck get i out of the postgres role? i don'r remind specifiy it, neither the password lul.
 
         
+JDBC Driver: 
+(1) Download the "....jar" File from the Postgres Site or Locate It in your Postgres folder.
+(2) Start a new Project with an IDE of your Choice
+(3) Configue the Project in its settings: Add the .jar als Library Ressource
+(4) Profit. XD
+
+Now you can use "import java.sql.*" to get Access to Database-Related Functions
+Here`s how you Initialize the Connection:
+
+
         
         
