@@ -9,6 +9,7 @@
 /*
 create table person(
     id BIGSERIAL NOT NULL PRIMARY KEY,
+    creationDate TIMESTAMP NOT NULL,
     firstName VARCHAR(50) NOT NULL,
     lastname VARCHAR(100) NOT NULL,
     gender VARCHAR(7) NOT NULL,
@@ -154,6 +155,7 @@ create table forum_hasMember_person(
 */
 
 
+
 /* Forum_hasModerator_Person: Eine Person kann in einem Forum Moderator sein - ein Forum hat immer einen Moderator -> Einfach den PrimaryKey von Person zum Forum mit rein
 
 create table forum(
@@ -167,7 +169,7 @@ create table forum(
 
 
 
-/* Forum_hasTag_Tag: N:N-Beziehung: Tags können in beliebigen Foren auftachen, sowie Foren beliebig viele Tags haben können -> neue Tabelle, keine Unique Constraints
+/* Forum_hasTag_Tag: m:n-Beziehung: Tags können in beliebigen Foren auftachen, sowie Foren beliebig viele Tags haben können -> neue Tabelle, keine Unique Constraints
 
 create table forum_hasTag_tag(
     forum_id BIGINT NOT NULL REFERENCES forum(id),
@@ -177,7 +179,7 @@ create table forum_hasTag_tag(
 
 
 
-/* Message_hasTag_Tag: wieder N:N Beziehung, ein Tag kann zu beliebig vielen Messages gehören und eine Message kann beliebig viele Tags haben
+/* Message_hasTag_Tag: wieder m:n Beziehung, ein Tag kann zu beliebig vielen Messages gehören und eine Message kann beliebig viele Tags haben
 Allerdings haben wir die beiden Kindklassen implementiert also brauchen wir zwei neue Tabellen:
 
 create table comment_hasTag_tag(
@@ -193,7 +195,7 @@ create table post_hasTag_tag(
 
 
 
-/* Tag_hasType_TagClass: erneut n:n Beziehung laut UML -> neue Tabelle aber keine UNIQUE Constraints
+/* Tag_hasType_TagClass: erneut m:n Beziehung laut UML -> neue Tabelle aber keine UNIQUE Constraints
 
 create table tag_hasType_tagclass(
     tag_id BIGINT NOT NULL REFERENCES tag(id),
@@ -203,7 +205,7 @@ create table tag_hasType_tagclass(
 
 
 
-/* TagClass_isSubclassOf_TagClass: weil wir es ja noch nicht hatten, erneut n:n -> neue Tabelle
+/* TagClass_isSubclassOf_TagClass: weil wir es ja noch nicht hatten, erneut m:n -> neue Tabelle
 
 create table tagclass_isSubclassOf_tagclass(
     tag_parent_id BIGINT NOT NULL REFERENCES tag(id),
@@ -283,7 +285,7 @@ create table post(
 
 
 
-/* Person_knows_Person: diese belastenden n:n Beziehungen... xD -> neue Tabelle lul
+/* Person_knows_Person: diese belastenden m:n Beziehungen... xD -> neue Tabelle lul
 
 create table person_knows_person(
     person_1_id BIGINT NOT NULL REFERENCES person(id),
@@ -294,7 +296,7 @@ create table person_knows_person(
 
 
 
-/* Person_likes_Message: ist wieder ne N:N Beziehung mit den beiden Kindklassen und einem extra Attribut -> zwei neue Tabellen
+/* Person_likes_Message: ist wieder ne M:N Beziehung mit den beiden Kindklassen und einem extra Attribut -> zwei neue Tabellen
 
 create table person_likes_post(
     person_id BIGINT NOT NULL REFERENCES person(id),
@@ -302,9 +304,9 @@ create table person_likes_post(
     creationDate TIMESTAMP NOT NULL
 );
 
-create table person_likes_message(
+create table person_likes_comment(
     person_id BIGINT NOT NULL REFERENCES person(id),
-    message_id BIGINT NOT NULL REFERENCES message(id),
+    comment_id BIGINT NOT NULL REFERENCES comment(id),
     creationDate TIMESTAMP NOT NULL
 );
 */
@@ -330,7 +332,7 @@ create table comment(
 
 
 
-/* Person_studyAt_University: n:n Beziehung, da eine Person an mehrere Unis studieren kann und ne Uni beliebig viele Studenten hat -> neue Tabelle 
+/* Person_studyAt_University: m:n Beziehung, da eine Person an mehrere Unis studieren kann und ne Uni beliebig viele Studenten hat -> neue Tabelle 
 
 create table person_studyAt_university(
     person_id BIGINIT NOT NULL REFERENCES person(id),
@@ -354,7 +356,7 @@ create table person_workAt_company(
 -- Die Person_hasInterest_Tag Beziehung wird nicht erwähnt?!? Genauso wie die IsPartOf Beziehungen:
 -->
 
-/* Person_hasInterest_Tag: n:n Beziehung, neue Tabelle ->
+/* Person_hasInterest_Tag: m:n Beziehung, neue Tabelle ->
 
 create table person_hasInterest_Tag(
     person_id BIGINT NOT NULL REFERENCES person(id),
@@ -392,6 +394,13 @@ create table country(
 ---
 ---
 
+
+
+CREATE EXTENSION citext;
+CREATE DOMAIN domain_email AS citext
+CHECK(
+   VALUE ~ '^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$'
+);
 
 
 -- Tabelle Tag
@@ -436,6 +445,7 @@ create table city(
 -- Tabelle Person
 create table person(
     id BIGSERIAL NOT NULL PRIMARY KEY,
+    creationDate TIMESTAMP NOT NULL,
     firstName VARCHAR(50) NOT NULL,
     lastName VARCHAR(100) NOT NULL,
     gender VARCHAR(7) NOT NULL,
@@ -446,7 +456,8 @@ create table person(
     locationIP VARCHAR(15) NOT NULL,
     city_id BIGINT NOT NULL REFERENCES city(id),
 
-    CONSTRAINT birthday_not_in_future CHECK (birthday <= NOW()::DATE)
+    CONSTRAINT birthday_not_in_future CHECK (birthday <= NOW()::DATE),
+    CONSTRAINT vaild_email CHECK (email::domain_email)
 );
 
 
@@ -479,7 +490,7 @@ create table forum(
 -- Tabelle Post
 create table post(
     id BIGSERIAL NOT NULL PRIMARY KEY,
-    language VARCHAR(50), -- Achtung, hier soll Null erlaubt sein
+    language VARCHAR(2), -- Achtung, hier soll Null erlaubt sein
     imageFile VARCHAR(100), -- Achtung, hier soll Null erlaubt sein
     creationDate TIMESTAMP NOT NULL, -- erstmal ohne Zeitzone, Daten müssen entsprechend geparsed werden
     browserUsed VARCHAR(20) NOT NULL,
@@ -505,7 +516,7 @@ create table comment(
     reply_to_post_id BIGINT REFERENCES post(id),
     reply_to_comment_id BIGINT REFERENCES comment(id),
 
-    CONSTRAINT message_or_post CHECK ((reply_to_comment_id IS NOT NULL) OR (reply_to_post_id IS NOT NULL)) -- noch schauen ob das so geht
+    CONSTRAINT message_or_post CHECK ((reply_to_comment_id IS NOT NULL) AND (reply_to_post_id IS NULL)) OR ((reply_to_comment_id IS NULL) AND (reply_to_post_id IS NOT NULL)) -- noch schauen ob das so geht, besser XOR!
 );
 
 
@@ -585,7 +596,7 @@ create table person_likes_post(
 
 
 -- Tabelle Person_likes_Comment
-create table person_likes_message(
+create table person_likes_comment(
     person_id BIGINT NOT NULL REFERENCES person(id),
     comment_id BIGINT NOT NULL REFERENCES comment(id),
     creationDate TIMESTAMP NOT NULL
@@ -604,3 +615,7 @@ create table person_hasInterest_Tag(
 
 -- bisherige Implementierung wurde getested, Postgres nimmt das so an.
 -- Todo: Update- und Löschregeln, Schlüsselconstraints, Datentypen prüen und Email-Adresse checken
+
+-- Was ist mit Ländern, die auf mehreren Kontinenten liegen?
+-- Macht es Sinn, wenn eine Firma keine Mitarbeiter hat bzw eine Universität keine Studenten?
+-- Person speaks Language untersuchen
