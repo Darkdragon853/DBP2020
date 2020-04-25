@@ -1,5 +1,8 @@
 import java.io.*;
 import java.sql.*;
+// TODO: Der SPlit funktionier nicht wie er soll. Er Splittet alle Buchstaben obwohl er '|' Splitten sollte.
+
+
 
 // Still only a Try from an Tutorial
 public class Main {
@@ -33,17 +36,13 @@ public class Main {
             st.close();
         }
         catch (SQLException sqle) {
-            System.out.println("Database Access Error or Closed Connection or no ResultSet returned" + sqle.getMessage());
+            System.out.println("Database Access Error or Closed Connection or no ResultSet returned: " + sqle.getMessage());
         } catch (Throwable t) {
             System.out.println("Unhandled Error: " + t.getMessage());
         }
 
         // Personen einlesen
-        if(readPersons()) {
-            System.out.println("Personen erfolgreich eingelesen!");
-        } else {
-            System.out.println("Fehler beim Einlesen der Personen!");
-        }
+        boolean test = readPlaces();
 
 
     }
@@ -52,7 +51,8 @@ public class Main {
     // Personen einlesen
     private static boolean readPersons() {
         boolean finalResult = true;
-        File file = new File("D:\\Universität\\Datenbankpraktikum\\Ressources\\social_network\\person_0_0.csv");
+        //File file = new File("D:\\Universität\\Datenbankpraktikum\\Ressources\\social_network\\person_0_0.csv");
+        File file = new File("C:\\Coding\\Datenbankpraktikum\\Ressources\\social_network\\person_0_0.csv");
         BufferedReader br = null;
         try {
              br = new BufferedReader(new FileReader(file));
@@ -61,16 +61,142 @@ public class Main {
         }
 
         String currentLine;
-
+        String insertStatement = ("");
         try {
             while ((currentLine = br.readLine()) != null) {
+                // Hier die momentane Eingabezeile verarbeiten
+                // Obviously we have to Split the Lines by '|'
+                String[] items = currentLine.split("|");
+
+                // Sprachen werden nachgeholt also einfach Filler verwenden
+                insertStatement = "INSERT INTO PERSON(id, creationDate, firstName, lastName, gender, birthday, email, speaks, browserUsed, locationIP, city_id) VALUES ("
+                                          + items[0] +", " + items[5] + ", " + items[1] +", " + items[2] + ", " + items[3] +", " + items[4] +", " + "{\"filler@gmx.de\"}" + ", " +  "{\"notDefined\"}"  + ", " +
+                                          items[7] + ", " + items[6] + ", " + items[8] + ");";
+
                 System.out.println(currentLine);
             }
         } catch(IOException ioex) {
             System.out.println("I/O Error aufgetreten!\n" + ioex.getMessage());
         }
 
-        // Obviously we have to Split the Lines by '|'
+
+        Statement statement = null;
+        int result = -1;
+        try {
+            statement = database.createStatement();
+            result = statement.executeUpdate(insertStatement);
+        } catch (SQLException sqle) {
+            System.out.println("Fehler beim Statement erzeugen oder Befehl ausführen: " + sqle.getMessage());
+        }
+        System.out.println("Antwort auf SQL Befehl: "+ result);
+
         return finalResult;
     }
+
+    private static boolean readPlaces() {
+        boolean finalResult = true;
+
+        File file = new File("C:\\Coding\\Datenbankpraktikum\\Ressources\\social_network\\place_0_0.csv");
+        BufferedReader br = null;
+        try {
+            br = new BufferedReader(new FileReader(file));
+        } catch (FileNotFoundException fnfe) {
+            System.out.println("Datei nicht gefunden!\n" + fnfe.getMessage() );
+        }
+
+        String currentLine;
+        String insertStatement = ("");
+        try {
+            while ((currentLine = br.readLine()) != null) {
+                System.out.println(currentLine);
+                // Hier die momentane Eingabezeile verarbeiten
+                // Obviously we have to Split the Lines by '|'
+                String[] items = currentLine.split("|");
+
+                for(int element = 0; element < items.length; element++) {
+                    System.out.println("Element: " + element + ", Inhalt: " + items[element]);
+                }
+
+                System.out.println("Typ: " + items[3]);
+                if(items[3] == ("continent")) {
+                    insertStatement = "INSERT INTO CONTINENT(id, name) VALUES (" + items[0] + ", " + items[1] + ");";
+
+                } else if(items[3] == ("country")) {
+                    insertStatement = "INSERT INTO COUNTRY(id, name, continent_id) VALUES (" + items[0] + ", " + items[1] + ", " + items[4] + ");";
+
+                } else if(items[3] == ("city")) {
+                    insertStatement = "INSERT INTO CITY(id, name, country_id) VALUES (" + items[0] + ", " + items[1] + ", " + items[4] + ");";
+
+                } else {
+                    System.out.println("Irgendwas außer City, Continent oder Country gelesen");
+                }
+
+                Statement statement = null;
+                int result = -1;
+                try {
+                    statement = database.createStatement();
+                    result = statement.executeUpdate(insertStatement);
+                } catch (SQLException sqle) {
+                    System.out.println("Fehler beim Statement erzeugen oder Befehl ausführen: " + sqle.getMessage());
+                }
+                System.out.println("Antwort auf SQL Befehl: "+ result);
+            }
+        } catch(IOException ioex) {
+            System.out.println("I/O Error aufgetreten!\n" + ioex.getMessage());
+        }
+
+
+        return finalResult;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
