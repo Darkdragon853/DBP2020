@@ -111,7 +111,7 @@ public class Main {
                 System.out.println(currentLine);
                 // Hier die momentane Eingabezeile verarbeiten
                 // Obviously we have to Split the Lines by '|'
-                String[] items = currentLine.split("|");
+                String[] items = currentLine.split("\\|");
 
                 for(int element = 0; element < items.length; element++) {
                     System.out.println("Element: " + element + ", Inhalt: " + items[element]);
