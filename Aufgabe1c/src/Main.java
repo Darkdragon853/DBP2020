@@ -1,6 +1,6 @@
 import java.io.*;
 import java.sql.*;
-// TODO: Der SPlit funktionier nicht wie er soll. Er Splittet alle Buchstaben obwohl er '|' Splitten sollte.
+// TODO: 2-fache Ausführung von ReadPlaces noch notwendig, da Kontinente erst zuletzt gelesen werden.
 
 
 
@@ -118,18 +118,20 @@ public class Main {
                 }
 
                 System.out.println("Typ: " + items[3]);
-                if(items[3] == ("continent")) {
-                    insertStatement = "INSERT INTO CONTINENT(id, name) VALUES (" + items[0] + ", " + items[1] + ");";
+                if(items[3].trim().equals("continent")) {
+                    insertStatement = "INSERT INTO CONTINENT(id, name) VALUES (" + items[0] + ", \'" + items[1] + "\');";
 
-                } else if(items[3] == ("country")) {
-                    insertStatement = "INSERT INTO COUNTRY(id, name, continent_id) VALUES (" + items[0] + ", " + items[1] + ", " + items[4] + ");";
+                } else if(items[3].trim().equals("country")) {
+                    insertStatement = "INSERT INTO COUNTRY(id, name, continent_id) VALUES (" + items[0] + ", \'" + items[1] + "\', " + items[4] + ");";
 
-                } else if(items[3] == ("city")) {
-                    insertStatement = "INSERT INTO CITY(id, name, country_id) VALUES (" + items[0] + ", " + items[1] + ", " + items[4] + ");";
+                } else if(items[3].trim().equals("city")) {
+                    insertStatement = "INSERT INTO CITY(id, name, country_id) VALUES (" + items[0] + ", \'" + items[1] + "\', " + items[4] + ");";
 
                 } else {
                     System.out.println("Irgendwas außer City, Continent oder Country gelesen");
                 }
+
+                System.out.println("BEFEHL: " + insertStatement);
 
                 Statement statement = null;
                 int result = -1;
