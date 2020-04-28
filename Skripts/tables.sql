@@ -406,14 +406,14 @@ CHECK(
 -- Tabelle Tag
 create table tag(
     id BIGSERIAL NOT NULL PRIMARY KEY,
-    name VARCHAR(50) NOT NULL
+    name VARCHAR(150) NOT NULL
 );
 
 
 -- Tabelle TagClass 
 create table tagclass(
     id BIGSERIAL NOT NULL PRIMARY KEY,
-    name VARCHAR(50) NOT NULL
+    name VARCHAR(150) NOT NULL
 );
 
 
@@ -464,7 +464,7 @@ create table person(
 -- Tabelle Company
 create table company(
     id BIGSERIAL NOT NULL PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
+    name VARCHAR(200) NOT NULL,
     country_id BIGINT NOT NULL REFERENCES country(id)
 );
 
@@ -472,7 +472,7 @@ create table company(
 -- Tabelle University
 create table university(
     id BIGSERIAL NOT NULL PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
+    name VARCHAR(200) NOT NULL,
     city_id BIGINT NOT NULL REFERENCES city(id)
 );
 
@@ -480,7 +480,7 @@ create table university(
 -- Tabelle Forum
 create table forum(
     id BIGSERIAL NOT NULL PRIMARY KEY,
-    title VARCHAR(100) NOT NULL,
+    title VARCHAR(200) NOT NULL,
     creationDate TIMESTAMP NOT NULL, -- erstmal ohne Zeitzone, Daten müssen entsprechend geparsed werden
     moderator BIGINT NOT NULL REFERENCES person(id),
     UNIQUE (moderator) -- eine Person kann nur in einem oder keinem Forum Moderator sein
@@ -493,7 +493,7 @@ create table post(
     language VARCHAR(2), -- Achtung, hier soll Null erlaubt sein
     imageFile VARCHAR(100), -- Achtung, hier soll Null erlaubt sein
     creationDate TIMESTAMP NOT NULL, -- erstmal ohne Zeitzone, Daten müssen entsprechend geparsed werden
-    browserUsed VARCHAR(20) NOT NULL,
+    browserUsed VARCHAR(50) NOT NULL,
     locationIP VARCHAR(15) NOT NULL,
     content TEXT, -- Achtung, hier soll Null erlaubt sein
     length INT NOT NULL,
