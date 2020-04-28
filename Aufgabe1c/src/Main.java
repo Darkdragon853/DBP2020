@@ -1,8 +1,6 @@
 import java.io.*;
 import java.sql.*;
-// TODO: 2-fache Ausführung von ReadPlaces noch notwendig, da Kontinente erst zuletzt gelesen werden.
-// TODO: TAG name Limit erweitern, urls überall mit rein, University Name länger
-
+import java.text.Normalizer;
 
 // Still only a Try from an Tutorial
 public class Main {
@@ -11,7 +9,7 @@ public class Main {
     public static void main(String[] args) {
         try{
             Class.forName("org.postgresql.Driver"); // Load the Driver
-            database = DriverManager.getConnection("jdbc:postgresql:tempo", "postgres", "Latarius853");
+            database = DriverManager.getConnection("jdbc:postgresql:tempo", "postgres", "qdf");
         } catch(ClassNotFoundException cnfe){
             System.out.println("Driver ist not available!\n" + cnfe.getMessage());
         } catch(SQLException sqle) {
@@ -42,7 +40,9 @@ public class Main {
         }
 
         // Funktionen nutzen / testen
-        boolean test = readPersonStudyAtOrganisation();
+        //boolean test1 = readPersons();
+        //boolean test2 = readPlaces();
+        boolean test3 = readPersonSpeaksLanguage();
 
 
     }
@@ -51,7 +51,9 @@ public class Main {
     private static boolean readPersons() {
         boolean finalResult = true;
         //File file = new File("D:\\Universität\\Datenbankpraktikum\\Ressources\\social_network\\person_0_0.csv");
-        File file = new File("C:\\Coding\\Datenbankpraktikum\\Ressources\\social_network\\person_0_0.csv");
+        //File file = new File("C:\\Coding\\Datenbankpraktikum\\Ressources\\social_network\\person_0_0.csv");
+        File file = new File("./../Ressources/social_network/person_0_0.csv");
+
         BufferedReader br = null;
         try {
              br = new BufferedReader(new FileReader(file));
@@ -96,9 +98,11 @@ public class Main {
         // TODO: Soweit 100% fertig
         // Ganz vorne Extradurchlauf der nur auf Kontinente zielt
         boolean finalResult = true;
-        int failures = 0;
+        int continentFailures = 0;
+        int otherFailures = 0;
 
-        File file = new File("C:\\Coding\\Datenbankpraktikum\\Ressources\\social_network\\place_0_0.csv");
+        //File file = new File("C:\\Coding\\Datenbankpraktikum\\Ressources\\social_network\\place_0_0.csv");
+        File file = new File("./../Ressources/social_network/place_0_0.csv");
         BufferedReader br = null;
 
         // Erster Durchlauf
@@ -133,7 +137,7 @@ public class Main {
                     int result = statement.executeUpdate(insertStatement);
                 } catch (SQLException sqle) {
                     System.out.println("Fehler beim Statement erzeugen oder Befehl ausführen: " + sqle.getMessage());
-                    failures++;
+                    continentFailures++;
                 }
             }
         } catch(IOException ioex) {
@@ -146,11 +150,12 @@ public class Main {
         } catch (FileNotFoundException fnfe) {
             System.out.println("Datei nicht gefunden!\n" + fnfe.getMessage() );
         }
-
         // Reset
         currentLine = "";
         insertStatement = "";
         try {
+            //skip first line of csv file
+            br.skip(1);
             while ((currentLine = br.readLine()) != null) {
                 //System.out.println(currentLine); -- Debug
                 // Hier die momentane Eingabezeile verarbeiten
@@ -180,24 +185,27 @@ public class Main {
                     result = statement.executeUpdate(insertStatement);
                 } catch (SQLException sqle) {
                     System.out.println("Fehler beim Statement erzeugen oder Befehl ausführen: " + sqle.getMessage());
-                    failures++;
+                    otherFailures++;
                 }
             }
         } catch(IOException ioex) {
             System.out.println("I/O Error aufgetreten!\n" + ioex.getMessage());
         }
 
-        System.out.println("readPlaces() mit " + (failures-1) + " Fehlern abgeschlossen."); // 7 Fehler ist normal wegen 1. Zeile und 6 Kontinenten die schon da sind
+        System.out.println("readPlaces() mit " + (continentFailures) + " Fehlern bei den Kontinenten und " + (otherFailures) + " anderen Fehlern abgeschlossen."); // 7 Fehler ist normal wegen 1. Zeile und 6 Kontinenten die schon da sind
         return finalResult;
     }
 
     private static boolean readTags() {
         // TODO: Ca. 90 % Fertig. limit noch erhöhen und prüfen
+        // TODO: urls als solche einlesen
+        // TODO: search for Facefucker
 
         boolean finalResult = true;
         int failures = 0;
 
-        File file = new File("C:\\Coding\\Datenbankpraktikum\\Ressources\\social_network\\tag_0_0.csv");
+        //File file = new File("C:\\Coding\\Datenbankpraktikum\\Ressources\\social_network\\tag_0_0.csv");
+        File file = new File("./../Ressources/social_network/tag_0_0.csv");
         BufferedReader br = null;
         try {
             br = new BufferedReader(new FileReader(file));
@@ -205,15 +213,22 @@ public class Main {
             System.out.println("Datei nicht gefunden!\n" + fnfe.getMessage() );
         }
 
+        String failString= null;
         String currentLine;
         String insertStatement = ("");
+        int iteration = 0;
         try {
             while ((currentLine = br.readLine()) != null) {
+                if (iteration==0){
+                    iteration++;
+                    continue;
+                }
                 // Hier die momentane Eingabezeile verarbeiten
                 // Obviously we have to Split the Lines by '|'
                 String[] items = currentLine.split("\\|");
-
-                insertStatement = "INSERT INTO TAG(id, name) VALUES (" + items[0] + ", \'" + items[1].replace("'", "`") + "\');";
+                //normalize strings with NFD
+                String currentName = Normalizer.normalize(items[1], Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "");
+                insertStatement = "INSERT INTO TAG(id, name) VALUES (" + items[0] + ", \'" + currentName.replace("'", "`") + "\');";
 
                 Statement statement = null;
                 try {
@@ -222,14 +237,20 @@ public class Main {
                 } catch (SQLException sqle) {
                     System.out.println("Fehler beim Statement erzeugen oder Befehl ausführen: " + sqle.getMessage());
                     failures++;
+                    failString=insertStatement;
                 }
 
-                System.out.println(currentLine); // --Debug
+                //System.out.println(currentName); // --Debug
+                System.out.println("...");
             }
         } catch(IOException ioex) {
             System.out.println("I/O Error aufgetreten!\n" + ioex.getMessage());
         }
-        System.out.println("readTags() mit "+ (failures-1)+ " Fehlern abgesclossen.");
+        System.out.println("readTags() mit "+ (failures)+ " Fehlern abgeschlossen. \n");
+        if (failString != null){
+            System.out.println("Fehler bei: " + failString);
+        }
+
 
         return finalResult;
     }
@@ -239,7 +260,8 @@ public class Main {
         boolean finalResult = true;
         int failures = 0;
 
-        File file = new File("C:\\Coding\\Datenbankpraktikum\\Ressources\\social_network\\tagclass_0_0.csv");
+        //File file = new File("C:\\Coding\\Datenbankpraktikum\\Ressources\\social_network\\tagclass_0_0.csv");
+        File file = new File("./../Ressources/social_network/tagclass_0_0.csv");
         BufferedReader br = null;
         try {
             br = new BufferedReader(new FileReader(file));
@@ -540,6 +562,71 @@ public class Main {
         return finalResult;
     }
 
+    private static boolean readPersonSpeaksLanguage() {
 
+        boolean finalResult = true;
+        int failures = 0;
+
+        //File file = new File("C:\\Coding\\Datenbankpraktikum\\Ressources\\social_network\\tag_0_0.csv");
+        File file = new File("./../Ressources/social_network/person_speaks_language_0_0.csv");
+        BufferedReader br = null;
+        try {
+            br = new BufferedReader(new FileReader(file));
+        } catch (FileNotFoundException fnfe) {
+            System.out.println("Datei nicht gefunden!\n" + fnfe.getMessage() );
+        }
+
+        String failString= null;
+        String currentLine;
+        String insertStatement = ("");
+        int iteration = 0;
+        try {
+            while ((currentLine = br.readLine()) != null) {
+                //skip first line in csv file
+                if (iteration==0){
+                    iteration++;
+                    continue;
+                }
+                // Hier die momentane Eingabezeile verarbeiten
+                // Obviously we have to Split the Lines by '|'
+                String[] items = currentLine.split("\\|");
+
+                // SELECT statement to get speaks entries
+                try{
+                    String checkStatement = "SELECT speaks FROM person WHERE id =" + items[0] + ";";
+                    Statement checkCurrent = database.createStatement();
+                    ResultSet currentLangs = checkCurrent.executeQuery(checkStatement);
+                    while (currentLangs.next()) {
+                        System.out.println(currentLangs.getString(1));
+                    }
+                }catch (Throwable t){
+                    t.printStackTrace();
+                }
+
+             /*
+                insertStatement = "UPDATE person SET speaks = "+ items[1] + " WHERE id= "+ items[0] + ";";
+                Statement statement = null;
+                try {
+                    statement = database.createStatement();
+                    int result = statement.executeUpdate(insertStatement);
+                } catch (SQLException sqle) {
+                    System.out.println("Fehler beim Statement erzeugen oder Befehl ausführen: " + sqle.getMessage());
+                    failures++;
+                    failString=insertStatement;
+                }*/
+
+                //System.out.println(currentName); // --Debug
+                System.out.println("...");
+            }
+        } catch(IOException ioex) {
+            System.out.println("I/O Error aufgetreten!\n" + ioex.getMessage());
+        }
+        System.out.println("readTags() mit "+ (failures)+ " Fehlern abgeschlossen. \n");
+        if (failString != null){
+            System.out.println("Fehler bei: " + failString);
+        }
+
+        return finalResult;
+    }
 
 }
