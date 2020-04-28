@@ -9,7 +9,7 @@ public class Main {
     public static void main(String[] args) {
         try{
             Class.forName("org.postgresql.Driver"); // Load the Driver
-            database = DriverManager.getConnection("jdbc:postgresql:tempo", "postgres", "qdf");
+            database = DriverManager.getConnection("jdbc:postgresql:tempo", "postgres", "Latarius853");
         } catch(ClassNotFoundException cnfe){
             System.out.println("Driver ist not available!\n" + cnfe.getMessage());
         } catch(SQLException sqle) {
