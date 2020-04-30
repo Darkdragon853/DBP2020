@@ -71,7 +71,7 @@ public class Main {
 
                 // Sprachen werden nachgeholt also einfach Filler verwenden
                 insertStatement = "INSERT INTO PERSON(id, creationDate, firstName, lastName, gender, birthday, email, speaks, browserUsed, locationIP, city_id) VALUES ("
-                                          + items[0] +", " + items[5] + ", " + items[1] +", " + items[2] + ", " + items[3] +", " + items[4] +", " + "{\"filler@gmx.de\"}" + ", " +  "{\"notDefined\"}"  + ", " +
+                                          + items[0] +", " + items[5] + ", " + items[1] +", " + items[2] + ", " + items[3] +", " + items[4] +", \'" + "{filler@gmx.de}" + "', \'" +  "{filler}"  + "\', " +
                                           items[7] + ", " + items[6] + ", " + items[8] + ");";
 
                 System.out.println(currentLine);
