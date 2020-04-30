@@ -438,7 +438,7 @@ create table continent(
 create table country(
     id BIGSERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
-    continent_id BIGINT NOT NULL REFERENCES continent(id)
+    continent_id BIGINT NOT NULL REFERENCES continent(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 
@@ -446,7 +446,7 @@ create table country(
 create table city(
     id BIGSERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
-    country_id BIGINT NOT NULL REFERENCES country(id)
+    country_id BIGINT NOT NULL REFERENCES country(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 
@@ -462,7 +462,7 @@ create table person(
     speaks VARCHAR[] NOT NULL, -- ArrayType bc [1..*]
     browserUsed VARCHAR(50) NOT NULL,
     locationIP VARCHAR(40) NOT NULL,
-    city_id BIGINT NOT NULL REFERENCES city(id),
+    city_id BIGINT NOT NULL REFERENCES city(id) ON DELETE CASCADE ON UPDATE CASCADE,
 
     CONSTRAINT birthday_not_in_future CHECK (birthday <= NOW()::DATE),
     CONSTRAINT vaild_email CHECK (TRUE =%= ALL(email))
@@ -473,7 +473,7 @@ create table person(
 create table company(
     id BIGSERIAL PRIMARY KEY,
     name VARCHAR(200) NOT NULL,
-    country_id BIGINT NOT NULL REFERENCES country(id)
+    country_id BIGINT NOT NULL REFERENCES country(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 
@@ -481,7 +481,7 @@ create table company(
 create table university(
     id BIGSERIAL PRIMARY KEY,
     name VARCHAR(200) NOT NULL,
-    city_id BIGINT NOT NULL REFERENCES city(id)
+    city_id BIGINT NOT NULL REFERENCES city(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 
@@ -490,7 +490,7 @@ create table forum(
     id BIGSERIAL PRIMARY KEY,
     title VARCHAR(200) NOT NULL,
     creationDate TIMESTAMP NOT NULL, -- erstmal ohne Zeitzone, Daten müssen entsprechend geparsed werden
-    moderator BIGINT NOT NULL REFERENCES person(id),
+    moderator BIGINT NOT NULL REFERENCES person(id) ON DELETE CASCADE ON UPDATE CASCADE,
     UNIQUE (moderator) -- eine Person kann nur in einem oder keinem Forum Moderator sein
 );
 
@@ -505,9 +505,9 @@ create table post(
     locationIP VARCHAR(40) NOT NULL,
     content TEXT, -- Achtung, hier soll Null erlaubt sein
     length INT NOT NULL,
-    forum_id BIGINT NOT NULL REFERENCES forum(id),
-    author_id BIGINT NOT NULL REFERENCES person(id),
-    country_id BIGINT NOT NULL REFERENCES country(id)
+    forum_id BIGINT NOT NULL REFERENCES forum(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    author_id BIGINT NOT NULL REFERENCES person(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    country_id BIGINT NOT NULL REFERENCES country(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 
@@ -519,19 +519,19 @@ create table comment(
     locationIP VARCHAR(40) NOT NULL,
     content TEXT, -- Achtung, hier soll Null erlaubt sein
     length INT NOT NULL,
-    author_id BIGINT NOT NULL REFERENCES person(id),
-    country_id BIGINT NOT NULL REFERENCES country(id),
-    reply_to_post_id BIGINT REFERENCES post(id),
-    reply_to_comment_id BIGINT REFERENCES comment(id),
+    author_id BIGINT NOT NULL REFERENCES person(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    country_id BIGINT NOT NULL REFERENCES country(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    reply_to_post_id BIGINT REFERENCES post(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    reply_to_comment_id BIGINT REFERENCES comment(id) ON DELETE CASCADE ON UPDATE CASCADE,
 
-    CONSTRAINT message_or_post CHECK (((reply_to_comment_id IS NOT NULL) AND (reply_to_post_id IS NULL)) OR ((reply_to_comment_id IS NULL) AND (reply_to_post_id IS NOT NULL))) -- noch schauen ob das so geht, besser XOR!
+    CONSTRAINT belongs_to_message_or_post CHECK (((reply_to_comment_id IS NOT NULL) AND (reply_to_post_id IS NULL)) OR ((reply_to_comment_id IS NULL) AND (reply_to_post_id IS NOT NULL))) -- noch schauen ob das so geht, besser XOR!
 );
 
 
 -- Tabelle Forum_hasMember_Person
 create table forum_hasMember_person( -- muss mindestens ein Member drin sein, sonst ist das kein gültiges Forum
-    person_id BIGINT NOT NULL REFERENCES person(id),
-    forum_id BIGINT NOT NULL REFERENCES forum(id),
+    person_id BIGINT NOT NULL REFERENCES person(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    forum_id BIGINT NOT NULL REFERENCES forum(id) ON DELETE CASCADE ON UPDATE CASCADE,
     joinDate TIMESTAMP NOT NULL,
     PRIMARY KEY (person_id, forum_id)
 );
@@ -539,48 +539,48 @@ create table forum_hasMember_person( -- muss mindestens ein Member drin sein, so
 
 -- Tabelle Forum_hasTag_Tag
 create table forum_hasTag_tag(
-    forum_id BIGINT NOT NULL REFERENCES forum(id),
-    tag_id BIGINT NOT NULL REFERENCES tag(id),
+    forum_id BIGINT NOT NULL REFERENCES forum(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    tag_id BIGINT NOT NULL REFERENCES tag(id) ON DELETE CASCADE ON UPDATE CASCADE,
     PRIMARY KEY (forum_id, tag_id)
 );
 
 
 -- Tabelle Tag_hasType_TagClass
 create table tag_hasType_tagclass(
-    tag_id BIGINT NOT NULL REFERENCES tag(id),
-    tagclass_id BIGINT NOT NULL REFERENCES tagclass(id),
+    tag_id BIGINT NOT NULL REFERENCES tag(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    tagclass_id BIGINT NOT NULL REFERENCES tagclass(id) ON DELETE CASCADE ON UPDATE CASCADE,
     PRIMARY KEY (tag_id, tagclass_id)
 );
 
 
 -- Tabelle TagClass_isSubclassOf_TagClass
 create table tagclass_isSubclassOf_tagclass(
-    tag_parent_id BIGINT NOT NULL REFERENCES tag(id),
-    tag_child_id BIGINT NOT NULL REFERENCES tag(id),
+    tag_parent_id BIGINT NOT NULL REFERENCES tag(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    tag_child_id BIGINT NOT NULL REFERENCES tag(id) ON DELETE CASCADE ON UPDATE CASCADE,
     PRIMARY KEY (tag_parent_id, tag_child_id)
 );
 
 
 -- Tabelle Post_hasTag_Tag
 create table post_hasTag_tag(
-    post_id BIGINT NOT NULL REFERENCES post(id),
-    tag_id BIGINT NOT NULL REFERENCES tag(id),
+    post_id BIGINT NOT NULL REFERENCES post(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    tag_id BIGINT NOT NULL REFERENCES tag(id) ON DELETE CASCADE ON UPDATE CASCADE,
     PRIMARY KEY (post_id, tag_id)
 );
 
 
 -- Tabelle Comment_hasTag_Tag
 create table comment_hasTag_tag(
-    comment_id BIGINT NOT NULL REFERENCES comment(id),
-    tag_id BIGINT NOT NULL REFERENCES tag(id),
+    comment_id BIGINT NOT NULL REFERENCES comment(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    tag_id BIGINT NOT NULL REFERENCES tag(id) ON DELETE CASCADE ON UPDATE CASCADE,
     PRIMARY KEY (comment_id, tag_id)
 );
 
 
 -- Tabelle Person_knows_Person
 create table person_knows_person(
-    person_1_id BIGINT NOT NULL REFERENCES person(id),
-    person_2_id BIGINT NOT NULL REFERENCES person(id),
+    person_1_id BIGINT NOT NULL REFERENCES person(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    person_2_id BIGINT NOT NULL REFERENCES person(id) ON DELETE CASCADE ON UPDATE CASCADE,
     creationDate TIMESTAMP NOT NULL,
     PRIMARY KEY (person_1_id, person_2_id)
 );
@@ -588,8 +588,8 @@ create table person_knows_person(
 
 -- Tabelle Person_studyAt_University
 create table person_studyAt_university(
-    person_id BIGINT NOT NULL REFERENCES person(id),
-    university_id BIGINT NOT NULL REFERENCES university(id),
+    person_id BIGINT NOT NULL REFERENCES person(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    university_id BIGINT NOT NULL REFERENCES university(id) ON DELETE CASCADE ON UPDATE CASCADE,
     classYear INT NOT NULL,
     PRIMARY KEY (person_id, university_id)
 );
@@ -597,8 +597,8 @@ create table person_studyAt_university(
 
 -- Tabelle Person_workAt_Company
 create table person_workAt_company(
-    person_id BIGINT NOT NULL REFERENCES person(id),
-    company_id BIGINT NOT NULL REFERENCES company(id),
+    person_id BIGINT NOT NULL REFERENCES person(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    company_id BIGINT NOT NULL REFERENCES company(id) ON DELETE CASCADE ON UPDATE CASCADE,
     workFrom INT NOT NULL,
     PRIMARY KEY (person_id, company_id)
 );
@@ -606,8 +606,8 @@ create table person_workAt_company(
 
 -- Tabelle Person_likes_Post
 create table person_likes_post(
-    person_id BIGINT NOT NULL REFERENCES person(id),
-    post_id BIGINT NOT NULL REFERENCES post(id),
+    person_id BIGINT NOT NULL REFERENCES person(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    post_id BIGINT NOT NULL REFERENCES post(id) ON DELETE CASCADE ON UPDATE CASCADE,
     creationDate TIMESTAMP NOT NULL,
     PRIMARY KEY (person_id, post_id)
 );
@@ -615,8 +615,8 @@ create table person_likes_post(
 
 -- Tabelle Person_likes_Comment
 create table person_likes_comment(
-    person_id BIGINT NOT NULL REFERENCES person(id),
-    comment_id BIGINT NOT NULL REFERENCES comment(id),
+    person_id BIGINT NOT NULL REFERENCES person(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    comment_id BIGINT NOT NULL REFERENCES comment(id) ON DELETE CASCADE ON UPDATE CASCADE,
     creationDate TIMESTAMP NOT NULL,
     PRIMARY KEY (person_id, comment_id)
 );
@@ -624,8 +624,8 @@ create table person_likes_comment(
 
 -- Tabelle Person_hasInterest_Tag
 create table person_hasInterest_Tag(
-    person_id BIGINT NOT NULL REFERENCES person(id),
-    tag_id BIGINT NOT NULL REFERENCES tag(id),
+    person_id BIGINT NOT NULL REFERENCES person(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    tag_id BIGINT NOT NULL REFERENCES tag(id) ON DELETE CASCADE ON UPDATE CASCADE,
     PRIMARY KEY (person_id, tag_id)
 );
 
@@ -634,7 +634,7 @@ create table person_hasInterest_Tag(
 
 
 -- bisherige Implementierung wurde getested, Postgres nimmt das so an.
--- Todo: Update- und Löschregeln, Schlüsselconstraints, Datentypen prüen und Email-Adresse checken
+-- Todo: Update- und Löschregeln, Schlüsselconstraints, Datentypen prüfen
 
 -- Was ist mit Ländern, die auf mehreren Kontinenten liegen?
 -- Macht es Sinn, wenn eine Firma keine Mitarbeiter hat bzw eine Universität keine Studenten?
