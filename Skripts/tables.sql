@@ -429,8 +429,6 @@ create table tagclass(
 create table continent(
     id BIGSERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL
-
-    -- UNIQUE(name) einfach weil wir es können
 );
 
 
@@ -489,7 +487,7 @@ create table university(
 create table forum(
     id BIGSERIAL PRIMARY KEY,
     title VARCHAR(200) NOT NULL,
-    creationDate TIMESTAMP NOT NULL, -- erstmal ohne Zeitzone, Daten müssen entsprechend geparsed werden
+    creationDate TIMESTAMP NOT NULL, 
     moderator BIGINT NOT NULL REFERENCES person(id) ON DELETE CASCADE ON UPDATE CASCADE,
     UNIQUE (moderator) -- eine Person kann nur in einem oder keinem Forum Moderator sein
 );
@@ -500,7 +498,7 @@ create table post(
     id BIGSERIAL PRIMARY KEY,
     language VARCHAR(2), -- Achtung, hier soll Null erlaubt sein
     imageFile VARCHAR(150), -- Achtung, hier soll Null erlaubt sein
-    creationDate TIMESTAMP NOT NULL, -- erstmal ohne Zeitzone, Daten müssen entsprechend geparsed werden
+    creationDate TIMESTAMP NOT NULL, 
     browserUsed VARCHAR(50) NOT NULL,
     locationIP VARCHAR(40) NOT NULL,
     content TEXT, -- Achtung, hier soll Null erlaubt sein
@@ -514,7 +512,7 @@ create table post(
 -- Tabelle Comment
 create table comment(
     id BIGSERIAL PRIMARY KEY,
-    creationDate TIMESTAMP NOT NULL, -- erstmal ohne Zeitzone, Daten müssen entsprechend geparsed werden
+    creationDate TIMESTAMP NOT NULL, 
     browserUsed VARCHAR(50) NOT NULL,
     locationIP VARCHAR(40) NOT NULL,
     content TEXT, -- Achtung, hier soll Null erlaubt sein
@@ -529,7 +527,7 @@ create table comment(
 
 
 -- Tabelle Forum_hasMember_Person
-create table forum_hasMember_person( -- muss mindestens ein Member drin sein, sonst ist das kein gültiges Forum
+create table forum_hasMember_person( 
     person_id BIGINT NOT NULL REFERENCES person(id) ON DELETE CASCADE ON UPDATE CASCADE,
     forum_id BIGINT NOT NULL REFERENCES forum(id) ON DELETE CASCADE ON UPDATE CASCADE,
     joinDate TIMESTAMP NOT NULL,
@@ -634,7 +632,7 @@ create table person_hasInterest_Tag(
 
 
 -- bisherige Implementierung wurde getested, Postgres nimmt das so an.
--- Todo: Update- und Löschregeln, Schlüsselconstraints, Datentypen prüfen
+-- Todo: urls sind noch nicht in den Places mit drin, Forum muss mind. einen Member haben -> Ist in Postgres schwierig zu machen, vielleicht per Java? (checkValidForums)
 
 -- Was ist mit Ländern, die auf mehreren Kontinenten liegen?
 -- Macht es Sinn, wenn eine Firma keine Mitarbeiter hat bzw eine Universität keine Studenten?
