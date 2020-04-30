@@ -396,31 +396,39 @@ create table country(
 
 
 
-CREATE EXTENSION citext;
-CREATE DOMAIN domain_email AS citext
-CHECK(
-   VALUE ~ '^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$'
-);
 
+-- Funktion valid_email, checkt ein Varchar auf Validität der Email-Adresse
+CREATE FUNCTION valid_email(b boolean, v VARCHAR) 
+    RETURNS boolean
+    AS $$ 
+    SELECT $2 ~ '^[\w\.]+@[\w+\.]+\.[\w]{2,4}$' as result $$
+    LANGUAGE sql;
+
+-- Operator =%= wird für die Email-Constraint gebraucht um alle Elemente aus dem Array zu vergleichen
+CREATE OPERATOR =%= (
+    PROCEDURE = valid_email,
+    LEFTARG = boolean,
+    RIGHTARG = varchar
+);
 
 -- Tabelle Tag
 create table tag(
-    id BIGSERIAL NOT NULL PRIMARY KEY,
+    id BIGSERIAL PRIMARY KEY,
     name VARCHAR(150) NOT NULL
 );
 
 
 -- Tabelle TagClass 
 create table tagclass(
-    id BIGSERIAL NOT NULL PRIMARY KEY,
+    id BIGSERIAL PRIMARY KEY,
     name VARCHAR(150) NOT NULL
 );
 
 
 -- Tabelle Continent
 create table continent(
-    id BIGSERIAL NOT NULL PRIMARY KEY,
-    name VARCHAR(50) NOT NULL
+    id BIGSERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL
 
     -- UNIQUE(name) einfach weil wir es können
 );
@@ -428,23 +436,23 @@ create table continent(
 
 -- Tabelle Country
 create table country(
-    id BIGSERIAL NOT NULL PRIMARY KEY,
-    name VARCHAR(50) NOT NULL,
+    id BIGSERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
     continent_id BIGINT NOT NULL REFERENCES continent(id)
 );
 
 
 -- Tabelle City
 create table city(
-    id BIGSERIAL NOT NULL PRIMARY KEY,
-    name VARCHAR(50) NOT NULL,
+    id BIGSERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
     country_id BIGINT NOT NULL REFERENCES country(id)
 );
 
 
 -- Tabelle Person
 create table person(
-    id BIGSERIAL NOT NULL PRIMARY KEY,
+    id BIGSERIAL PRIMARY KEY,
     creationDate TIMESTAMP NOT NULL,
     firstName VARCHAR(50) NOT NULL,
     lastName VARCHAR(100) NOT NULL,
@@ -452,18 +460,18 @@ create table person(
     birthday Date NOT NULL,
     email VARCHAR[] NOT NULL, -- ArrayType bc [1..*]
     speaks VARCHAR[] NOT NULL, -- ArrayType bc [1..*]
-    browserUsed VARCHAR(20) NOT NULL,
-    locationIP VARCHAR(15) NOT NULL,
+    browserUsed VARCHAR(50) NOT NULL,
+    locationIP VARCHAR(40) NOT NULL,
     city_id BIGINT NOT NULL REFERENCES city(id),
 
     CONSTRAINT birthday_not_in_future CHECK (birthday <= NOW()::DATE),
-    CONSTRAINT vaild_email CHECK (email::domain_email)
+    CONSTRAINT vaild_email CHECK (TRUE =%= ALL(email))
 );
 
 
 -- Tabelle Company
 create table company(
-    id BIGSERIAL NOT NULL PRIMARY KEY,
+    id BIGSERIAL PRIMARY KEY,
     name VARCHAR(200) NOT NULL,
     country_id BIGINT NOT NULL REFERENCES country(id)
 );
@@ -471,7 +479,7 @@ create table company(
 
 -- Tabelle University
 create table university(
-    id BIGSERIAL NOT NULL PRIMARY KEY,
+    id BIGSERIAL PRIMARY KEY,
     name VARCHAR(200) NOT NULL,
     city_id BIGINT NOT NULL REFERENCES city(id)
 );
@@ -479,7 +487,7 @@ create table university(
 
 -- Tabelle Forum
 create table forum(
-    id BIGSERIAL NOT NULL PRIMARY KEY,
+    id BIGSERIAL PRIMARY KEY,
     title VARCHAR(200) NOT NULL,
     creationDate TIMESTAMP NOT NULL, -- erstmal ohne Zeitzone, Daten müssen entsprechend geparsed werden
     moderator BIGINT NOT NULL REFERENCES person(id),
@@ -489,12 +497,12 @@ create table forum(
 
 -- Tabelle Post
 create table post(
-    id BIGSERIAL NOT NULL PRIMARY KEY,
+    id BIGSERIAL PRIMARY KEY,
     language VARCHAR(2), -- Achtung, hier soll Null erlaubt sein
-    imageFile VARCHAR(100), -- Achtung, hier soll Null erlaubt sein
+    imageFile VARCHAR(150), -- Achtung, hier soll Null erlaubt sein
     creationDate TIMESTAMP NOT NULL, -- erstmal ohne Zeitzone, Daten müssen entsprechend geparsed werden
     browserUsed VARCHAR(50) NOT NULL,
-    locationIP VARCHAR(15) NOT NULL,
+    locationIP VARCHAR(40) NOT NULL,
     content TEXT, -- Achtung, hier soll Null erlaubt sein
     length INT NOT NULL,
     forum_id BIGINT NOT NULL REFERENCES forum(id),
@@ -505,10 +513,10 @@ create table post(
 
 -- Tabelle Comment
 create table comment(
-    id BIGSERIAL NOT NULL PRIMARY KEY,
+    id BIGSERIAL PRIMARY KEY,
     creationDate TIMESTAMP NOT NULL, -- erstmal ohne Zeitzone, Daten müssen entsprechend geparsed werden
-    browserUsed VARCHAR(20) NOT NULL,
-    locationIP VARCHAR(15) NOT NULL,
+    browserUsed VARCHAR(50) NOT NULL,
+    locationIP VARCHAR(40) NOT NULL,
     content TEXT, -- Achtung, hier soll Null erlaubt sein
     length INT NOT NULL,
     author_id BIGINT NOT NULL REFERENCES person(id),
@@ -516,7 +524,7 @@ create table comment(
     reply_to_post_id BIGINT REFERENCES post(id),
     reply_to_comment_id BIGINT REFERENCES comment(id),
 
-    CONSTRAINT message_or_post CHECK ((reply_to_comment_id IS NOT NULL) AND (reply_to_post_id IS NULL)) OR ((reply_to_comment_id IS NULL) AND (reply_to_post_id IS NOT NULL)) -- noch schauen ob das so geht, besser XOR!
+    CONSTRAINT message_or_post CHECK (((reply_to_comment_id IS NOT NULL) AND (reply_to_post_id IS NULL)) OR ((reply_to_comment_id IS NULL) AND (reply_to_post_id IS NOT NULL))) -- noch schauen ob das so geht, besser XOR!
 );
 
 
@@ -524,42 +532,48 @@ create table comment(
 create table forum_hasMember_person( -- muss mindestens ein Member drin sein, sonst ist das kein gültiges Forum
     person_id BIGINT NOT NULL REFERENCES person(id),
     forum_id BIGINT NOT NULL REFERENCES forum(id),
-    joinDate TIMESTAMP NOT NULL
+    joinDate TIMESTAMP NOT NULL,
+    PRIMARY KEY (person_id, forum_id)
 );
 
 
 -- Tabelle Forum_hasTag_Tag
 create table forum_hasTag_tag(
     forum_id BIGINT NOT NULL REFERENCES forum(id),
-    tag_id BIGINT NOT NULL REFERENCES tag(id)
+    tag_id BIGINT NOT NULL REFERENCES tag(id),
+    PRIMARY KEY (forum_id, tag_id)
 );
 
 
 -- Tabelle Tag_hasType_TagClass
 create table tag_hasType_tagclass(
     tag_id BIGINT NOT NULL REFERENCES tag(id),
-    tagclass_id BIGINT NOT NULL REFERENCES tagclass(id)
+    tagclass_id BIGINT NOT NULL REFERENCES tagclass(id),
+    PRIMARY KEY (tag_id, tagclass_id)
 );
 
 
 -- Tabelle TagClass_isSubclassOf_TagClass
 create table tagclass_isSubclassOf_tagclass(
     tag_parent_id BIGINT NOT NULL REFERENCES tag(id),
-    tag_child_id BIGINT NOT NULL REFERENCES tag(id)
+    tag_child_id BIGINT NOT NULL REFERENCES tag(id),
+    PRIMARY KEY (tag_parent_id, tag_child_id)
 );
 
 
 -- Tabelle Post_hasTag_Tag
 create table post_hasTag_tag(
     post_id BIGINT NOT NULL REFERENCES post(id),
-    tag_id BIGINT NOT NULL REFERENCES tag(id)
+    tag_id BIGINT NOT NULL REFERENCES tag(id),
+    PRIMARY KEY (post_id, tag_id)
 );
 
 
 -- Tabelle Comment_hasTag_Tag
 create table comment_hasTag_tag(
     comment_id BIGINT NOT NULL REFERENCES comment(id),
-    tag_id BIGINT NOT NULL REFERENCES tag(id)
+    tag_id BIGINT NOT NULL REFERENCES tag(id),
+    PRIMARY KEY (comment_id, tag_id)
 );
 
 
@@ -567,7 +581,8 @@ create table comment_hasTag_tag(
 create table person_knows_person(
     person_1_id BIGINT NOT NULL REFERENCES person(id),
     person_2_id BIGINT NOT NULL REFERENCES person(id),
-    creationDate TIMESTAMP NOT NULL
+    creationDate TIMESTAMP NOT NULL,
+    PRIMARY KEY (person_1_id, person_2_id)
 );
 
 
@@ -575,7 +590,8 @@ create table person_knows_person(
 create table person_studyAt_university(
     person_id BIGINT NOT NULL REFERENCES person(id),
     university_id BIGINT NOT NULL REFERENCES university(id),
-    classYear INT NOT NULL
+    classYear INT NOT NULL,
+    PRIMARY KEY (person_id, university_id)
 );
 
 
@@ -583,7 +599,8 @@ create table person_studyAt_university(
 create table person_workAt_company(
     person_id BIGINT NOT NULL REFERENCES person(id),
     company_id BIGINT NOT NULL REFERENCES company(id),
-    workFrom INT NOT NULL
+    workFrom INT NOT NULL,
+    PRIMARY KEY (person_id, company_id)
 );
 
 
@@ -591,7 +608,8 @@ create table person_workAt_company(
 create table person_likes_post(
     person_id BIGINT NOT NULL REFERENCES person(id),
     post_id BIGINT NOT NULL REFERENCES post(id),
-    creationDate TIMESTAMP NOT NULL
+    creationDate TIMESTAMP NOT NULL,
+    PRIMARY KEY (person_id, post_id)
 );
 
 
@@ -599,14 +617,16 @@ create table person_likes_post(
 create table person_likes_comment(
     person_id BIGINT NOT NULL REFERENCES person(id),
     comment_id BIGINT NOT NULL REFERENCES comment(id),
-    creationDate TIMESTAMP NOT NULL
+    creationDate TIMESTAMP NOT NULL,
+    PRIMARY KEY (person_id, comment_id)
 );
 
 
 -- Tabelle Person_hasInterest_Tag
 create table person_hasInterest_Tag(
     person_id BIGINT NOT NULL REFERENCES person(id),
-    tag_id BIGINT NOT NULL REFERENCES tag(id)
+    tag_id BIGINT NOT NULL REFERENCES tag(id),
+    PRIMARY KEY (person_id, tag_id)
 );
 
 
@@ -618,4 +638,3 @@ create table person_hasInterest_Tag(
 
 -- Was ist mit Ländern, die auf mehreren Kontinenten liegen?
 -- Macht es Sinn, wenn eine Firma keine Mitarbeiter hat bzw eine Universität keine Studenten?
--- Person speaks Language untersuchen
