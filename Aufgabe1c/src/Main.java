@@ -14,14 +14,14 @@ public class Main {
         EntityReader.readOrganisation();
         EntityReader.readForum();
         EntityReader.readPost();
+        EntityReader.readComment();
         // Continue with the relations
         RelationReader.readPersonStudyAtOrganisation();
         RelationReader.readPersonWorkAtOrganisation();
         RelationReader.readTagClassIsSubclassOfTagClass();
         RelationReader.readTagHasTypeTagClass();
         RelationReader.readPersonSpeaksLanguage();
-        RelationReader.readComment();
-        RelationReader.readCommentHasTag();
+        RelationReader.readCommentHasTagTag();
         RelationReader.readForumHasMemberPerson();
         RelationReader.readForumHasTagTag();
         RelationReader.readPersonEmailEmailAdress();

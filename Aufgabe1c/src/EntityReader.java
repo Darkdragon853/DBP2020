@@ -349,8 +349,7 @@ public class EntityReader {
                 // Obviously we have to Split the Lines by '|'
                 String[] items = currentLine.split("\\|");
 
-                // Sprachen werden nachgeholt also einfach Filler verwenden
-                insertStatement = "INSERT INTO POST(id, language, imageFile, creationDate, browserUsed, locationIP, content, length, creator, Forum.id, place) VALUES ("
+                insertStatement = "INSERT INTO POST(id, language, imageFile, creationDate, browserUsed, locationIP, content, length, creator, forum_id, place) VALUES ("
                         + items[0] + ", " + items[5] + ", " + items[1] + ", " + items[2] + ", " + items[4] + ", " + items[3] + ", " + items[6] + ", " + items[7] + ", " + items[8] + ", " + items[9] + ", " + items[10] + ");";
 
                 System.out.println(currentLine);
@@ -371,4 +370,45 @@ public class EntityReader {
         System.out.println("Antwort auf SQL Befehl: " + result);
 
     }
+    static void readComment() {
+        //TODO: write method
+        File file = new File("./../Ressources/social_network/comment_0_0.csv");
+
+        BufferedReader br = null;
+        try {
+            br = new BufferedReader(new FileReader(file));
+        } catch (FileNotFoundException fnfe) {
+            System.out.println("Datei nicht gefunden!\n" + fnfe.getMessage());
+        }
+
+        String currentLine;
+        String insertStatement = ("");
+        try {
+            while ((currentLine = br.readLine()) != null) {
+                // Hier die momentane Eingabezeile verarbeiten
+                // Obviously we have to Split the Lines by '|'
+                String[] items = currentLine.split("\\|");
+
+                insertStatement = "INSERT INTO POST(id, creationDate, browserUsed, locationIP, content, length, creator, place, reply_of_post, reply_of_comment) VALUES ("
+                        + items[0] + ", " + items[1] + ", " + items[3] + ", " + items[2] + ", " + items[4] + ", " + items[5] + ", " + items[6] + ", " + items[7] + ", " + items[8] + ", " + items[9] + ");";
+
+                System.out.println(currentLine);
+            }
+        } catch (IOException ioex) {
+            System.out.println("I/O Error aufgetreten!\n" + ioex.getMessage());
+        }
+
+
+        Statement statement = null;
+        int result = -1;
+        try {
+            statement = DBConnection.database.createStatement();
+            result = statement.executeUpdate(insertStatement);
+        } catch (SQLException sqle) {
+            System.out.println("Fehler beim Statement erzeugen oder Befehl ausführen: " + sqle.getMessage());
+        }
+        System.out.println("Antwort auf SQL Befehl: " + result);
+
+    }
+
 }

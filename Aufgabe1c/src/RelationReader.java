@@ -10,7 +10,6 @@ public class RelationReader {
 
     static void readPersonStudyAtOrganisation() {
         // TODO: Testen
-        boolean finalResult = true;
         int failures = 0;
 
         File file = new File("./../Ressources/social_network/person_studyAt_organisation_0_0.csv");
@@ -50,7 +49,6 @@ public class RelationReader {
     }
     static void readPersonWorkAtOrganisation() {
         // TODO: Testen
-        boolean finalResult = true;
         int failures = 0;
 
         File file = new File("./../Ressources/social_network/person_workAt_organisation_0_0.csv");
@@ -90,7 +88,6 @@ public class RelationReader {
     }
     static void readTagClassIsSubclassOfTagClass() {
         // TODO: Testen
-        boolean finalResult = true;
         int failures = 0;
 
         File file = new File("./../Ressources/social_network/tagclass_isSubclassOf_tagclass_0_0.csv");
@@ -130,8 +127,6 @@ public class RelationReader {
     }
     static void readTagHasTypeTagClass() {
         // TODO: Testen
-
-        boolean finalResult = true;
         int failures = 0;
 
         File file = new File("./../Ressources/social_network/tag_hasType_tagclass_0_0.csv");
@@ -170,8 +165,6 @@ public class RelationReader {
 
     }
     static void readPersonSpeaksLanguage() {
-
-        boolean finalResult = true;
         int failures = 0;
 
         File file = new File("./../Ressources/social_network/person_speaks_language_0_0.csv");
@@ -227,70 +220,361 @@ public class RelationReader {
         } catch(IOException ioex) {
             System.out.println("I/O Error aufgetreten!\n" + ioex.getMessage());
         }
-        System.out.println("readTags() mit "+ (failures)+ " Fehlern abgeschlossen. \n");
+        System.out.println("readPersonSpeaksLanguage() mit "+ (failures)+ " Fehlern abgeschlossen. \n");
         if (failString != null){
             System.out.println("Fehler bei: " + failString);
         }
 
     }
-    static void readComment() {
-        //TODO: write method
-        boolean finalResult = true;
+    static void readCommentHasTagTag() {
+        // TODO: Testen
         int failures = 0;
 
-    }
-    static void readCommentHasTag() {
-        //TODO: write method
-        boolean finalResult = true;
-        int failures = 0;
+        File file = new File("./../Ressources/social_network/comment_hasTag_tag_0_0.csv");
+        BufferedReader br = null;
+        try {
+            br = new BufferedReader(new FileReader(file));
+        } catch (FileNotFoundException fnfe) {
+            System.out.println("Datei nicht gefunden!\n" + fnfe.getMessage() );
+        }
+
+        String currentLine;
+        String insertStatement = ("");
+        try {
+            while ((currentLine = br.readLine()) != null) {
+                // Hier die momentane Eingabezeile verarbeiten
+                // Obviously we have to Split the Lines by '|'
+                String[] items = currentLine.split("\\|");
+
+                insertStatement = "INSERT INTO COMMENT_HASTAG_TAG(comment_id, tag_id) VALUES (" + items[0] + ", " + items[1] + ");";
+
+                Statement statement = null;
+                try {
+                    statement = DBConnection.database.createStatement();
+                    int result = statement.executeUpdate(insertStatement);
+                } catch (SQLException sqle) {
+                    System.out.println("Fehler beim Statement erzeugen oder Befehl ausführen: " + sqle.getMessage());
+                    failures++;
+                }
+
+                System.out.println(currentLine); // --Debug
+            }
+        } catch(IOException ioex) {
+            System.out.println("I/O Error aufgetreten!\n" + ioex.getMessage());
+        }
+        System.out.println("readCommentHasTagTag() mit "+ (failures-1)+ " Fehlern abgesclossen.");
 
     }
     static void readForumHasMemberPerson() {
-        //TODO: write method
-        boolean finalResult = true;
+        // TODO: Testen
         int failures = 0;
+
+        File file = new File("./../Ressources/social_network/comment_hasTag_tag_0_0.csv");
+        BufferedReader br = null;
+        try {
+            br = new BufferedReader(new FileReader(file));
+        } catch (FileNotFoundException fnfe) {
+            System.out.println("Datei nicht gefunden!\n" + fnfe.getMessage() );
+        }
+
+        String currentLine;
+        String insertStatement = ("");
+        try {
+            while ((currentLine = br.readLine()) != null) {
+                // Hier die momentane Eingabezeile verarbeiten
+                // Obviously we have to Split the Lines by '|'
+                String[] items = currentLine.split("\\|");
+
+                insertStatement = "INSERT INTO FORUM_HASMENBER_PERSON(forum_id, person_id, join_date) VALUES (" + items[0] + ", " + items[1] + ", " + items[2] + ");";
+
+                Statement statement = null;
+                try {
+                    statement = DBConnection.database.createStatement();
+                    int result = statement.executeUpdate(insertStatement);
+                } catch (SQLException sqle) {
+                    System.out.println("Fehler beim Statement erzeugen oder Befehl ausführen: " + sqle.getMessage());
+                    failures++;
+                }
+
+                System.out.println(currentLine); // --Debug
+            }
+        } catch(IOException ioex) {
+            System.out.println("I/O Error aufgetreten!\n" + ioex.getMessage());
+        }
+        System.out.println("readForumHasMemberPerson() mit "+ (failures-1)+ " Fehlern abgesclossen.");
 
     }
     static void readForumHasTagTag() {
-        //TODO: write method
-        boolean finalResult = true;
+        // TODO: Testen
         int failures = 0;
+
+        File file = new File("./../Ressources/social_network/forum_hasTag_tag_0_0.csv");
+        BufferedReader br = null;
+        try {
+            br = new BufferedReader(new FileReader(file));
+        } catch (FileNotFoundException fnfe) {
+            System.out.println("Datei nicht gefunden!\n" + fnfe.getMessage() );
+        }
+
+        String currentLine;
+        String insertStatement = ("");
+        try {
+            while ((currentLine = br.readLine()) != null) {
+                // Hier die momentane Eingabezeile verarbeiten
+                // Obviously we have to Split the Lines by '|'
+                String[] items = currentLine.split("\\|");
+
+                insertStatement = "INSERT INTO FORUM_HASTAG_TAG(forum_id, tag_id) VALUES (" + items[0] + ", " + items[1] + ");";
+
+                Statement statement = null;
+                try {
+                    statement = DBConnection.database.createStatement();
+                    int result = statement.executeUpdate(insertStatement);
+                } catch (SQLException sqle) {
+                    System.out.println("Fehler beim Statement erzeugen oder Befehl ausführen: " + sqle.getMessage());
+                    failures++;
+                }
+
+                System.out.println(currentLine); // --Debug
+            }
+        } catch(IOException ioex) {
+            System.out.println("I/O Error aufgetreten!\n" + ioex.getMessage());
+        }
+        System.out.println("readForumHasTagTag() mit "+ (failures-1)+ " Fehlern abgesclossen.");
 
     }
     static void readPersonEmailEmailAdress() {
-        //TODO: write method
-        boolean finalResult = true;
+        // TODO: Testen
         int failures = 0;
+
+        File file = new File("./../Ressources/social_network/person_email_emailaddress_0_0.csv");
+        BufferedReader br = null;
+        try {
+            br = new BufferedReader(new FileReader(file));
+        } catch (FileNotFoundException fnfe) {
+            System.out.println("Datei nicht gefunden!\n" + fnfe.getMessage() );
+        }
+
+        String currentLine;
+        String insertStatement = ("");
+        try {
+            while ((currentLine = br.readLine()) != null) {
+                // Hier die momentane Eingabezeile verarbeiten
+                // Obviously we have to Split the Lines by '|'
+                String[] items = currentLine.split("\\|");
+
+                insertStatement = "INSERT INTO PERSON_EMAIL_EMAILADDRESS(person_id, email) VALUES (" + items[0] + ", " + items[1] + ");";
+
+                Statement statement = null;
+                try {
+                    statement = DBConnection.database.createStatement();
+                    int result = statement.executeUpdate(insertStatement);
+                } catch (SQLException sqle) {
+                    System.out.println("Fehler beim Statement erzeugen oder Befehl ausführen: " + sqle.getMessage());
+                    failures++;
+                }
+
+                System.out.println(currentLine); // --Debug
+            }
+        } catch(IOException ioex) {
+            System.out.println("I/O Error aufgetreten!\n" + ioex.getMessage());
+        }
+        System.out.println("readPersonEmailEmailAdress() mit "+ (failures-1)+ " Fehlern abgesclossen.");
 
     }
     static void readPersonHasInterestTag() {
-        //TODO: write method
-        boolean finalResult = true;
+        // TODO: Testen
         int failures = 0;
+
+        File file = new File("./../Ressources/social_network/person_hasInterest_tag_0_0.csv");
+        BufferedReader br = null;
+        try {
+            br = new BufferedReader(new FileReader(file));
+        } catch (FileNotFoundException fnfe) {
+            System.out.println("Datei nicht gefunden!\n" + fnfe.getMessage() );
+        }
+
+        String currentLine;
+        String insertStatement = ("");
+        try {
+            while ((currentLine = br.readLine()) != null) {
+                // Hier die momentane Eingabezeile verarbeiten
+                // Obviously we have to Split the Lines by '|'
+                String[] items = currentLine.split("\\|");
+
+                insertStatement = "INSERT INTO PERSON_HASINTEREST_TAG(person_id, tag_id) VALUES (" + items[0] + ", " + items[1] + ");";
+
+                Statement statement = null;
+                try {
+                    statement = DBConnection.database.createStatement();
+                    int result = statement.executeUpdate(insertStatement);
+                } catch (SQLException sqle) {
+                    System.out.println("Fehler beim Statement erzeugen oder Befehl ausführen: " + sqle.getMessage());
+                    failures++;
+                }
+
+                System.out.println(currentLine); // --Debug
+            }
+        } catch(IOException ioex) {
+            System.out.println("I/O Error aufgetreten!\n" + ioex.getMessage());
+        }
+        System.out.println("readPersonHasInterestTag() mit "+ (failures-1)+ " Fehlern abgesclossen.");
 
     }
     static void readPersonKnowsPerson() {
-        //TODO: write method
-        boolean finalResult = true;
+        // TODO: Testen
         int failures = 0;
+
+        File file = new File("./../Ressources/social_network/person_knows_person_0_0.csv");
+        BufferedReader br = null;
+        try {
+            br = new BufferedReader(new FileReader(file));
+        } catch (FileNotFoundException fnfe) {
+            System.out.println("Datei nicht gefunden!\n" + fnfe.getMessage() );
+        }
+
+        String currentLine;
+        String insertStatement = ("");
+        try {
+            while ((currentLine = br.readLine()) != null) {
+                // Hier die momentane Eingabezeile verarbeiten
+                // Obviously we have to Split the Lines by '|'
+                String[] items = currentLine.split("\\|");
+
+                insertStatement = "INSERT INTO PERSON_KNOWS_PERSON(person_id, person_id, creation_date) VALUES (" + items[0] + ", " + items[1] + ", " + items[2] + ");";
+
+                Statement statement = null;
+                try {
+                    statement = DBConnection.database.createStatement();
+                    int result = statement.executeUpdate(insertStatement);
+                } catch (SQLException sqle) {
+                    System.out.println("Fehler beim Statement erzeugen oder Befehl ausführen: " + sqle.getMessage());
+                    failures++;
+                }
+
+                System.out.println(currentLine); // --Debug
+            }
+        } catch(IOException ioex) {
+            System.out.println("I/O Error aufgetreten!\n" + ioex.getMessage());
+        }
+        System.out.println("readPersonKnowsPerson() mit "+ (failures-1)+ " Fehlern abgesclossen.");
 
     }
     static void readPersonLikesComment() {
-        //TODO: write method
-        boolean finalResult = true;
+        // TODO: Testen
         int failures = 0;
+
+        File file = new File("./../Ressources/social_network/person_likes_comment_0_0.csv");
+        BufferedReader br = null;
+        try {
+            br = new BufferedReader(new FileReader(file));
+        } catch (FileNotFoundException fnfe) {
+            System.out.println("Datei nicht gefunden!\n" + fnfe.getMessage() );
+        }
+
+        String currentLine;
+        String insertStatement = ("");
+        try {
+            while ((currentLine = br.readLine()) != null) {
+                // Hier die momentane Eingabezeile verarbeiten
+                // Obviously we have to Split the Lines by '|'
+                String[] items = currentLine.split("\\|");
+
+                insertStatement = "INSERT INTO PERSON_LIKES_COMMENT(person_id, comment_id, creation_date) VALUES (" + items[0] + ", " + items[1] + ", " + items[2] + ");";
+
+                Statement statement = null;
+                try {
+                    statement = DBConnection.database.createStatement();
+                    int result = statement.executeUpdate(insertStatement);
+                } catch (SQLException sqle) {
+                    System.out.println("Fehler beim Statement erzeugen oder Befehl ausführen: " + sqle.getMessage());
+                    failures++;
+                }
+
+                System.out.println(currentLine); // --Debug
+            }
+        } catch(IOException ioex) {
+            System.out.println("I/O Error aufgetreten!\n" + ioex.getMessage());
+        }
+        System.out.println("readPersonLikesComment() mit "+ (failures-1)+ " Fehlern abgesclossen.");
 
     }
     static void readPersonLikesPost() {
-        //TODO: write method
-        boolean finalResult = true;
+        // TODO: Testen
         int failures = 0;
+
+        File file = new File("./../Ressources/social_network/person_likes_post_0_0.csv");
+        BufferedReader br = null;
+        try {
+            br = new BufferedReader(new FileReader(file));
+        } catch (FileNotFoundException fnfe) {
+            System.out.println("Datei nicht gefunden!\n" + fnfe.getMessage() );
+        }
+
+        String currentLine;
+        String insertStatement = ("");
+        try {
+            while ((currentLine = br.readLine()) != null) {
+                // Hier die momentane Eingabezeile verarbeiten
+                // Obviously we have to Split the Lines by '|'
+                String[] items = currentLine.split("\\|");
+
+                insertStatement = "INSERT INTO PERSON_LIKES_POST(person_id, post_id, creation_date) VALUES (" + items[0] + ", " + items[1] + ", " + items[2] + ");";
+
+                Statement statement = null;
+                try {
+                    statement = DBConnection.database.createStatement();
+                    int result = statement.executeUpdate(insertStatement);
+                } catch (SQLException sqle) {
+                    System.out.println("Fehler beim Statement erzeugen oder Befehl ausführen: " + sqle.getMessage());
+                    failures++;
+                }
+
+                System.out.println(currentLine); // --Debug
+            }
+        } catch(IOException ioex) {
+            System.out.println("I/O Error aufgetreten!\n" + ioex.getMessage());
+        }
+        System.out.println("readPersonLikesPost() mit "+ (failures-1)+ " Fehlern abgesclossen.");
 
     }
     static void readPostHasTagTag() {
-        //TODO: write method
-        boolean finalResult = true;
+        // TODO: Testen
         int failures = 0;
+
+        File file = new File("./../Ressources/social_network/post_hasTag_Tag_0_0.csv");
+        BufferedReader br = null;
+        try {
+            br = new BufferedReader(new FileReader(file));
+        } catch (FileNotFoundException fnfe) {
+            System.out.println("Datei nicht gefunden!\n" + fnfe.getMessage() );
+        }
+
+        String currentLine;
+        String insertStatement = ("");
+        try {
+            while ((currentLine = br.readLine()) != null) {
+                // Hier die momentane Eingabezeile verarbeiten
+                // Obviously we have to Split the Lines by '|'
+                String[] items = currentLine.split("\\|");
+
+                insertStatement = "INSERT INTO POST_HASTAG_TAG(post_id, tag_id) VALUES (" + items[0] + ", " + items[1] + ");";
+
+                Statement statement = null;
+                try {
+                    statement = DBConnection.database.createStatement();
+                    int result = statement.executeUpdate(insertStatement);
+                } catch (SQLException sqle) {
+                    System.out.println("Fehler beim Statement erzeugen oder Befehl ausführen: " + sqle.getMessage());
+                    failures++;
+                }
+
+                System.out.println(currentLine); // --Debug
+            }
+        } catch(IOException ioex) {
+            System.out.println("I/O Error aufgetreten!\n" + ioex.getMessage());
+        }
+        System.out.println("readPostHasTagTag() mit "+ (failures-1)+ " Fehlern abgeschlossen.");
 
     }
 }
