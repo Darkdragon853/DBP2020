@@ -8,8 +8,7 @@ import java.text.Normalizer;
  */
 public class EntityReader {
 
-    static boolean readPerson() {
-        boolean finalResult = true;
+    static void readPerson() {
         File file = new File("./../Ressources/social_network/person_0_0.csv");
 
         BufferedReader br = null;
@@ -49,13 +48,10 @@ public class EntityReader {
         }
         System.out.println("Antwort auf SQL Befehl: " + result);
 
-        return finalResult;
     }
-
-    static boolean readPlace() {
+    static void readPlace() {
         // TODO: Soweit 100% fertig
         // Ganz vorne Extradurchlauf der nur auf Kontinente zielt
-        boolean finalResult = true;
         int continentFailures = 0;
         int otherFailures = 0;
 
@@ -150,15 +146,12 @@ public class EntityReader {
         }
 
         System.out.println("readPlaces() mit " + (continentFailures) + " Fehlern bei den Kontinenten und " + (otherFailures) + " anderen Fehlern abgeschlossen."); // 7 Fehler ist normal wegen 1. Zeile und 6 Kontinenten die schon da sind
-        return finalResult;
     }
-
-    static boolean readTag() {
+    static void readTag() {
         // TODO: Ca. 90 % Fertig. limit noch erhöhen und prüfen
         // TODO: urls als solche einlesen
         // TODO: search for Facefucker
 
-        boolean finalResult = true;
         int failures = 0;
 
         //File file = new File("C:\\Coding\\Datenbankpraktikum\\Ressources\\social_network\\tag_0_0.csv");
@@ -209,12 +202,9 @@ public class EntityReader {
         }
 
 
-        return finalResult;
     }
-
-    static boolean readTagClass() {
+    static void readTagClass() {
         // TODO: Seems like 100%
-        boolean finalResult = true;
         int failures = 0;
 
         File file = new File("./../Ressources/social_network/tagclass_0_0.csv");
@@ -254,12 +244,9 @@ public class EntityReader {
 
         System.out.println("readTagClasses() mit " + (failures - 1) + " Fehlern abgeschlossen.");
 
-        return finalResult;
     }
-
-    static boolean readOrganisation() {
+    static void readOrganisation() {
         // TODO: Namenlänge anpassen, nochmal testen
-        boolean finalResult = true;
         int failures = 0;
 
         File file = new File("./../Ressources/social_network/organisation_0_0.csv");
@@ -303,12 +290,9 @@ public class EntityReader {
             System.out.println("I/O Error aufgetreten!\n" + ioex.getMessage());
         }
         System.out.println("readOrganisations() mit " + (failures - 1) + " Fehlern abgeschlossen.");
-        return finalResult;
     }
-
-    static boolean readForum() {
+    static void readForum() {
         // TODO: Testen
-        boolean finalResult = true;
         int failures = 0;
 
         File file = new File("./../Ressources/social_network/forum_0_0.csv");
@@ -345,14 +329,46 @@ public class EntityReader {
         }
         System.out.println("readForums() mit  " + (failures - 1) + " Fehlern abgeschlossen.");
 
-        return finalResult;
     }
+    static void readPost() {
+        //TODO: recheck method
+        File file = new File("./../Ressources/social_network/post_0_0.csv");
 
-    static boolean readPost() {
-        //TODO: write method
-        boolean finalResult = true;
-        int failures = 0;
+        BufferedReader br = null;
+        try {
+            br = new BufferedReader(new FileReader(file));
+        } catch (FileNotFoundException fnfe) {
+            System.out.println("Datei nicht gefunden!\n" + fnfe.getMessage());
+        }
 
-        return finalResult;
+        String currentLine;
+        String insertStatement = ("");
+        try {
+            while ((currentLine = br.readLine()) != null) {
+                // Hier die momentane Eingabezeile verarbeiten
+                // Obviously we have to Split the Lines by '|'
+                String[] items = currentLine.split("\\|");
+
+                // Sprachen werden nachgeholt also einfach Filler verwenden
+                insertStatement = "INSERT INTO POST(id, language, imageFile, creationDate, browserUsed, locationIP, content, length, creator, Forum.id, place) VALUES ("
+                        + items[0] + ", " + items[5] + ", " + items[1] + ", " + items[2] + ", " + items[4] + ", " + items[3] + ", " + items[6] + ", " + items[7] + ", " + items[8] + ", " + items[9] + ", " + items[10] + ");";
+
+                System.out.println(currentLine);
+            }
+        } catch (IOException ioex) {
+            System.out.println("I/O Error aufgetreten!\n" + ioex.getMessage());
+        }
+
+
+        Statement statement = null;
+        int result = -1;
+        try {
+            statement = DBConnection.database.createStatement();
+            result = statement.executeUpdate(insertStatement);
+        } catch (SQLException sqle) {
+            System.out.println("Fehler beim Statement erzeugen oder Befehl ausführen: " + sqle.getMessage());
+        }
+        System.out.println("Antwort auf SQL Befehl: " + result);
+
     }
 }

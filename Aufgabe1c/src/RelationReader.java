@@ -8,7 +8,7 @@ import java.sql.Statement;
  */
 public class RelationReader {
 
-    static boolean readPersonStudyAtOrganisation() {
+    static void readPersonStudyAtOrganisation() {
         // TODO: Testen
         boolean finalResult = true;
         int failures = 0;
@@ -47,9 +47,8 @@ public class RelationReader {
         }
         System.out.println("readPersonStudyAtOrganisation() mit  " + (failures-1) + " Fehlern abgeschlossen.");
 
-        return finalResult;
     }
-    static boolean readPersonWorkAtOrganisation() {
+    static void readPersonWorkAtOrganisation() {
         // TODO: Testen
         boolean finalResult = true;
         int failures = 0;
@@ -88,9 +87,8 @@ public class RelationReader {
         }
         System.out.println("readPersonWorkAtOrganisation() mit  " + (failures-1) + " Fehlern abgeschlossen.");
 
-        return finalResult;
     }
-    static boolean readTagClassIsSubclassOfTagClass() {
+    static void readTagClassIsSubclassOfTagClass() {
         // TODO: Testen
         boolean finalResult = true;
         int failures = 0;
@@ -129,9 +127,8 @@ public class RelationReader {
         }
         System.out.println("readTagClassIsSubclassOfTagClass() mit "+ (failures-1)+ " Fehlern abgesclossen.");
 
-        return finalResult;
     }
-    static boolean readTagHasTypeTagClass() {
+    static void readTagHasTypeTagClass() {
         // TODO: Testen
 
         boolean finalResult = true;
@@ -171,9 +168,8 @@ public class RelationReader {
         }
         System.out.println("readTagHasTypeTagClass() mit "+ (failures-1)+ " Fehlern abgesclossen.");
 
-        return finalResult;
     }
-    static boolean readPersonSpeaksLanguage() {
+    static void readPersonSpeaksLanguage() {
 
         boolean finalResult = true;
         int failures = 0;
@@ -236,77 +232,65 @@ public class RelationReader {
             System.out.println("Fehler bei: " + failString);
         }
 
-        return finalResult;
     }
-    static boolean readComment() {
+    static void readComment() {
         //TODO: write method
         boolean finalResult = true;
         int failures = 0;
 
-        return finalResult;
-
     }
-    static boolean readCommentHasTag() {
+    static void readCommentHasTag() {
         //TODO: write method
         boolean finalResult = true;
         int failures = 0;
 
-        return finalResult;
     }
-    static boolean readForumHasMemberPerson() {
+    static void readForumHasMemberPerson() {
         //TODO: write method
         boolean finalResult = true;
         int failures = 0;
 
-        return finalResult;
     }
-    static boolean readForumHasTagTag() {
+    static void readForumHasTagTag() {
         //TODO: write method
         boolean finalResult = true;
         int failures = 0;
 
-        return finalResult;
     }
-    static boolean readPersonEmailEmailAdress() {
+    static void readPersonEmailEmailAdress() {
         //TODO: write method
         boolean finalResult = true;
         int failures = 0;
 
-        return finalResult;
     }
-    static boolean readPersonHasInterestTag() {
+    static void readPersonHasInterestTag() {
         //TODO: write method
         boolean finalResult = true;
         int failures = 0;
 
-        return finalResult;
     }
-    static boolean readPersonKnowsPerson() {
+    static void readPersonKnowsPerson() {
         //TODO: write method
         boolean finalResult = true;
         int failures = 0;
 
-        return finalResult;
     }
-    static boolean readPersonLikesComment() {
+    static void readPersonLikesComment() {
         //TODO: write method
         boolean finalResult = true;
         int failures = 0;
 
-        return finalResult;
     }
-    static boolean readPersonLikesPost() {
+    static void readPersonLikesPost() {
         //TODO: write method
         boolean finalResult = true;
         int failures = 0;
 
-        return finalResult;
     }
-    static boolean readPostHasTagTag() {
+    static void readPostHasTagTag() {
         //TODO: write method
         boolean finalResult = true;
         int failures = 0;
 
-        return finalResult;
     }
 }

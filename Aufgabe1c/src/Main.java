@@ -1,7 +1,3 @@
-import java.io.*;
-import java.sql.*;
-import java.text.Normalizer;
-
 /**
  * Main Class, entry point of the input reader function tool to build the database and fill it with given data
  */
