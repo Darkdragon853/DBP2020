@@ -1,4 +1,4 @@
--- Zuerst kümmern wir uns um die sicheren Entitäten
+﻿-- Zuerst kümmern wir uns um die sicheren Entitäten
 -- Elternklassen werden nicht in das Relationenschema übernommen
 -- Kindklassen sollen in eigene Relationen überführt werden
 
@@ -457,7 +457,7 @@ create table person(
     city_id BIGINT NOT NULL REFERENCES city(id),
 
     CONSTRAINT birthday_not_in_future CHECK (birthday <= NOW()::DATE),
-    CONSTRAINT vaild_email CHECK (email::domain_email)
+    CONSTRAINT vaild_email CHECK (email::domain_email == True)
 );
 
 
