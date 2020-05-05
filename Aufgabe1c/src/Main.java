@@ -1,3 +1,4 @@
+import javax.management.relation.Relation;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.ParseException;
@@ -31,21 +32,24 @@ public class Main {
 
         // Continue with the relations
 
+        RelationReader rr = new RelationReader();
 
-        /*
-        RelationReader.readPersonStudyAtOrganisation();
-        RelationReader.readPersonWorkAtOrganisation();
-        RelationReader.readTagClassIsSubclassOfTagClass();
-        RelationReader.readTagHasTypeTagClass();
-        RelationReader.readPersonSpeaksLanguage();
-        RelationReader.readCommentHasTagTag();
-        RelationReader.readForumHasMemberPerson();
-        RelationReader.readForumHasTagTag();
-        RelationReader.readPersonEmailEmailAdress();
-        RelationReader.readPersonHasInterestTag();
-        RelationReader.readPersonKnowsPerson();
-        RelationReader.readPersonLikesComment();
-        RelationReader.readPersonLikesPost();
-        RelationReader.readPostHasTagTag();*/
+
+        rr.readPersonStudyAtOrganisation();
+        rr.readPersonWorkAtOrganisation();
+        rr.readTagClassIsSubclassOfTagClass();
+        rr.readTagHasTypeTagClass();
+        // Noch zu entwickeln
+        rr.readPersonSpeaksLanguage();
+        rr.readCommentHasTagTag();
+        rr.readForumHasMemberPerson();
+        rr.readForumHasTagTag();
+        // Noch zu entwickeln
+        rr.readPersonEmailEmailAdress();
+        rr.readPersonHasInterestTag();
+        rr.readPersonKnowsPerson();
+        rr.readPersonLikesComment();
+        rr.readPersonLikesPost();
+        rr.readPostHasTagTag();
     }
 }

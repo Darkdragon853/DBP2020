@@ -208,33 +208,42 @@ public class RelationReader {
                     iteration++;
                     continue;
                 }
+
                 // Hier die momentane Eingabezeile verarbeiten
                 // Obviously we have to Split the Lines by '|'
-                String[] items = currentLine.split("\\|");
 
-                // SELECT statement to get speaks entries
+                String[] items = currentLine.split("\\|");
+                String knownSpeaks = "";
+
+                // First we use a SELECT statement to get speaks entries and store them in knownSpeaks
                 try{
                     String checkStatement = "SELECT speaks FROM person WHERE id =" + items[0] + ";";
-                    Statement checkCurrent = DBConnection.database.createStatement();
+                    Statement checkCurrent = con.database.createStatement();
                     ResultSet currentLangs = checkCurrent.executeQuery(checkStatement);
                     while (currentLangs.next()) {
                         System.out.println(currentLangs.getString(1));
+
+
+                        // Nächster Schritt: Output anschauen und darauf weiterbauen
+                        // Entwurf:
+                        // knownSpeaks = currentLangs.getString(1);
+
                     }
-                }catch (Throwable t){
+                } catch (Throwable t){
                     t.printStackTrace();
                 }
+                String newSpeaks = knownSpeaks + items[1];
 
-             *//*
-                insertStatement = "UPDATE person SET speaks = "+ items[1] + " WHERE id= "+ items[0] + ";";
+                insertStatement = "UPDATE person SET speaks = "+ newSpeaks + " WHERE id= "+ items[0] + ";";
                 Statement statement = null;
                 try {
-                    statement = database.createStatement();
+                    statement = con.database.createStatement();
                     int result = statement.executeUpdate(insertStatement);
                 } catch (SQLException sqle) {
                     System.out.println("Fehler beim Statement erzeugen oder Befehl ausführen: " + sqle.getMessage());
                     failures++;
                     failString=insertStatement;
-                }*//*
+                }
 
                 //System.out.println(currentName); // --Debug
                 System.out.println("...");
@@ -246,7 +255,6 @@ public class RelationReader {
         if (failString != null){
             System.out.println("Fehler bei: " + failString);
         }
-
     }
 
     void readCommentHasTagTag() {
@@ -383,11 +391,10 @@ public class RelationReader {
 
     }
 
-    void readPersonEmailEmailAdress() {
-        // TODO: Testen
-        j
+    void readPersonEmailEmailAdress()  {
+
         int failures = 0;
-        File file = new File("./../Ressources/social_network/person_email_emailaddress_0_0.csv");
+        File file = new File("./../Ressources/social_network/person_speaks_language_0_0.csv");
         BufferedReader br = null;
         try {
             br = new BufferedReader(new FileReader(file));
@@ -395,21 +402,44 @@ public class RelationReader {
             System.out.println("Datei nicht gefunden!\n" + fnfe.getMessage() );
         }
 
+        String failString= null;
         String currentLine;
         String insertStatement = ("");
         int iteration = 0;
         try {
             while ((currentLine = br.readLine()) != null) {
-                if (iteration == 0) {
+                //skip first line in csv file
+                if (iteration==0){
                     iteration++;
                     continue;
                 }
                 // Hier die momentane Eingabezeile verarbeiten
                 // Obviously we have to Split the Lines by '|'
                 String[] items = currentLine.split("\\|");
+                String knownEmails = "";
 
-                insertStatement = "INSERT INTO PERSON_EMAIL_EMAILADDRESS(person_id, email) VALUES (" + items[0] + ", " + items[1] + ");";
+                // First we use a SELECT statement to get email entries and store them in knownEmails
+                try{
+                    String checkStatement = "SELECT email FROM person WHERE id =" + items[0] + ";";
+                    Statement checkCurrent = con.database.createStatement();
+                    ResultSet currentLangs = checkCurrent.executeQuery(checkStatement);
+                    while (currentLangs.next()) {
+                        System.out.println(currentLangs.getString(1));
 
+
+                        // Nächster Schritt: Output anschauen und darauf weiterbauen
+                        // Entwurf:
+                        // knownEmails = currentLangs.getString(1)
+
+                    }
+                } catch (Throwable t){
+                    t.printStackTrace();
+                }
+
+                // Zusammenfügen
+                String newMails = knownEmails + items[1];
+
+                insertStatement = "UPDATE person SET email = "+ newMails + " WHERE id= "+ items[0] + ";";
                 Statement statement = null;
                 try {
                     statement = con.database.createStatement();
@@ -417,15 +447,19 @@ public class RelationReader {
                 } catch (SQLException sqle) {
                     System.out.println("Fehler beim Statement erzeugen oder Befehl ausführen: " + sqle.getMessage());
                     failures++;
+                    failString=insertStatement;
                 }
 
-                System.out.println(currentLine); // --Debug
+                //System.out.println(currentName); // --Debug
+                System.out.println("...");
             }
         } catch(IOException ioex) {
             System.out.println("I/O Error aufgetreten!\n" + ioex.getMessage());
         }
-        System.out.println("readPersonEmailEmailAdress() mit "+ (failures)+ " Fehlern abgesclossen.");
-
+        System.out.println("readPersonEmailEmailaddress() mit "+ (failures)+ " Fehlern abgeschlossen. \n");
+        if (failString != null){
+            System.out.println("Fehler bei: " + failString);
+        }
     }
 
     void readPersonHasInterestTag() {
