@@ -7,11 +7,12 @@ import java.sql.Statement;
  * holds the readers for the relations
  */
 public class RelationReader {
+    DBConnection con = new DBConnection();
 
-    /*static void readPersonStudyAtOrganisation() {
+    void readPersonStudyAtOrganisation() {
         // TODO: Testen
-        int failures = 0;
 
+        int failures = 0;
         File file = new File("./../Ressources/social_network/person_studyAt_organisation_0_0.csv");
         BufferedReader br = null;
         try {
@@ -22,19 +23,24 @@ public class RelationReader {
 
         String currentLine;
         String insertStatement = ("");
+        int iteration = 0;
         try {
             while ((currentLine = br.readLine()) != null) {
+                if (iteration == 0) {
+                    iteration++;
+                    continue;
+                }
                 // Hier die momentane Eingabezeile verarbeiten
                 // Obviously we have to Split the Lines by '|'
                 String[] items = currentLine.split("\\|");
 
-                insertStatement = "INSERT INTO PERSON_STUDYAT_UNIVERSITY(person_id, university_id, classYear) VALUES (" + items[0] + ", " + items[1] +", " + items[2] + ");";
+                insertStatement = "INSERT INTO person_studyAt_university(person_id, university_id, classYear) VALUES (" + items[0] + ", " + items[1] +", " + items[2] + ");";
 
                 System.out.println(currentLine); // -- Debug
 
                 Statement statement = null;
                 try {
-                    statement = DBConnection.database.createStatement();
+                    statement = con.database.createStatement();
                     int result = statement.executeUpdate(insertStatement);
                 } catch (SQLException sqle) {
                     System.out.println("Fehler beim Statement erzeugen oder Befehl ausführen: " + sqle.getMessage());
@@ -44,13 +50,13 @@ public class RelationReader {
         } catch(IOException ioex) {
             System.out.println("I/O Error aufgetreten!\n" + ioex.getMessage());
         }
-        System.out.println("readPersonStudyAtOrganisation() mit  " + (failures-1) + " Fehlern abgeschlossen.");
+        System.out.println("readPersonStudyAtOrganisation() mit  " + (failures) + " Fehlern abgeschlossen.");
 
     }
-    static void readPersonWorkAtOrganisation() {
+    void readPersonWorkAtOrganisation() {
         // TODO: Testen
-        int failures = 0;
 
+        int failures = 0;
         File file = new File("./../Ressources/social_network/person_workAt_organisation_0_0.csv");
         BufferedReader br = null;
         try {
@@ -61,19 +67,24 @@ public class RelationReader {
 
         String currentLine;
         String insertStatement = ("");
+        int iteration = 0;
         try {
             while ((currentLine = br.readLine()) != null) {
+                if (iteration == 0) {
+                    iteration++;
+                    continue;
+                }
                 // Hier die momentane Eingabezeile verarbeiten
                 // Obviously we have to Split the Lines by '|'
                 String[] items = currentLine.split("\\|");
 
-                insertStatement = "INSERT INTO PERSON_WORKAT_COMPANY(person_id, company_id, workFrom) VALUES (" + items[0] + ", " + items[1] +", " + items[2] + ");";
+                insertStatement = "INSERT INTO person_workAt_company(person_id, company_id, workFrom) VALUES (" + items[0] + ", " + items[1] +", " + items[2] + ");";
 
                 System.out.println(currentLine); // -- Debug
 
                 Statement statement = null;
                 try {
-                    statement = DBConnection.database.createStatement();
+                    statement = con.database.createStatement();
                     int result = statement.executeUpdate(insertStatement);
                 } catch (SQLException sqle) {
                     System.out.println("Fehler beim Statement erzeugen oder Befehl ausführen: " + sqle.getMessage());
@@ -83,10 +94,10 @@ public class RelationReader {
         } catch(IOException ioex) {
             System.out.println("I/O Error aufgetreten!\n" + ioex.getMessage());
         }
-        System.out.println("readPersonWorkAtOrganisation() mit  " + (failures-1) + " Fehlern abgeschlossen.");
+        System.out.println("readPersonWorkAtOrganisation() mit  " + (failures) + " Fehlern abgeschlossen.");
 
     }
-    static void readTagClassIsSubclassOfTagClass() {
+    void readTagClassIsSubclassOfTagClass() {
         // TODO: Testen
         int failures = 0;
 
@@ -100,17 +111,22 @@ public class RelationReader {
 
         String currentLine;
         String insertStatement = ("");
+        int iteration = 0;
         try {
             while ((currentLine = br.readLine()) != null) {
+                if (iteration == 0) {
+                    iteration++;
+                    continue;
+                }
                 // Hier die momentane Eingabezeile verarbeiten
                 // Obviously we have to Split the Lines by '|'
                 String[] items = currentLine.split("\\|");
 
-                insertStatement = "INSERT INTO TAGCLASS_ISSUBCLASSOF_TAGCLASS(tag_parent_id, tag_child_id) VALUES (" + items[0] + ", " + items[1] + ");";
+                insertStatement = "INSERT INTO tagclass_isSubclassOf_tagclass(tag_parent_id, tag_child_id) VALUES (" + items[0] + ", " + items[1] + ");";
 
                 Statement statement = null;
                 try {
-                    statement = DBConnection.database.createStatement();
+                    statement = con.database.createStatement();
                     int result = statement.executeUpdate(insertStatement);
                 } catch (SQLException sqle) {
                     System.out.println("Fehler beim Statement erzeugen oder Befehl ausführen: " + sqle.getMessage());
@@ -122,13 +138,13 @@ public class RelationReader {
         } catch(IOException ioex) {
             System.out.println("I/O Error aufgetreten!\n" + ioex.getMessage());
         }
-        System.out.println("readTagClassIsSubclassOfTagClass() mit "+ (failures-1)+ " Fehlern abgesclossen.");
+        System.out.println("readTagClassIsSubclassOfTagClass() mit "+ (failures)+ " Fehlern abgesclossen.");
 
     }
-    static void readTagHasTypeTagClass() {
+    void readTagHasTypeTagClass() {
         // TODO: Testen
-        int failures = 0;
 
+        int failures = 0;
         File file = new File("./../Ressources/social_network/tag_hasType_tagclass_0_0.csv");
         BufferedReader br = null;
         try {
@@ -139,17 +155,22 @@ public class RelationReader {
 
         String currentLine;
         String insertStatement = ("");
+        int iteration = 0;
         try {
             while ((currentLine = br.readLine()) != null) {
+                if (iteration == 0) {
+                    iteration++;
+                    continue;
+                }
                 // Hier die momentane Eingabezeile verarbeiten
                 // Obviously we have to Split the Lines by '|'
                 String[] items = currentLine.split("\\|");
 
-                insertStatement = "INSERT INTO TAG_HASTYPE_TAGCLASS(tag_id, tagclass_id) VALUES (" + items[0] + ", " + items[1] + ");";
+                insertStatement = "INSERT INTO tag_hasType_tagclass(tag_id, tagclass_id) VALUES (" + items[0] + ", " + items[1] + ");";
 
                 Statement statement = null;
                 try {
-                    statement = DBConnection.database.createStatement();
+                    statement = con.database.createStatement();
                     int result = statement.executeUpdate(insertStatement);
                 } catch (SQLException sqle) {
                     System.out.println("Fehler beim Statement erzeugen oder Befehl ausführen: " + sqle.getMessage());
@@ -161,12 +182,13 @@ public class RelationReader {
         } catch(IOException ioex) {
             System.out.println("I/O Error aufgetreten!\n" + ioex.getMessage());
         }
-        System.out.println("readTagHasTypeTagClass() mit "+ (failures-1)+ " Fehlern abgesclossen.");
+        System.out.println("readTagHasTypeTagClass() mit "+ (failures)+ " Fehlern abgesclossen.");
 
     }
-    static void readPersonSpeaksLanguage() {
-        int failures = 0;
 
+    void readPersonSpeaksLanguage() {
+
+        int failures = 0;
         File file = new File("./../Ressources/social_network/person_speaks_language_0_0.csv");
         BufferedReader br = null;
         try {
@@ -226,10 +248,11 @@ public class RelationReader {
         }
 
     }
-    static void readCommentHasTagTag() {
-        // TODO: Testen
-        int failures = 0;
 
+    void readCommentHasTagTag() {
+        // TODO: Testen
+
+        int failures = 0;
         File file = new File("./../Ressources/social_network/comment_hasTag_tag_0_0.csv");
         BufferedReader br = null;
         try {
@@ -240,17 +263,22 @@ public class RelationReader {
 
         String currentLine;
         String insertStatement = ("");
+        int iteration = 0;
         try {
             while ((currentLine = br.readLine()) != null) {
+                if (iteration == 0) {
+                    iteration++;
+                    continue;
+                }
                 // Hier die momentane Eingabezeile verarbeiten
                 // Obviously we have to Split the Lines by '|'
                 String[] items = currentLine.split("\\|");
 
-                insertStatement = "INSERT INTO COMMENT_HASTAG_TAG(comment_id, tag_id) VALUES (" + items[0] + ", " + items[1] + ");";
+                insertStatement = "INSERT INTO comment_hasTag_tag(comment_id, tag_id) VALUES (" + items[0] + ", " + items[1] + ");";
 
                 Statement statement = null;
                 try {
-                    statement = DBConnection.database.createStatement();
+                    statement = con.database.createStatement();
                     int result = statement.executeUpdate(insertStatement);
                 } catch (SQLException sqle) {
                     System.out.println("Fehler beim Statement erzeugen oder Befehl ausführen: " + sqle.getMessage());
@@ -265,10 +293,10 @@ public class RelationReader {
         System.out.println("readCommentHasTagTag() mit "+ (failures)+ " Fehlern abgeschlossen.");
 
     }
-    static void readForumHasMemberPerson() {
+    void readForumHasMemberPerson() {
         // TODO: Testen
-        int failures = 0;
 
+        int failures = 0;
         File file = new File("./../Ressources/social_network/comment_hasTag_tag_0_0.csv");
         BufferedReader br = null;
         try {
@@ -279,17 +307,23 @@ public class RelationReader {
 
         String currentLine;
         String insertStatement = ("");
+        int iteration = 0;
         try {
             while ((currentLine = br.readLine()) != null) {
+                if (iteration == 0) {
+                    iteration++;
+                    continue;
+                }
                 // Hier die momentane Eingabezeile verarbeiten
                 // Obviously we have to Split the Lines by '|'
                 String[] items = currentLine.split("\\|");
+                String timestamp = Utils.getTimestamp(items[2]);
 
-                insertStatement = "INSERT INTO FORUM_HASMENBER_PERSON(forum_id, person_id, join_date) VALUES (" + items[0] + ", " + items[1] + ", " + items[2] + ");";
+                insertStatement = "INSERT INTO forum_hasMember_person(forum_id, person_id, join_date) VALUES (" + items[0] + ", " + items[1] + ", \'" + timestamp + "\');";
 
                 Statement statement = null;
                 try {
-                    statement = DBConnection.database.createStatement();
+                    statement = con.database.createStatement();
                     int result = statement.executeUpdate(insertStatement);
                 } catch (SQLException sqle) {
                     System.out.println("Fehler beim Statement erzeugen oder Befehl ausführen: " + sqle.getMessage());
@@ -304,10 +338,10 @@ public class RelationReader {
         System.out.println("readForumHasMemberPerson() mit "+ (failures)+ " Fehlern abgeschlossen.");
 
     }
-    static void readForumHasTagTag() {
+    void readForumHasTagTag() {
         // TODO: Testen
-        int failures = 0;
 
+        int failures = 0;
         File file = new File("./../Ressources/social_network/forum_hasTag_tag_0_0.csv");
         BufferedReader br = null;
         try {
@@ -318,17 +352,22 @@ public class RelationReader {
 
         String currentLine;
         String insertStatement = ("");
+        int iteration = 0;
         try {
             while ((currentLine = br.readLine()) != null) {
+                if (iteration == 0) {
+                    iteration++;
+                    continue;
+                }
                 // Hier die momentane Eingabezeile verarbeiten
                 // Obviously we have to Split the Lines by '|'
                 String[] items = currentLine.split("\\|");
 
-                insertStatement = "INSERT INTO FORUM_HASTAG_TAG(forum_id, tag_id) VALUES (" + items[0] + ", " + items[1] + ");";
+                insertStatement = "INSERT INTO forum_hasTag_tag(forum_id, tag_id) VALUES (" + items[0] + ", " + items[1] + ");";
 
                 Statement statement = null;
                 try {
-                    statement = DBConnection.database.createStatement();
+                    statement = con.database.createStatement();
                     int result = statement.executeUpdate(insertStatement);
                 } catch (SQLException sqle) {
                     System.out.println("Fehler beim Statement erzeugen oder Befehl ausführen: " + sqle.getMessage());
@@ -340,13 +379,14 @@ public class RelationReader {
         } catch(IOException ioex) {
             System.out.println("I/O Error aufgetreten!\n" + ioex.getMessage());
         }
-        System.out.println("readForumHasTagTag() mit "+ (failures-1)+ " Fehlern abgesclossen.");
+        System.out.println("readForumHasTagTag() mit "+ (failures)+ " Fehlern abgesclossen.");
 
     }
-    static void readPersonEmailEmailAdress() {
-        // TODO: Testen
-        int failures = 0;
 
+    void readPersonEmailEmailAdress() {
+        // TODO: Testen
+        j
+        int failures = 0;
         File file = new File("./../Ressources/social_network/person_email_emailaddress_0_0.csv");
         BufferedReader br = null;
         try {
@@ -357,8 +397,13 @@ public class RelationReader {
 
         String currentLine;
         String insertStatement = ("");
+        int iteration = 0;
         try {
             while ((currentLine = br.readLine()) != null) {
+                if (iteration == 0) {
+                    iteration++;
+                    continue;
+                }
                 // Hier die momentane Eingabezeile verarbeiten
                 // Obviously we have to Split the Lines by '|'
                 String[] items = currentLine.split("\\|");
@@ -367,7 +412,7 @@ public class RelationReader {
 
                 Statement statement = null;
                 try {
-                    statement = DBConnection.database.createStatement();
+                    statement = con.database.createStatement();
                     int result = statement.executeUpdate(insertStatement);
                 } catch (SQLException sqle) {
                     System.out.println("Fehler beim Statement erzeugen oder Befehl ausführen: " + sqle.getMessage());
@@ -379,13 +424,14 @@ public class RelationReader {
         } catch(IOException ioex) {
             System.out.println("I/O Error aufgetreten!\n" + ioex.getMessage());
         }
-        System.out.println("readPersonEmailEmailAdress() mit "+ (failures-1)+ " Fehlern abgesclossen.");
+        System.out.println("readPersonEmailEmailAdress() mit "+ (failures)+ " Fehlern abgesclossen.");
 
     }
-    static void readPersonHasInterestTag() {
-        // TODO: Testen
-        int failures = 0;
 
+    void readPersonHasInterestTag() {
+        // TODO: Testen
+
+        int failures = 0;
         File file = new File("./../Ressources/social_network/person_hasInterest_tag_0_0.csv");
         BufferedReader br = null;
         try {
@@ -396,17 +442,22 @@ public class RelationReader {
 
         String currentLine;
         String insertStatement = ("");
+        int iteration = 0;
         try {
             while ((currentLine = br.readLine()) != null) {
+                if (iteration == 0) {
+                    iteration++;
+                    continue;
+                }
                 // Hier die momentane Eingabezeile verarbeiten
                 // Obviously we have to Split the Lines by '|'
                 String[] items = currentLine.split("\\|");
 
-                insertStatement = "INSERT INTO PERSON_HASINTEREST_TAG(person_id, tag_id) VALUES (" + items[0] + ", " + items[1] + ");";
+                insertStatement = "INSERT INTO person_hasInterest_tag(person_id, tag_id) VALUES (" + items[0] + ", " + items[1] + ");";
 
                 Statement statement = null;
                 try {
-                    statement = DBConnection.database.createStatement();
+                    statement = con.database.createStatement();
                     int result = statement.executeUpdate(insertStatement);
                 } catch (SQLException sqle) {
                     System.out.println("Fehler beim Statement erzeugen oder Befehl ausführen: " + sqle.getMessage());
@@ -418,13 +469,13 @@ public class RelationReader {
         } catch(IOException ioex) {
             System.out.println("I/O Error aufgetreten!\n" + ioex.getMessage());
         }
-        System.out.println("readPersonHasInterestTag() mit "+ (failures-1)+ " Fehlern abgesclossen.");
+        System.out.println("readPersonHasInterestTag() mit "+ (failures) + " Fehlern abgesclossen.");
 
     }
-    static void readPersonKnowsPerson() {
+    void readPersonKnowsPerson() {
         // TODO: Testen
-        int failures = 0;
 
+        int failures = 0;
         File file = new File("./../Ressources/social_network/person_knows_person_0_0.csv");
         BufferedReader br = null;
         try {
@@ -435,17 +486,23 @@ public class RelationReader {
 
         String currentLine;
         String insertStatement = ("");
+        int iteration = 0;
         try {
             while ((currentLine = br.readLine()) != null) {
+                if (iteration == 0) {
+                    iteration++;
+                    continue;
+                }
                 // Hier die momentane Eingabezeile verarbeiten
                 // Obviously we have to Split the Lines by '|'
                 String[] items = currentLine.split("\\|");
+                String timestamp = Utils.getTimestamp(items[2]);
 
-                insertStatement = "INSERT INTO PERSON_KNOWS_PERSON(person_id, person_id, creation_date) VALUES (" + items[0] + ", " + items[1] + ", " + items[2] + ");";
+                insertStatement = "INSERT INTO person_knows_person(person_id, person_id, creation_date) VALUES (" + items[0] + ", " + items[1] + ", \'" + timestamp + "\');";
 
                 Statement statement = null;
                 try {
-                    statement = DBConnection.database.createStatement();
+                    statement = con.database.createStatement();
                     int result = statement.executeUpdate(insertStatement);
                 } catch (SQLException sqle) {
                     System.out.println("Fehler beim Statement erzeugen oder Befehl ausführen: " + sqle.getMessage());
@@ -457,13 +514,13 @@ public class RelationReader {
         } catch(IOException ioex) {
             System.out.println("I/O Error aufgetreten!\n" + ioex.getMessage());
         }
-        System.out.println("readPersonKnowsPerson() mit "+ (failures-1)+ " Fehlern abgesclossen.");
+        System.out.println("readPersonKnowsPerson() mit "+ (failures) + " Fehlern abgesclossen.");
 
     }
-    static void readPersonLikesComment() {
+    void readPersonLikesComment() {
         // TODO: Testen
-        int failures = 0;
 
+        int failures = 0;
         File file = new File("./../Ressources/social_network/person_likes_comment_0_0.csv");
         BufferedReader br = null;
         try {
@@ -474,17 +531,23 @@ public class RelationReader {
 
         String currentLine;
         String insertStatement = ("");
+        int iteration = 0;
         try {
             while ((currentLine = br.readLine()) != null) {
+                if (iteration == 0) {
+                    iteration++;
+                    continue;
+                }
                 // Hier die momentane Eingabezeile verarbeiten
                 // Obviously we have to Split the Lines by '|'
                 String[] items = currentLine.split("\\|");
+                String timestamp = Utils.getTimestamp(items[2]);
 
-                insertStatement = "INSERT INTO PERSON_LIKES_COMMENT(person_id, comment_id, creation_date) VALUES (" + items[0] + ", " + items[1] + ", " + items[2] + ");";
+                insertStatement = "INSERT INTO person_likes_comment(person_id, comment_id, creation_date) VALUES (" + items[0] + ", " + items[1] + ", \'" + timestamp + "\');";
 
                 Statement statement = null;
                 try {
-                    statement = DBConnection.database.createStatement();
+                    statement = con.database.createStatement();
                     int result = statement.executeUpdate(insertStatement);
                 } catch (SQLException sqle) {
                     System.out.println("Fehler beim Statement erzeugen oder Befehl ausführen: " + sqle.getMessage());
@@ -496,13 +559,13 @@ public class RelationReader {
         } catch(IOException ioex) {
             System.out.println("I/O Error aufgetreten!\n" + ioex.getMessage());
         }
-        System.out.println("readPersonLikesComment() mit "+ (failures-1)+ " Fehlern abgesclossen.");
+        System.out.println("readPersonLikesComment() mit "+ (failures)+ " Fehlern abgesclossen.");
 
     }
-    static void readPersonLikesPost() {
+    void readPersonLikesPost() {
         // TODO: Testen
-        int failures = 0;
 
+        int failures = 0;
         File file = new File("./../Ressources/social_network/person_likes_post_0_0.csv");
         BufferedReader br = null;
         try {
@@ -513,17 +576,23 @@ public class RelationReader {
 
         String currentLine;
         String insertStatement = ("");
+        int iteration = 0;
         try {
             while ((currentLine = br.readLine()) != null) {
+                if (iteration == 0) {
+                    iteration++;
+                    continue;
+                }
                 // Hier die momentane Eingabezeile verarbeiten
                 // Obviously we have to Split the Lines by '|'
                 String[] items = currentLine.split("\\|");
+                String timestamp = Utils.getTimestamp(items[2]);
 
-                insertStatement = "INSERT INTO PERSON_LIKES_POST(person_id, post_id, creation_date) VALUES (" + items[0] + ", " + items[1] + ", " + items[2] + ");";
+                insertStatement = "INSERT INTO person_likes_post(person_id, post_id, creation_date) VALUES (" + items[0] + ", " + items[1] + ", \'" + timestamp + "\');";
 
                 Statement statement = null;
                 try {
-                    statement = DBConnection.database.createStatement();
+                    statement = con.database.createStatement();
                     int result = statement.executeUpdate(insertStatement);
                 } catch (SQLException sqle) {
                     System.out.println("Fehler beim Statement erzeugen oder Befehl ausführen: " + sqle.getMessage());
@@ -535,13 +604,13 @@ public class RelationReader {
         } catch(IOException ioex) {
             System.out.println("I/O Error aufgetreten!\n" + ioex.getMessage());
         }
-        System.out.println("readPersonLikesPost() mit "+ (failures-1)+ " Fehlern abgesclossen.");
+        System.out.println("readPersonLikesPost() mit "+ (failures) + " Fehlern abgesclossen.");
 
     }
-    static void readPostHasTagTag() {
+    void readPostHasTagTag() {
         // TODO: Testen
-        int failures = 0;
 
+        int failures = 0;
         File file = new File("./../Ressources/social_network/post_hasTag_Tag_0_0.csv");
         BufferedReader br = null;
         try {
@@ -552,17 +621,22 @@ public class RelationReader {
 
         String currentLine;
         String insertStatement = ("");
+        int iteration = 0;
         try {
             while ((currentLine = br.readLine()) != null) {
+                if (iteration == 0) {
+                    iteration++;
+                    continue;
+                }
                 // Hier die momentane Eingabezeile verarbeiten
                 // Obviously we have to Split the Lines by '|'
                 String[] items = currentLine.split("\\|");
 
-                insertStatement = "INSERT INTO POST_HASTAG_TAG(post_id, tag_id) VALUES (" + items[0] + ", " + items[1] + ");";
+                insertStatement = "INSERT INTO post_hasTag_tag(post_id, tag_id) VALUES (" + items[0] + ", " + items[1] + ");";
 
                 Statement statement = null;
                 try {
-                    statement = DBConnection.database.createStatement();
+                    statement = con.database.createStatement();
                     int result = statement.executeUpdate(insertStatement);
                 } catch (SQLException sqle) {
                     System.out.println("Fehler beim Statement erzeugen oder Befehl ausführen: " + sqle.getMessage());
@@ -574,7 +648,7 @@ public class RelationReader {
         } catch(IOException ioex) {
             System.out.println("I/O Error aufgetreten!\n" + ioex.getMessage());
         }
-        System.out.println("readPostHasTagTag() mit "+ (failures-1)+ " Fehlern abgeschlossen.");
+        System.out.println("readPostHasTagTag() mit "+ (failures)+ " Fehlern abgeschlossen.");
 
-    }*/
+    }
 }

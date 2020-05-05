@@ -22,14 +22,17 @@ public class Main {
 
         er.readPlace();
         er.readPerson();
-        /*
-        EntityReader.readTag();
-        EntityReader.readTagClass();
-        EntityReader.readOrganisation();
-        EntityReader.readForum();
-        EntityReader.readPost();
-        EntityReader.readComment();
+        er.readTag();
+        er.readTagClass();
+        er.readOrganisation();
+        er.readForum();
+        er.readPost();
+        er.readComment();
+
         // Continue with the relations
+
+
+        /*
         RelationReader.readPersonStudyAtOrganisation();
         RelationReader.readPersonWorkAtOrganisation();
         RelationReader.readTagClassIsSubclassOfTagClass();
