@@ -7,8 +7,9 @@ import java.text.Normalizer;
  * holds the reader for the entity types
  */
 public class EntityReader {
+    DBConnection con = new DBConnection();
 
-    static void readPerson() {
+   void readPerson() {
         File file = new File("./../Ressources/social_network/person_0_0.csv");
 
         BufferedReader br = null;
@@ -41,7 +42,7 @@ public class EntityReader {
         Statement statement = null;
         int result = -1;
         try {
-            statement = DBConnection.database.createStatement();
+            statement = con.database.createStatement();
             result = statement.executeUpdate(insertStatement);
         } catch (SQLException sqle) {
             System.out.println("Fehler beim Statement erzeugen oder Befehl ausführen: " + sqle.getMessage());
@@ -49,7 +50,7 @@ public class EntityReader {
         System.out.println("Antwort auf SQL Befehl: " + result);
 
     }
-    static void readPlace() {
+    /*static void readPlace() {
         // TODO: Soweit 100% fertig
         // Ganz vorne Extradurchlauf der nur auf Kontinente zielt
         int continentFailures = 0;
@@ -75,7 +76,7 @@ public class EntityReader {
                 String[] items = currentLine.split("\\|");
 
                 if (items[3].trim().equals("continent")) {
-                    insertStatement = "INSERT INTO CONTINENT(id, name) VALUES (" + items[0] + ", \'" + items[1] + "\');";
+                    insertStatement = "INSERT INTO CONTINENT(id, name, url) VALUES (" + items[0] + ", \'" + items[1]  + "\' , \'" + items[2] + "\');";
 
                 } else {
                     // Alles was kein Kontinent ist interessiert uns hier nicht
@@ -86,7 +87,7 @@ public class EntityReader {
 
                 Statement statement = null;
                 try {
-                    statement = DBConnection.database.createStatement();
+                    statement = database.createStatement();
                     int result = statement.executeUpdate(insertStatement);
                 } catch (SQLException sqle) {
                     System.out.println("Fehler beim Statement erzeugen oder Befehl ausführen: " + sqle.getMessage());
@@ -134,7 +135,7 @@ public class EntityReader {
                 Statement statement = null;
                 int result = -1;
                 try {
-                    statement = DBConnection.database.createStatement();
+                    statement = database.createStatement();
                     result = statement.executeUpdate(insertStatement);
                 } catch (SQLException sqle) {
                     System.out.println("Fehler beim Statement erzeugen oder Befehl ausführen: " + sqle.getMessage());
@@ -182,7 +183,7 @@ public class EntityReader {
 
                 Statement statement = null;
                 try {
-                    statement = DBConnection.database.createStatement();
+                    statement = database.createStatement();
                     int result = statement.executeUpdate(insertStatement);
                 } catch (SQLException sqle) {
                     System.out.println("Fehler beim Statement erzeugen oder Befehl ausführen: " + sqle.getMessage());
@@ -228,7 +229,7 @@ public class EntityReader {
 
                 Statement statement = null;
                 try {
-                    statement = DBConnection.database.createStatement();
+                    statement = database.createStatement();
                     int result = statement.executeUpdate(insertStatement);
                 } catch (SQLException sqle) {
                     System.out.println("Fehler beim Statement erzeugen oder Befehl ausführen: " + sqle.getMessage());
@@ -279,7 +280,7 @@ public class EntityReader {
 
                 Statement statement = null;
                 try {
-                    statement = DBConnection.database.createStatement();
+                    statement = database.createStatement();
                     int result = statement.executeUpdate(insertStatement);
                 } catch (SQLException sqle) {
                     System.out.println("Fehler beim Statement erzeugen oder Befehl ausführen: " + sqle.getMessage());
@@ -317,7 +318,7 @@ public class EntityReader {
 
                 Statement statement = null;
                 try {
-                    statement = DBConnection.database.createStatement();
+                    statement = database.createStatement();
                     int result = statement.executeUpdate(insertStatement);
                 } catch (SQLException sqle) {
                     System.out.println("Fehler beim Statement erzeugen oder Befehl ausführen: " + sqle.getMessage());
@@ -362,7 +363,7 @@ public class EntityReader {
         Statement statement = null;
         int result = -1;
         try {
-            statement = DBConnection.database.createStatement();
+            statement = database.createStatement();
             result = statement.executeUpdate(insertStatement);
         } catch (SQLException sqle) {
             System.out.println("Fehler beim Statement erzeugen oder Befehl ausführen: " + sqle.getMessage());
@@ -371,7 +372,6 @@ public class EntityReader {
 
     }
     static void readComment() {
-        //TODO: write method
         File file = new File("./../Ressources/social_network/comment_0_0.csv");
 
         BufferedReader br = null;
@@ -389,7 +389,7 @@ public class EntityReader {
                 // Obviously we have to Split the Lines by '|'
                 String[] items = currentLine.split("\\|");
 
-                insertStatement = "INSERT INTO POST(id, creationDate, browserUsed, locationIP, content, length, creator, place, reply_of_post, reply_of_comment) VALUES ("
+                insertStatement = "INSERT INTO COMMENT(id, creationDate, browserUsed, locationIP, content, length, creator, place, replyOfPost, replyOfComment) VALUES ("
                         + items[0] + ", " + items[1] + ", " + items[3] + ", " + items[2] + ", " + items[4] + ", " + items[5] + ", " + items[6] + ", " + items[7] + ", " + items[8] + ", " + items[9] + ");";
 
                 System.out.println(currentLine);
@@ -402,13 +402,12 @@ public class EntityReader {
         Statement statement = null;
         int result = -1;
         try {
-            statement = DBConnection.database.createStatement();
+            statement = database.createStatement();
             result = statement.executeUpdate(insertStatement);
         } catch (SQLException sqle) {
             System.out.println("Fehler beim Statement erzeugen oder Befehl ausführen: " + sqle.getMessage());
         }
         System.out.println("Antwort auf SQL Befehl: " + result);
 
-    }
-
+    }*/
 }

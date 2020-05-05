@@ -5,13 +5,13 @@ import java.sql.*;
  */
 public class DBConnection {
 
-    static Connection database = null;
+        Connection database = null;
 
             public DBConnection() {
                 this.database = database;
                 try{
                     Class.forName("org.postgresql.Driver"); // Load the Driver
-                    database = DriverManager.getConnection("jdbc:postgresql:tempo", "postgres", "Latarius853");
+                    database = DriverManager.getConnection("jdbc:postgresql:social_network", "postgres", "Latarius853");
                 } catch(ClassNotFoundException cnfe){
                     System.out.println("Driver ist not available!\n" + cnfe.getMessage());
                 } catch(SQLException sqle) {
