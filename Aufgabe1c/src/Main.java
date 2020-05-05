@@ -15,7 +15,7 @@ import java.text.SimpleDateFormat;
     //TODO: refactor all reader methods to be no more static.. then recheck the main()
 public class Main {
 
-    public static void main(String[] args) throws ParseException {
+    public static void main(String[] args) {
     // Use/test the data input reader functions
 
         // Start with the Entities
