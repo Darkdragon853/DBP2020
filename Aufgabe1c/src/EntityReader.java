@@ -9,7 +9,7 @@ import java.text.Normalizer;
 public class EntityReader {
     DBConnection con = new DBConnection();
 
-   void readPerson() {
+    void readPerson() {
         File file = new File("./../Ressources/social_network/person_0_0.csv");
 
         BufferedReader br = null;
@@ -21,36 +21,48 @@ public class EntityReader {
 
         String currentLine;
         String insertStatement = ("");
+        int iteration =0;
         try {
             while ((currentLine = br.readLine()) != null) {
+                if (iteration == 0) {
+                    iteration++;
+                    continue;
+                }
                 // Hier die momentane Eingabezeile verarbeiten
                 // Obviously we have to Split the Lines by '|'
                 String[] items = currentLine.split("\\|");
+                String[] splitted = items[5].split("T");
+                String date = splitted[0];
+                String time = splitted[1].split("\\+")[0];
+                String timestamp = date + " " + time;
 
                 // Sprachen werden nachgeholt also einfach Filler verwenden
                 insertStatement = "INSERT INTO PERSON(id, creationDate, firstName, lastName, gender, birthday, email, speaks, browserUsed, locationIP, city_id) VALUES ("
-                        + items[0] + ", " + items[5] + ", " + items[1] + ", " + items[2] + ", " + items[3] + ", " + items[4] + ", \'" + "{filler@gmx.de}" + "', \'" + "{filler}" + "\', " +
-                        items[7] + ", " + items[6] + ", " + items[8] + ");";
+                        + items[0] + ",\' " + timestamp + "\',\' " + items[1] + "\',\' " + items[2] + "\',\' " + items[3] + "\',\' " + items[4] + "\', \'" + "{filler@gmx.de}" + "', \'" + "{filler}" + "\',\' " +
+                        items[7] + "\',\' " + items[6] + "\', " + items[8] + ");";
 
                 System.out.println(currentLine);
+                System.out.println(insertStatement);
+
+                Statement statement = null;
+                int result = -1;
+                try {
+                    statement = con.database.createStatement();
+                    result = statement.executeUpdate(insertStatement);
+                } catch (SQLException sqle) {
+                    System.out.println("Fehler beim Statement erzeugen oder Befehl ausführen: " + sqle.getMessage());
+                }
+                System.out.println("Antwort auf SQL Befehl: " + result);
             }
         } catch (IOException ioex) {
             System.out.println("I/O Error aufgetreten!\n" + ioex.getMessage());
         }
 
 
-        Statement statement = null;
-        int result = -1;
-        try {
-            statement = con.database.createStatement();
-            result = statement.executeUpdate(insertStatement);
-        } catch (SQLException sqle) {
-            System.out.println("Fehler beim Statement erzeugen oder Befehl ausführen: " + sqle.getMessage());
-        }
-        System.out.println("Antwort auf SQL Befehl: " + result);
+
 
     }
-    /*static void readPlace() {
+    void readPlace() {
         // TODO: Soweit 100% fertig
         // Ganz vorne Extradurchlauf der nur auf Kontinente zielt
         int continentFailures = 0;
@@ -87,7 +99,7 @@ public class EntityReader {
 
                 Statement statement = null;
                 try {
-                    statement = database.createStatement();
+                    statement = con.database.createStatement();
                     int result = statement.executeUpdate(insertStatement);
                 } catch (SQLException sqle) {
                     System.out.println("Fehler beim Statement erzeugen oder Befehl ausführen: " + sqle.getMessage());
@@ -135,7 +147,7 @@ public class EntityReader {
                 Statement statement = null;
                 int result = -1;
                 try {
-                    statement = database.createStatement();
+                    statement = con.database.createStatement();
                     result = statement.executeUpdate(insertStatement);
                 } catch (SQLException sqle) {
                     System.out.println("Fehler beim Statement erzeugen oder Befehl ausführen: " + sqle.getMessage());
@@ -148,7 +160,7 @@ public class EntityReader {
 
         System.out.println("readPlaces() mit " + (continentFailures) + " Fehlern bei den Kontinenten und " + (otherFailures) + " anderen Fehlern abgeschlossen."); // 7 Fehler ist normal wegen 1. Zeile und 6 Kontinenten die schon da sind
     }
-    static void readTag() {
+    /*static void readTag() {
         // TODO: Ca. 90 % Fertig. limit noch erhöhen und prüfen
         // TODO: urls als solche einlesen
         // TODO: search for Facefucker
