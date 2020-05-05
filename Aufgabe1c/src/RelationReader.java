@@ -8,7 +8,7 @@ import java.sql.Statement;
  */
 public class RelationReader {
 
-    static void readPersonStudyAtOrganisation() {
+    /*static void readPersonStudyAtOrganisation() {
         // TODO: Testen
         int failures = 0;
 
@@ -202,7 +202,7 @@ public class RelationReader {
                     t.printStackTrace();
                 }
 
-             /*
+             *//*
                 insertStatement = "UPDATE person SET speaks = "+ items[1] + " WHERE id= "+ items[0] + ";";
                 Statement statement = null;
                 try {
@@ -212,7 +212,7 @@ public class RelationReader {
                     System.out.println("Fehler beim Statement erzeugen oder Befehl ausführen: " + sqle.getMessage());
                     failures++;
                     failString=insertStatement;
-                }*/
+                }*//*
 
                 //System.out.println(currentName); // --Debug
                 System.out.println("...");
@@ -262,7 +262,7 @@ public class RelationReader {
         } catch(IOException ioex) {
             System.out.println("I/O Error aufgetreten!\n" + ioex.getMessage());
         }
-        System.out.println("readCommentHasTagTag() mit "+ (failures-1)+ " Fehlern abgesclossen.");
+        System.out.println("readCommentHasTagTag() mit "+ (failures)+ " Fehlern abgeschlossen.");
 
     }
     static void readForumHasMemberPerson() {
@@ -301,7 +301,7 @@ public class RelationReader {
         } catch(IOException ioex) {
             System.out.println("I/O Error aufgetreten!\n" + ioex.getMessage());
         }
-        System.out.println("readForumHasMemberPerson() mit "+ (failures-1)+ " Fehlern abgesclossen.");
+        System.out.println("readForumHasMemberPerson() mit "+ (failures)+ " Fehlern abgeschlossen.");
 
     }
     static void readForumHasTagTag() {
@@ -576,5 +576,5 @@ public class RelationReader {
         }
         System.out.println("readPostHasTagTag() mit "+ (failures-1)+ " Fehlern abgeschlossen.");
 
-    }
+    }*/
 }

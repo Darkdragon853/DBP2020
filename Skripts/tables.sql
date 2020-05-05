@@ -428,7 +428,8 @@ create table tagclass(
 -- Tabelle Continent
 create table continent(
     id BIGSERIAL PRIMARY KEY,
-    name VARCHAR(100) NOT NULL
+    name VARCHAR(100) NOT NULL,
+    url TEXT
 );
 
 
@@ -436,7 +437,8 @@ create table continent(
 create table country(
     id BIGSERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
-    continent_id BIGINT NOT NULL REFERENCES continent(id) ON DELETE CASCADE ON UPDATE CASCADE
+    continent_id BIGINT NOT NULL REFERENCES continent(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    url TEXT
 );
 
 
@@ -444,7 +446,8 @@ create table country(
 create table city(
     id BIGSERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
-    country_id BIGINT NOT NULL REFERENCES country(id) ON DELETE CASCADE ON UPDATE CASCADE
+    country_id BIGINT NOT NULL REFERENCES country(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    url TEXT
 );
 
 
@@ -633,6 +636,7 @@ create table person_hasInterest_Tag(
 
 -- bisherige Implementierung wurde getested, Postgres nimmt das so an.
 -- Todo: urls sind noch nicht in den Places mit drin, Forum muss mind. einen Member haben -> Ist in Postgres schwierig zu machen, vielleicht per Java? (checkValidForums)
+-- Todo: urls als TEXT bei places einfügen
 
 -- Was ist mit Ländern, die auf mehreren Kontinenten liegen?
 -- Macht es Sinn, wenn eine Firma keine Mitarbeiter hat bzw eine Universität keine Studenten?
