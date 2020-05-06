@@ -31,19 +31,19 @@ public class Main {
 
         RelationReader rr = new RelationReader();
 
-//        rr.readPersonStudyAtOrganisation();
-//        rr.readPersonWorkAtOrganisation();
-//        rr.readTagClassIsSubclassOfTagClass();
-//        rr.readTagHasTypeTagClass();
-//        rr.readPersonSpeaksLanguage();
+        rr.readPersonStudyAtOrganisation();
+        rr.readPersonWorkAtOrganisation();
+        rr.readTagClassIsSubclassOfTagClass();
+        rr.readTagHasTypeTagClass();
+        rr.readPersonSpeaksLanguage();
         // Comment ist noch leer
 //        rr.readCommentHasTagTag();
 //        rr.readForumHasMemberPerson();
 //        rr.readForumHasTagTag();
 
-//        rr.readPersonEmailEmailAddress();
-//        rr.readPersonHasInterestTag();
-//        rr.readPersonKnowsPerson();
+        rr.readPersonEmailEmailAddress();
+        rr.readPersonHasInterestTag();
+        rr.readPersonKnowsPerson();
         // Noch ist Comments leer
 //        rr.readPersonLikesComment();
         // Noch ist Posts leer
