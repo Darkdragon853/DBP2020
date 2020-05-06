@@ -24,14 +24,12 @@ public class Main {
         // Start with the Entities
         EntityReader er = new EntityReader();
 
-//        er.readPlace();
+        er.readPlace();
 //        er.readPerson();
-        // Urls noch
 //        er.readTag();
-        // Urls noch
 //        er.readTagClass();
-        // Urls müssen noch rein
-//        er.readOrganisation();
+
+        er.readOrganisation();
 //        er.readForum();
         // Fehler werden durch die nicht vorhandenen Forums erzeugt
 //        er.readPost();
@@ -61,5 +59,6 @@ public class Main {
 //        rr.readPersonLikesPost();
             // Post noch leer
 //        rr.readPostHasTagTag();
+
     }
 }

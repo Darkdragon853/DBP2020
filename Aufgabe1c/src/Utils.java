@@ -15,8 +15,18 @@ public class Utils {
 
     public static String getNormalizedString(String input) {
 
-        //normalize strings with NFD
-        String result = Normalizer.normalize(input, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "");
+        // Normalize strings with NFD
+        String intermediate = Normalizer.normalize(input, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "");
+
+        // Ersetze Quotes
+        String result = removeQuotes(intermediate);
+        return result;
+    }
+
+    private static String removeQuotes(String input) {
+
+        // Ersetze Quotes durch ähnliches Zeichen
+        String result = input.replaceAll("'", "`");
 
         return result;
     }

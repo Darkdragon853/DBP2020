@@ -196,7 +196,7 @@ public class EntityReader {
                 String[] items = currentLine.split("\\|");
 
                 String currentName = Utils.getNormalizedString(items[1]);
-                insertStatement = "INSERT INTO tag(id, name) VALUES (" + items[0] + ", \'" + currentName.replace("'", "`") + "\');";
+                insertStatement = "INSERT INTO tag(id, name, url) VALUES (" + items[0] + ", \'" + currentName.replace("'", "`") + "\', \'" + items[2].replace("'", "`") + "\');";
 
                 Statement statement = null;
                 try {
@@ -244,7 +244,7 @@ public class EntityReader {
                 // Obviously we have to Split the Lines by '|'
                 String[] items = currentLine.split("\\|");
 
-                insertStatement = "INSERT INTO tagclass(id, name) VALUES (" + items[0] + ", \'" + items[1].replace("'", "`") + "\');";
+                insertStatement = "INSERT INTO tagclass(id, name, url) VALUES (" + items[0] + ", \'" + items[1].replace("'", "`") + "\', \'" + items[2].replace("'", "`") + "\');";
 
 
                 Statement statement = null;
@@ -290,10 +290,10 @@ public class EntityReader {
                 String[] items = currentLine.split("\\|");
 
                 if (items[1].trim().equals("company")) {
-                    insertStatement = "INSERT INTO company(id, name, country_id) VALUES (" + items[0] + ", \'" + items[2].replace("'", "`") + "\', " + items[4] + ");";
+                    insertStatement = "INSERT INTO company(id, name, url, country_id) VALUES (" + items[0] + ", \'" + items[2].replace("'", "`") + "\', \'" +items[3] + "\', " + items[4] + ");";
 
                 } else if (items[1].trim().equals("university")) {
-                    insertStatement = "INSERT INTO university(id, name, city_id) VALUES (" + items[0] + ", \'" + items[2].replace("'", "`") + "\', " + items[4] + ");";
+                    insertStatement = "INSERT INTO university(id, name, url, city_id) VALUES (" + items[0] + ", \'" + items[2].replace("'", "`") + "\', \'" +items[3] + "\', " + items[4] + ");";
 
                 } else {
                     System.out.println("Irgendwas außer university oder company gelesen");

@@ -15,14 +15,16 @@ CREATE OPERATOR =%= (
 -- Tabelle Tag
 create table tag(
     id BIGSERIAL PRIMARY KEY,
-    name VARCHAR(150) NOT NULL
+    name VARCHAR(150) NOT NULL,
+    url TEXT
 );
 
 
 -- Tabelle TagClass 
 create table tagclass(
     id BIGSERIAL PRIMARY KEY,
-    name VARCHAR(150) NOT NULL
+    name VARCHAR(150) NOT NULL,
+    url TEXT
 );
 
 
@@ -75,6 +77,7 @@ create table person(
 create table company(
     id BIGSERIAL PRIMARY KEY,
     name VARCHAR(200) NOT NULL,
+    url TEXT,
     country_id BIGINT NOT NULL REFERENCES country(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
@@ -83,6 +86,7 @@ create table company(
 create table university(
     id BIGSERIAL PRIMARY KEY,
     name VARCHAR(200) NOT NULL,
+    url TEXT,
     city_id BIGINT NOT NULL REFERENCES city(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
