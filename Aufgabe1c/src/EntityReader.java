@@ -1,7 +1,6 @@
 import java.io.*;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.Normalizer;
 
 /**
  * holds the reader for the entity types
@@ -11,8 +10,9 @@ public class EntityReader {
 
     void readPerson() {
         // TODO: NOCH TESTEN
-        File file = new File("./../Ressources/social_network/person_0_0.csv");
 
+        int failures = 0;
+        File file = new File("./../Ressources/social_network/person_0_0.csv");
         BufferedReader br = null;
         try {
             br = new BufferedReader(new FileReader(file));
@@ -37,16 +37,13 @@ public class EntityReader {
                 String timestamp = Utils.getTimestamp(items[5]);
 
                 // Sprachen werden nachgeholt also einfach Filler verwenden
-                insertStatement = "INSERT INTO person(id,  firstName, lastName, gender, birthday, creationDate, locationIP, browserUsed, city_id, email, speaks,) VALUES ("
+                insertStatement = "INSERT INTO person(id,  firstName, lastName, gender, birthday, creationDate, locationIP, browserUsed, city_id, email, speaks) VALUES ("
                         + items[0] + ", \'"  + items[1] + "\', \'" + items[2] + "\',\' " + items[3] + "\',\' " + items[4] + "\', \'" +
-                timestamp + "\', \'" + items[5] + "\', \'" + items[6] + "\', " + items[7] + ", \'" + "{filler@gmx.de}" + "\', \'" + "{filler}" + "\');";
+                timestamp + "\', \'" + items[6] + "\', \'" + items[7] + "\', " + items[8] + ", \'" + "{filler@gmx.de}" + "\', \'" + "{filler}" + "\');";
 
-                /* safetycopy insertStatement = "INSERT INTO person(id, creationDate, firstName, lastName, gender, birthday, email, speaks, browserUsed, locationIP, city_id) VALUES ("
-                        + items[0] + ",\' " + timestamp + "\',\' " + items[1] + "\',\' " + items[2] + "\',\' " + items[3] + "\',\' " + items[4] + "\', \'" + "{filler@gmx.de}" + "', \'" + "{filler}" + "\',\' " +
-                        items[7] + "\',\' " + items[6] + "\', " + items[8] + ");"; */
 
-                System.out.println(currentLine);
-                System.out.println(insertStatement);
+                //System.out.println(currentLine);
+                //System.out.println(insertStatement);
 
                 Statement statement = null;
                 int result = -1;
@@ -55,12 +52,14 @@ public class EntityReader {
                     result = statement.executeUpdate(insertStatement);
                 } catch (SQLException sqle) {
                     System.out.println("Fehler beim Statement erzeugen oder Befehl ausführen: " + sqle.getMessage());
+                    failures++;
                 }
-                System.out.println("Antwort auf SQL Befehl: " + result);
+                // System.out.println("Antwort auf SQL Befehl: " + result);
             }
         } catch (IOException ioex) {
             System.out.println("I/O Error aufgetreten!\n" + ioex.getMessage());
         }
+        System.out.println("readPlaces() mit " + failures  + " Fehlern abgeschlossen."); //
     }
     void readPlace() {
         // TODO: Soweit 100% fertig
@@ -141,10 +140,10 @@ public class EntityReader {
                     continue;
 
                 } else if (items[3].trim().equals("country")) {
-                    insertStatement = "INSERT INTO country(id, name, url, continent_id) VALUES (" + items[0] + ", \'" + items[1].replace("'", "`") + "\', \'" + items[2] + "\'," + items[4] + ");";
+                    insertStatement = "INSERT INTO country(id, name, url, continent_id) VALUES (" + items[0] + ", \'" + items[1].replaceAll("'", "`") + "\', \'" + items[2].replaceAll("'", "`") + "\'," + items[4] + ");";
 
                 } else if (items[3].trim().equals("city")) {
-                    insertStatement = "INSERT INTO city(id, name, url, country_id) VALUES (" + items[0] + ", \'" + items[1].replace("'", "`") + "\', \'" + items[2] + "\'," + items[4] + ");";
+                    insertStatement = "INSERT INTO city(id, name, url, country_id) VALUES (" + items[0] + ", \'" + items[1].replaceAll("'", "`") + "\', \'" + items[2].replaceAll("'", "`") + "\'," + items[4] + ");";
 
                 } else {
                     System.out.println("Irgendwas außer City, Continent oder Country gelesen");
@@ -195,8 +194,8 @@ public class EntityReader {
                 // Hier die momentane Eingabezeile verarbeiten
                 // Obviously we have to Split the Lines by '|'
                 String[] items = currentLine.split("\\|");
-                //normalize strings with NFD
-                String currentName = Normalizer.normalize(items[1], Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "");
+
+                String currentName = Utils.getNormalizedString(items[1]);
                 insertStatement = "INSERT INTO tag(id, name) VALUES (" + items[0] + ", \'" + currentName.replace("'", "`") + "\');";
 
                 Statement statement = null;
@@ -210,7 +209,7 @@ public class EntityReader {
                 }
 
                 //System.out.println(currentName); // --Debug
-                System.out.println("...");
+                // System.out.println("...");
             }
         } catch (IOException ioex) {
             System.out.println("I/O Error aufgetreten!\n" + ioex.getMessage());
@@ -384,7 +383,7 @@ public class EntityReader {
                 String[] items = currentLine.split("\\|");
                 String timestamp = Utils.getTimestamp(items[2]);
 
-                insertStatement = "INSERT INTO post(id, imageFile, creationDate, locationIP, browserUsed, language, content, length, creator, Forum.id, place) VALUES ("
+                insertStatement = "INSERT INTO post(id, imageFile, creationDate, locationIP, browserUsed, language, content, length, author_id, forum_id, country_id) VALUES ("
                         + items[0] + ", \'" + items[1] + "\', \'" + timestamp + "\', \'" + items[3] + "\', \'" + items[4] + "\', \'" + items[5] + "\', \'" + items[6] + "\', " + items[7] + ", " + items[8] + ", " + items[9] + ", " + items[10] + ");";
 
                 Statement statement = null;
@@ -429,12 +428,18 @@ public class EntityReader {
                 String[] items = currentLine.split("\\|");
                 String timestamp = Utils.getTimestamp(items[1]);
 
-                insertStatement = "INSERT INTO comment(id, creationDate, locationIP, browserUsed,  content, length, creator, place, replyOfPost, replyOfComment) VALUES ("
-                        + items[0] + ", \'" + timestamp + "\', \'" + items[2] + "\', \'" + items[3] + "\', \'" + items[4] + "\', " + items[5] + ", " + items[6] + ", " + items[7] + ", " + items[8] + ", " + items[9] + ");";
+
+                // Fallunterscheidung über Länge:
+
+
+
+
+                insertStatement = "INSERT INTO comment(id, creationDate, locationIP, browserUsed,  content, length, author_id, country_id, replyOfPost, replyOfComment) VALUES ("
+                        + items[0] + ", \'" + timestamp + "\', \'" + items[2] + "\', \'" + items[3] + "\', \'" + items[4] + "\', " + items[5] + ", " + items[6] + ", " + items[7] + ", " + items[8] + ");";
 
 
                 System.out.println(currentLine);
-
+                System.out.println(insertStatement);
                 Statement statement = null;
                 int result = -1;
                 try {

@@ -36,7 +36,7 @@ public class RelationReader {
 
                 insertStatement = "INSERT INTO person_studyAt_university(person_id, university_id, classYear) VALUES (" + items[0] + ", " + items[1] +", " + items[2] + ");";
 
-                System.out.println(currentLine); // -- Debug
+                //System.out.println(currentLine); // -- Debug
 
                 Statement statement = null;
                 try {
@@ -133,7 +133,7 @@ public class RelationReader {
                     failures++;
                 }
 
-                System.out.println(currentLine); // --Debug
+                //System.out.println(currentLine); // --Debug
             }
         } catch(IOException ioex) {
             System.out.println("I/O Error aufgetreten!\n" + ioex.getMessage());
@@ -177,7 +177,7 @@ public class RelationReader {
                     failures++;
                 }
 
-                System.out.println(currentLine); // --Debug
+                //System.out.println(currentLine); // --Debug
             }
         } catch(IOException ioex) {
             System.out.println("I/O Error aufgetreten!\n" + ioex.getMessage());
@@ -222,20 +222,25 @@ public class RelationReader {
                     Statement checkCurrent = con.database.createStatement();
                     ResultSet currentLangs = checkCurrent.executeQuery(checkStatement);
                     while (currentLangs.next()) {
-                        System.out.println(currentLangs.getString(1));
+                        String currentString = currentLangs.getString(1);
+                        // System.out.println(currentString);
 
 
-                        // Nächster Schritt: Output anschauen und darauf weiterbauen
-                        // Entwurf:
-                        // knownSpeaks = currentLangs.getString(1);
-
+                        if(currentString.equals("{filler}")) {
+                            // Erster Eintrag der Sprache
+                            knownSpeaks = "{";
+                        } else {
+                            // Schon Einträge drin
+                            knownSpeaks = currentString.substring(0, currentString.length()-1) + ",";
+                            //  System.out.println("String von 0 bis Length -1 : " + knownSpeaks);
+                        }
                     }
                 } catch (Throwable t){
                     t.printStackTrace();
                 }
-                String newSpeaks = knownSpeaks + items[1];
+                String newSpeaks = knownSpeaks + items[1] + "}";
 
-                insertStatement = "UPDATE person SET speaks = "+ newSpeaks + " WHERE id= "+ items[0] + ";";
+                insertStatement = "UPDATE person SET speaks = \'"+ newSpeaks + "\' WHERE id= "+ items[0] + ";";
                 Statement statement = null;
                 try {
                     statement = con.database.createStatement();
@@ -247,7 +252,7 @@ public class RelationReader {
                 }
 
                 //System.out.println(currentName); // --Debug
-                System.out.println("...");
+                // System.out.println("...");
             }
         } catch(IOException ioex) {
             System.out.println("I/O Error aufgetreten!\n" + ioex.getMessage());
@@ -306,7 +311,7 @@ public class RelationReader {
         // TODO: Testen
 
         int failures = 0;
-        File file = new File("./../Ressources/social_network/comment_hasTag_tag_0_0.csv");
+        File file = new File("./../Ressources/social_network/forum_hasMember_person_0_0.csv");
         BufferedReader br = null;
         try {
             br = new BufferedReader(new FileReader(file));
@@ -328,7 +333,7 @@ public class RelationReader {
                 String[] items = currentLine.split("\\|");
                 String timestamp = Utils.getTimestamp(items[2]);
 
-                insertStatement = "INSERT INTO forum_hasMember_person(forum_id, person_id, join_date) VALUES (" + items[0] + ", " + items[1] + ", \'" + timestamp + "\');";
+                insertStatement = "INSERT INTO forum_hasMember_person(forum_id, person_id, joinDate) VALUES (" + items[0] + ", " + items[1] + ", \'" + timestamp + "\');";
 
                 Statement statement = null;
                 try {
@@ -396,7 +401,7 @@ public class RelationReader {
     void readPersonEmailEmailAdress()  {
 
         int failures = 0;
-        File file = new File("./../Ressources/social_network/person_speaks_language_0_0.csv");
+        File file = new File("./../Ressources/social_network/person_email_emailaddress_0_0.csv");
         BufferedReader br = null;
         try {
             br = new BufferedReader(new FileReader(file));
@@ -424,24 +429,29 @@ public class RelationReader {
                 try{
                     String checkStatement = "SELECT email FROM person WHERE id =" + items[0] + ";";
                     Statement checkCurrent = con.database.createStatement();
-                    ResultSet currentLangs = checkCurrent.executeQuery(checkStatement);
-                    while (currentLangs.next()) {
-                        System.out.println(currentLangs.getString(1));
+                    ResultSet currentMails = checkCurrent.executeQuery(checkStatement);
+                    while (currentMails.next()) {
+                        String currentString = currentMails.getString(1);
+                        // System.out.println(currentString);
 
-
-                        // Nächster Schritt: Output anschauen und darauf weiterbauen
-                        // Entwurf:
-                        // knownEmails = currentLangs.getString(1)
-
+                        if(currentString.equals("{filler@gmx.de}")) {
+                            // Erster Eintrag der Sprache
+                            knownEmails = "{";
+                        } else {
+                            // Schon Einträge drin
+                            knownEmails = currentString.substring(0, currentString.length()-1) + ",";
+                            // System.out.println("String von 0 bis Length -1 : " + knownEmails);
+                        }
                     }
                 } catch (Throwable t){
                     t.printStackTrace();
                 }
 
                 // Zusammenfügen
-                String newMails = knownEmails + items[1];
+                String newMails = knownEmails + items[1] + "}";
 
-                insertStatement = "UPDATE person SET email = "+ newMails + " WHERE id= "+ items[0] + ";";
+                insertStatement = "UPDATE person SET email = \'"+ newMails + "\' WHERE id= "+ items[0] + ";";
+                // System.out.println(insertStatement);
                 Statement statement = null;
                 try {
                     statement = con.database.createStatement();
@@ -451,16 +461,13 @@ public class RelationReader {
                     failures++;
                     failString=insertStatement;
                 }
-
-                //System.out.println(currentName); // --Debug
-                System.out.println("...");
             }
         } catch(IOException ioex) {
             System.out.println("I/O Error aufgetreten!\n" + ioex.getMessage());
         }
         System.out.println("readPersonEmailEmailaddress() mit "+ (failures)+ " Fehlern abgeschlossen. \n");
         if (failString != null){
-            System.out.println("Fehler bei: " + failString);
+            System.out.println("letzter Fehler bei: " + failString);
         }
     }
 
@@ -500,7 +507,7 @@ public class RelationReader {
                     failures++;
                 }
 
-                System.out.println(currentLine); // --Debug
+                //System.out.println(currentLine); // --Debug
             }
         } catch(IOException ioex) {
             System.out.println("I/O Error aufgetreten!\n" + ioex.getMessage());
@@ -534,7 +541,7 @@ public class RelationReader {
                 String[] items = currentLine.split("\\|");
                 String timestamp = Utils.getTimestamp(items[2]);
 
-                insertStatement = "INSERT INTO person_knows_person(person_id, person_id, creation_date) VALUES (" + items[0] + ", " + items[1] + ", \'" + timestamp + "\');";
+                insertStatement = "INSERT INTO person_knows_person(person_1_id, person_2_id, creationDate) VALUES (" + items[0] + ", " + items[1] + ", \'" + timestamp + "\');";
 
                 Statement statement = null;
                 try {
@@ -545,7 +552,7 @@ public class RelationReader {
                     failures++;
                 }
 
-                System.out.println(currentLine); // --Debug
+                //System.out.println(currentLine); // --Debug
             }
         } catch(IOException ioex) {
             System.out.println("I/O Error aufgetreten!\n" + ioex.getMessage());
@@ -579,7 +586,7 @@ public class RelationReader {
                 String[] items = currentLine.split("\\|");
                 String timestamp = Utils.getTimestamp(items[2]);
 
-                insertStatement = "INSERT INTO person_likes_comment(person_id, comment_id, creation_date) VALUES (" + items[0] + ", " + items[1] + ", \'" + timestamp + "\');";
+                insertStatement = "INSERT INTO person_likes_comment(person_id, comment_id, creationDate) VALUES (" + items[0] + ", " + items[1] + ", \'" + timestamp + "\');";
 
                 Statement statement = null;
                 try {
@@ -624,7 +631,7 @@ public class RelationReader {
                 String[] items = currentLine.split("\\|");
                 String timestamp = Utils.getTimestamp(items[2]);
 
-                insertStatement = "INSERT INTO person_likes_post(person_id, post_id, creation_date) VALUES (" + items[0] + ", " + items[1] + ", \'" + timestamp + "\');";
+                insertStatement = "INSERT INTO person_likes_post(person_id, post_id, creationDate) VALUES (" + items[0] + ", " + items[1] + ", \'" + timestamp + "\');";
 
                 Statement statement = null;
                 try {

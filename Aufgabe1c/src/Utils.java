@@ -1,4 +1,7 @@
+import java.text.Normalizer;
+
 public class Utils {
+
 
     public static String getTimestamp(String input) {
 
@@ -8,5 +11,13 @@ public class Utils {
         String timestamp = date + " " + time;
 
         return timestamp;
+    }
+
+    public static String getNormalizedString(String input) {
+
+        //normalize strings with NFD
+        String result = Normalizer.normalize(input, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "");
+
+        return result;
     }
 }

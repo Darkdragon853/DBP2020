@@ -14,6 +14,8 @@ import java.text.SimpleDateFormat;
     //TODO: copypaste the creationDate parser where needed
     //TODO: Cooler Ladebalken per System.out.println
     //TODO: Normalizer
+    // TODO: Forum Probleme künstlich?
+    // TODO: Filler überarbeiten?
 public class Main {
 
     public static void main(String[] args) {
@@ -22,34 +24,42 @@ public class Main {
         // Start with the Entities
         EntityReader er = new EntityReader();
 
-        er.readPlace();
-        er.readPerson();
-        er.readTag();
-        er.readTagClass();
-        er.readOrganisation();
-        er.readForum();
-        er.readPost();
-        er.readComment();
+//        er.readPlace();
+//        er.readPerson();
+        // Urls noch
+//        er.readTag();
+        // Urls noch
+//        er.readTagClass();
+        // Urls müssen noch rein
+//        er.readOrganisation();
+//        er.readForum();
+        // Fehler werden durch die nicht vorhandenen Forums erzeugt
+//        er.readPost();
+        // Problem: Wenn der letzte Eintrag in der csv nicht gefüllt ist, kommt durch split das letzte item nicht. Mache Fallunterscheidung.
+ //       er.readComment();
 
         // Continue with the relations
 
         RelationReader rr = new RelationReader();
 
-        rr.readPersonStudyAtOrganisation();
-        rr.readPersonWorkAtOrganisation();
-        rr.readTagClassIsSubclassOfTagClass();
-        rr.readTagHasTypeTagClass();
-        // Noch zu entwickeln
-        rr.readPersonSpeaksLanguage();
-        rr.readCommentHasTagTag();
-        rr.readForumHasMemberPerson();
-        rr.readForumHasTagTag();
-        // Noch zu entwickeln
-        rr.readPersonEmailEmailAdress();
-        rr.readPersonHasInterestTag();
-        rr.readPersonKnowsPerson();
-        rr.readPersonLikesComment();
-        rr.readPersonLikesPost();
-        rr.readPostHasTagTag();
+//        rr.readPersonStudyAtOrganisation();
+//        rr.readPersonWorkAtOrganisation();
+//        rr.readTagClassIsSubclassOfTagClass();
+//        rr.readTagHasTypeTagClass();
+//        rr.readPersonSpeaksLanguage();
+          // Comment ist noch leer
+//        rr.readCommentHasTagTag();
+//        rr.readForumHasMemberPerson();
+//        rr.readForumHasTagTag();
+
+//        rr.readPersonEmailEmailAdress();
+//        rr.readPersonHasInterestTag();
+//        rr.readPersonKnowsPerson();
+        // Noch ist Comments leer
+//        rr.readPersonLikesComment();
+        // Noch ist Posts leer
+//        rr.readPersonLikesPost();
+            // Post noch leer
+//        rr.readPostHasTagTag();
     }
 }

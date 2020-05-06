@@ -1,24 +1,16 @@
-﻿
----
----
----  RESULTIERENDE TABELLEN:
----
----
-
-
--- Funktion valid_email, checkt ein Varchar auf Validität der Email-Adresse
 CREATE FUNCTION valid_email(b boolean, v VARCHAR) 
     RETURNS boolean
     AS $$ 
     SELECT $2 ~ '^[\w\.]+@[\w+\.]+\.[\w]{2,4}$' as result $$
     LANGUAGE sql;
 
--- Operator =%= wird für die Email-Constraint gebraucht um alle Elemente aus dem Array zu vergleichen
+
 CREATE OPERATOR =%= (
     PROCEDURE = valid_email,
     LEFTARG = boolean,
     RIGHTARG = varchar
 );
+
 
 -- Tabelle Tag
 create table tag(
@@ -238,14 +230,3 @@ create table person_hasInterest_Tag(
     tag_id BIGINT NOT NULL REFERENCES tag(id) ON DELETE CASCADE ON UPDATE CASCADE,
     PRIMARY KEY (person_id, tag_id)
 );
-
-
-
-
-
--- bisherige Implementierung wurde getested, Postgres nimmt das so an.
--- Todo: urls sind noch nicht in den Places mit drin, Forum muss mind. einen Member haben -> Ist in Postgres schwierig zu machen, vielleicht per Java? (checkValidForums)
--- Todo: urls als TEXT bei places einfügen
-
--- Was ist mit Ländern, die auf mehreren Kontinenten liegen?
--- Macht es Sinn, wenn eine Firma keine Mitarbeiter hat bzw eine Universität keine Studenten?
