@@ -12,7 +12,8 @@ import java.text.SimpleDateFormat;
     //TODO: Skip first line in every csv file
     //TODO: check if Strings are correctly escaped
     //TODO: copypaste the creationDate parser where needed
-    //TODO: refactor all reader methods to be no more static.. then recheck the main()
+    //TODO: Cooler Ladebalken per System.out.println
+    //TODO: Normalizer
 public class Main {
 
     public static void main(String[] args) {
@@ -33,7 +34,6 @@ public class Main {
         // Continue with the relations
 
         RelationReader rr = new RelationReader();
-
 
         rr.readPersonStudyAtOrganisation();
         rr.readPersonWorkAtOrganisation();

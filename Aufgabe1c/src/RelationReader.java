@@ -186,6 +186,7 @@ public class RelationReader {
 
     }
 
+    //  in Progress
     void readPersonSpeaksLanguage() {
 
         int failures = 0;
@@ -391,6 +392,7 @@ public class RelationReader {
 
     }
 
+    // in Progress
     void readPersonEmailEmailAdress()  {
 
         int failures = 0;
