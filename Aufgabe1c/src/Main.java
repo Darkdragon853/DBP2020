@@ -1,9 +1,8 @@
 /**
  * Main Class, entry point of the input reader function tool to build the database and fill it with given data
  */
-// TODO: Nomenklatur: Befehle CAPSLOCK, tablenames klein, Attribute in lowercaseCamelCase, foreign keys als Parent.child
-//TODO: Itemnummerierung nach Datensatzangabe
-// TODO: Forum Probleme künstlich?
+// TODO: Behandlung der Kommentare bzw des letzten Feldes
+// TODO: Forum Probleme künstlich - auf Antwort im Moodle warten
 // TODO: Filler überarbeiten?
 public class Main {
 
