@@ -1,16 +1,8 @@
-import javax.management.relation.Relation;
-import java.sql.Date;
-import java.sql.Timestamp;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-
 /**
  * Main Class, entry point of the input reader function tool to build the database and fill it with given data
  */
 // TODO: Nomenklatur: Befehle CAPSLOCK, tablenames klein, Attribute in lowercaseCamelCase, foreign keys als Parent.child
 //TODO: Itemnummerierung nach Datensatzangabe
-//TODO: Skip first line in every csv file
-//TODO: check if Strings are correctly escaped
 // TODO: Forum Probleme künstlich?
 // TODO: Filler überarbeiten?
 public class Main {

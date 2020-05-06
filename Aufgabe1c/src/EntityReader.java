@@ -62,7 +62,6 @@ public class EntityReader {
         Utils.showProgress();
     }
     void readPlace() {
-        // TODO: Soweit 100% fertig
         // Ganz vorne Extradurchlauf der nur auf Kontinente zielt
 
         int continentFailures = 0;
