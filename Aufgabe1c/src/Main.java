@@ -40,9 +40,9 @@ public class Main {
         }
 
         // Funktionen nutzen / testen
-        //boolean test1 = readPersons();
+        boolean test1 = readPersons();
         //boolean test2 = readPlaces();
-        boolean test3 = readPersonSpeaksLanguage();
+        //boolean test3 = readPersonSpeaksLanguage();
 
 
     }
