@@ -185,8 +185,6 @@ public class RelationReader {
         System.out.println("readTagHasTypeTagClass() mit "+ (failures)+ " Fehlern abgesclossen.");
 
     }
-
-    //  in Progress
     void readPersonSpeaksLanguage() {
 
         int failures = 0;
@@ -238,8 +236,10 @@ public class RelationReader {
                 } catch (Throwable t){
                     t.printStackTrace();
                 }
+                // Then we construct the new entry
                 String newSpeaks = knownSpeaks + items[1] + "}";
 
+                // And update the Table
                 insertStatement = "UPDATE person SET speaks = \'"+ newSpeaks + "\' WHERE id= "+ items[0] + ";";
                 Statement statement = null;
                 try {
@@ -262,7 +262,6 @@ public class RelationReader {
             System.out.println("Fehler bei: " + failString);
         }
     }
-
     void readCommentHasTagTag() {
         // TODO: Testen
 
@@ -396,9 +395,7 @@ public class RelationReader {
         System.out.println("readForumHasTagTag() mit "+ (failures)+ " Fehlern abgesclossen.");
 
     }
-
-    // in Progress
-    void readPersonEmailEmailAdress()  {
+    void readPersonEmailEmailAddress()  {
 
         int failures = 0;
         File file = new File("./../Ressources/social_network/person_email_emailaddress_0_0.csv");
@@ -470,9 +467,7 @@ public class RelationReader {
             System.out.println("letzter Fehler bei: " + failString);
         }
     }
-
     void readPersonHasInterestTag() {
-        // TODO: Testen
 
         int failures = 0;
         File file = new File("./../Ressources/social_network/person_hasInterest_tag_0_0.csv");
@@ -516,7 +511,6 @@ public class RelationReader {
 
     }
     void readPersonKnowsPerson() {
-        // TODO: Testen
 
         int failures = 0;
         File file = new File("./../Ressources/social_network/person_knows_person_0_0.csv");
@@ -561,7 +555,6 @@ public class RelationReader {
 
     }
     void readPersonLikesComment() {
-        // TODO: Testen
 
         int failures = 0;
         File file = new File("./../Ressources/social_network/person_likes_comment_0_0.csv");

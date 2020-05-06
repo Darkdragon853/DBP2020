@@ -64,9 +64,9 @@ public class EntityReader {
     void readPlace() {
         // TODO: Soweit 100% fertig
         // Ganz vorne Extradurchlauf der nur auf Kontinente zielt
+
         int continentFailures = 0;
         int otherFailures = 0;
-
         File file = new File("./../Ressources/social_network/place_0_0.csv");
         BufferedReader br = null;
 
@@ -91,8 +91,10 @@ public class EntityReader {
                 // Obviously we have to Split the Lines by '|'. In addition we need to replace ' by ` bc it interacts like the end of a string
                 String[] items = currentLine.split("\\|");
 
+                String clearUrl = Utils.getNormalizedString(items[2]);
+                String clearName = Utils.getNormalizedString(items[1]);
                 if (items[3].trim().equals("continent")) {
-                    insertStatement = "INSERT INTO continent(id, name, url) VALUES (" + items[0] + ", \'" + items[1]  + "\' , \'" + items[2] + "\');";
+                    insertStatement = "INSERT INTO continent(id, name, url) VALUES (" + items[0] + ", \'" + clearName  + "\' , \'" + clearUrl + "\');";
 
                 } else {
                     // Alles was kein Kontinent ist interessiert uns hier nicht
@@ -135,15 +137,18 @@ public class EntityReader {
                 // Obviously we have to Split the Lines by '|'. In addition we need to replace ' by ` bc it interacts like the end of a string
                 String[] items = currentLine.split("\\|");
 
+                String clearUrl = Utils.getNormalizedString(items[2]);
+                String clearName = Utils.getNormalizedString(items[1]);
+
                 if (items[3].trim().equals("continent")) {
                     // Kontinente sind schon drin
                     continue;
 
                 } else if (items[3].trim().equals("country")) {
-                    insertStatement = "INSERT INTO country(id, name, url, continent_id) VALUES (" + items[0] + ", \'" + items[1].replaceAll("'", "`") + "\', \'" + items[2].replaceAll("'", "`") + "\'," + items[4] + ");";
+                    insertStatement = "INSERT INTO country(id, name, url, continent_id) VALUES (" + items[0] + ", \'" + clearName + "\', \'" + clearUrl + "\'," + items[4] + ");";
 
                 } else if (items[3].trim().equals("city")) {
-                    insertStatement = "INSERT INTO city(id, name, url, country_id) VALUES (" + items[0] + ", \'" + items[1].replaceAll("'", "`") + "\', \'" + items[2].replaceAll("'", "`") + "\'," + items[4] + ");";
+                    insertStatement = "INSERT INTO city(id, name, url, country_id) VALUES (" + items[0] + ", \'" + clearName + "\', \'" + clearUrl + "\'," + items[4] + ");";
 
                 } else {
                     System.out.println("Irgendwas außer City, Continent oder Country gelesen");
@@ -168,8 +173,6 @@ public class EntityReader {
         System.out.println("readPlaces() mit " + (continentFailures) + " Fehlern bei den Kontinenten und " + (otherFailures) + " anderen Fehlern abgeschlossen."); // 7 Fehler ist normal wegen 1. Zeile und 6 Kontinenten die schon da sind
     }
     void readTag() {
-        // TODO: Ca. 90 % Fertig. limit noch erhöhen und prüfen
-        // TODO: urls als solche einlesen
         // TODO: search for Facefucker
 
         int failures = 0;
@@ -195,8 +198,10 @@ public class EntityReader {
                 // Obviously we have to Split the Lines by '|'
                 String[] items = currentLine.split("\\|");
 
-                String currentName = Utils.getNormalizedString(items[1]);
-                insertStatement = "INSERT INTO tag(id, name, url) VALUES (" + items[0] + ", \'" + currentName.replace("'", "`") + "\', \'" + items[2].replace("'", "`") + "\');";
+                String clearUrl = Utils.getNormalizedString(items[2]);
+                String clearName = Utils.getNormalizedString(items[1]);
+
+                insertStatement = "INSERT INTO tag(id, name, url) VALUES (" + items[0] + ", \'" + clearName + "\', \'" + clearUrl + "\');";
 
                 Statement statement = null;
                 try {
@@ -220,7 +225,6 @@ public class EntityReader {
         }
     }
     void readTagClass() {
-        // TODO: Seems like 100%
 
         int failures = 0;
         File file = new File("./../Ressources/social_network/tagclass_0_0.csv");
@@ -244,8 +248,10 @@ public class EntityReader {
                 // Obviously we have to Split the Lines by '|'
                 String[] items = currentLine.split("\\|");
 
-                insertStatement = "INSERT INTO tagclass(id, name, url) VALUES (" + items[0] + ", \'" + items[1].replace("'", "`") + "\', \'" + items[2].replace("'", "`") + "\');";
+                String clearUrl = Utils.getNormalizedString(items[2]);
+                String clearName = Utils.getNormalizedString(items[1]);
 
+                insertStatement = "INSERT INTO tagclass(id, name, url) VALUES (" + items[0] + ", \'" + clearName + "\', \'" + clearUrl + "\');";
 
                 Statement statement = null;
                 try {
@@ -264,7 +270,6 @@ public class EntityReader {
         System.out.println("readTagClasses() mit " + (failures) + " Fehlern abgeschlossen.");
     }
     void readOrganisation() {
-        // TODO: Namenlänge anpassen, nochmal testen
 
         int failures = 0;
         File file = new File("./../Ressources/social_network/organisation_0_0.csv");
@@ -289,11 +294,14 @@ public class EntityReader {
                 // Obviously we have to Split the Lines by '|'
                 String[] items = currentLine.split("\\|");
 
+                String clearUrl = Utils.getNormalizedString(items[3]);
+                String clearName = Utils.getNormalizedString(items[2]);
+
                 if (items[1].trim().equals("company")) {
-                    insertStatement = "INSERT INTO company(id, name, url, country_id) VALUES (" + items[0] + ", \'" + items[2].replace("'", "`") + "\', \'" +items[3] + "\', " + items[4] + ");";
+                    insertStatement = "INSERT INTO company(id, name, url, country_id) VALUES (" + items[0] + ", \'" + clearName + "\', \'" + clearUrl + "\', " + items[4] + ");";
 
                 } else if (items[1].trim().equals("university")) {
-                    insertStatement = "INSERT INTO university(id, name, url, city_id) VALUES (" + items[0] + ", \'" + items[2].replace("'", "`") + "\', \'" +items[3] + "\', " + items[4] + ");";
+                    insertStatement = "INSERT INTO university(id, name, url, city_id) VALUES (" + items[0] + ", \'" + clearName + "\', \'" + clearUrl + "\', " + items[4] + ");";
 
                 } else {
                     System.out.println("Irgendwas außer university oder company gelesen");
@@ -339,7 +347,9 @@ public class EntityReader {
                 String[] items = currentLine.split("\\|");
                 String timestamp = Utils.getTimestamp(items[2]);
 
-                insertStatement = "INSERT INTO forum(id, title, creationDate, moderator) VALUES (" + items[0] + ", \'" + items[1].replace("'", "`") + "\', \'" + timestamp + "\', " + items[3] + ");";
+                String clearTitle = Utils.getNormalizedString(items[1]);
+
+                insertStatement = "INSERT INTO forum(id, title, creationDate, moderator) VALUES (" + items[0] + ", \'" + clearTitle + "\', \'" + timestamp + "\', " + items[3] + ");";
 
                 System.out.println(currentLine); // -- Debug
 
@@ -383,8 +393,11 @@ public class EntityReader {
                 String[] items = currentLine.split("\\|");
                 String timestamp = Utils.getTimestamp(items[2]);
 
+                String clearContent = Utils.getNormalizedString(items[6]);
+
+
                 insertStatement = "INSERT INTO post(id, imageFile, creationDate, locationIP, browserUsed, language, content, length, author_id, forum_id, country_id) VALUES ("
-                        + items[0] + ", \'" + items[1] + "\', \'" + timestamp + "\', \'" + items[3] + "\', \'" + items[4] + "\', \'" + items[5] + "\', \'" + items[6] + "\', " + items[7] + ", " + items[8] + ", " + items[9] + ", " + items[10] + ");";
+                        + items[0] + ", \'" + items[1] + "\', \'" + timestamp + "\', \'" + items[3] + "\', \'" + items[4] + "\', \'" + items[5] + "\', \'" + clearContent + "\', " + items[7] + ", " + items[8] + ", " + items[9] + ", " + items[10] + ");";
 
                 Statement statement = null;
                 int result = -1;
@@ -428,14 +441,16 @@ public class EntityReader {
                 String[] items = currentLine.split("\\|");
                 String timestamp = Utils.getTimestamp(items[1]);
 
+                String clearContent = Utils.getNormalizedString(items[6]);
 
                 // Fallunterscheidung über Länge:
 
 
 
 
+
                 insertStatement = "INSERT INTO comment(id, creationDate, locationIP, browserUsed,  content, length, author_id, country_id, replyOfPost, replyOfComment) VALUES ("
-                        + items[0] + ", \'" + timestamp + "\', \'" + items[2] + "\', \'" + items[3] + "\', \'" + items[4] + "\', " + items[5] + ", " + items[6] + ", " + items[7] + ", " + items[8] + ");";
+                        + items[0] + ", \'" + timestamp + "\', \'" + items[2] + "\', \'" + items[3] + "\', \'" + items[4] + "\', " + items[5] + ", " + clearContent + ", " + items[7] + ", " + items[8] + ");";
 
 
                 System.out.println(currentLine);

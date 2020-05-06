@@ -13,7 +13,6 @@ import java.text.SimpleDateFormat;
     //TODO: check if Strings are correctly escaped
     //TODO: copypaste the creationDate parser where needed
     //TODO: Cooler Ladebalken per System.out.println
-    //TODO: Normalizer
     // TODO: Forum Probleme künstlich?
     // TODO: Filler überarbeiten?
 public class Main {
@@ -24,12 +23,11 @@ public class Main {
         // Start with the Entities
         EntityReader er = new EntityReader();
 
-        er.readPlace();
+//        er.readPlace();
 //        er.readPerson();
 //        er.readTag();
 //        er.readTagClass();
-
-        er.readOrganisation();
+//        er.readOrganisation();
 //        er.readForum();
         // Fehler werden durch die nicht vorhandenen Forums erzeugt
 //        er.readPost();
@@ -50,7 +48,7 @@ public class Main {
 //        rr.readForumHasMemberPerson();
 //        rr.readForumHasTagTag();
 
-//        rr.readPersonEmailEmailAdress();
+//        rr.readPersonEmailEmailAddress();
 //        rr.readPersonHasInterestTag();
 //        rr.readPersonKnowsPerson();
         // Noch ist Comments leer
