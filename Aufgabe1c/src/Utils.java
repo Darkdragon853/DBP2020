@@ -30,4 +30,8 @@ public class Utils {
 
         return result;
     }
+
+    public static void showProgress() {
+        System.out.print(">");
+    }
 }

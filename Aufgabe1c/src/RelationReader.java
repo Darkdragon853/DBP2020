@@ -50,8 +50,8 @@ public class RelationReader {
         } catch(IOException ioex) {
             System.out.println("I/O Error aufgetreten!\n" + ioex.getMessage());
         }
-        System.out.println("readPersonStudyAtOrganisation() mit  " + (failures) + " Fehlern abgeschlossen.");
-
+        //System.out.println("readPersonStudyAtOrganisation() mit  " + (failures) + " Fehlern abgeschlossen.");
+        Utils.showProgress();
     }
     void readPersonWorkAtOrganisation() {
         // TODO: Testen
@@ -94,8 +94,8 @@ public class RelationReader {
         } catch(IOException ioex) {
             System.out.println("I/O Error aufgetreten!\n" + ioex.getMessage());
         }
-        System.out.println("readPersonWorkAtOrganisation() mit  " + (failures) + " Fehlern abgeschlossen.");
-
+        //System.out.println("readPersonWorkAtOrganisation() mit  " + (failures) + " Fehlern abgeschlossen.");
+        Utils.showProgress();
     }
     void readTagClassIsSubclassOfTagClass() {
         // TODO: Testen
@@ -138,8 +138,8 @@ public class RelationReader {
         } catch(IOException ioex) {
             System.out.println("I/O Error aufgetreten!\n" + ioex.getMessage());
         }
-        System.out.println("readTagClassIsSubclassOfTagClass() mit "+ (failures)+ " Fehlern abgesclossen.");
-
+        //System.out.println("readTagClassIsSubclassOfTagClass() mit "+ (failures)+ " Fehlern abgesclossen.");
+        Utils.showProgress();
     }
     void readTagHasTypeTagClass() {
         // TODO: Testen
@@ -182,8 +182,8 @@ public class RelationReader {
         } catch(IOException ioex) {
             System.out.println("I/O Error aufgetreten!\n" + ioex.getMessage());
         }
-        System.out.println("readTagHasTypeTagClass() mit "+ (failures)+ " Fehlern abgesclossen.");
-
+        //System.out.println("readTagHasTypeTagClass() mit "+ (failures)+ " Fehlern abgesclossen.");
+        Utils.showProgress();
     }
     void readPersonSpeaksLanguage() {
 
@@ -257,10 +257,11 @@ public class RelationReader {
         } catch(IOException ioex) {
             System.out.println("I/O Error aufgetreten!\n" + ioex.getMessage());
         }
-        System.out.println("readPersonSpeaksLanguage() mit "+ (failures)+ " Fehlern abgeschlossen. \n");
+        /*System.out.println("readPersonSpeaksLanguage() mit "+ (failures)+ " Fehlern abgeschlossen. \n");
         if (failString != null){
             System.out.println("Fehler bei: " + failString);
-        }
+        }*/
+        Utils.showProgress();
     }
     void readCommentHasTagTag() {
         // TODO: Testen
@@ -303,8 +304,8 @@ public class RelationReader {
         } catch(IOException ioex) {
             System.out.println("I/O Error aufgetreten!\n" + ioex.getMessage());
         }
-        System.out.println("readCommentHasTagTag() mit "+ (failures)+ " Fehlern abgeschlossen.");
-
+        //System.out.println("readCommentHasTagTag() mit "+ (failures)+ " Fehlern abgeschlossen.");
+        Utils.showProgress();
     }
     void readForumHasMemberPerson() {
         // TODO: Testen
@@ -348,8 +349,8 @@ public class RelationReader {
         } catch(IOException ioex) {
             System.out.println("I/O Error aufgetreten!\n" + ioex.getMessage());
         }
-        System.out.println("readForumHasMemberPerson() mit "+ (failures)+ " Fehlern abgeschlossen.");
-
+        //System.out.println("readForumHasMemberPerson() mit "+ (failures)+ " Fehlern abgeschlossen.");
+        Utils.showProgress();
     }
     void readForumHasTagTag() {
         // TODO: Testen
@@ -392,8 +393,8 @@ public class RelationReader {
         } catch(IOException ioex) {
             System.out.println("I/O Error aufgetreten!\n" + ioex.getMessage());
         }
-        System.out.println("readForumHasTagTag() mit "+ (failures)+ " Fehlern abgesclossen.");
-
+        //System.out.println("readForumHasTagTag() mit "+ (failures)+ " Fehlern abgesclossen.");
+        Utils.showProgress();
     }
     void readPersonEmailEmailAddress()  {
 
@@ -462,10 +463,11 @@ public class RelationReader {
         } catch(IOException ioex) {
             System.out.println("I/O Error aufgetreten!\n" + ioex.getMessage());
         }
-        System.out.println("readPersonEmailEmailaddress() mit "+ (failures)+ " Fehlern abgeschlossen. \n");
+        /*System.out.println("readPersonEmailEmailaddress() mit "+ (failures)+ " Fehlern abgeschlossen. \n");
         if (failString != null){
             System.out.println("letzter Fehler bei: " + failString);
-        }
+        }*/
+        Utils.showProgress();
     }
     void readPersonHasInterestTag() {
 
@@ -507,8 +509,8 @@ public class RelationReader {
         } catch(IOException ioex) {
             System.out.println("I/O Error aufgetreten!\n" + ioex.getMessage());
         }
-        System.out.println("readPersonHasInterestTag() mit "+ (failures) + " Fehlern abgesclossen.");
-
+        //System.out.println("readPersonHasInterestTag() mit "+ (failures) + " Fehlern abgesclossen.");
+        Utils.showProgress();
     }
     void readPersonKnowsPerson() {
 
@@ -551,8 +553,8 @@ public class RelationReader {
         } catch(IOException ioex) {
             System.out.println("I/O Error aufgetreten!\n" + ioex.getMessage());
         }
-        System.out.println("readPersonKnowsPerson() mit "+ (failures) + " Fehlern abgesclossen.");
-
+        //System.out.println("readPersonKnowsPerson() mit "+ (failures) + " Fehlern abgesclossen.");
+        Utils.showProgress();
     }
     void readPersonLikesComment() {
 
@@ -595,8 +597,8 @@ public class RelationReader {
         } catch(IOException ioex) {
             System.out.println("I/O Error aufgetreten!\n" + ioex.getMessage());
         }
-        System.out.println("readPersonLikesComment() mit "+ (failures)+ " Fehlern abgesclossen.");
-
+        //System.out.println("readPersonLikesComment() mit "+ (failures)+ " Fehlern abgesclossen.");
+        Utils.showProgress();
     }
     void readPersonLikesPost() {
         // TODO: Testen
@@ -640,8 +642,8 @@ public class RelationReader {
         } catch(IOException ioex) {
             System.out.println("I/O Error aufgetreten!\n" + ioex.getMessage());
         }
-        System.out.println("readPersonLikesPost() mit "+ (failures) + " Fehlern abgesclossen.");
-
+        //System.out.println("readPersonLikesPost() mit "+ (failures) + " Fehlern abgesclossen.");
+        Utils.showProgress();
     }
     void readPostHasTagTag() {
         // TODO: Testen
@@ -684,7 +686,7 @@ public class RelationReader {
         } catch(IOException ioex) {
             System.out.println("I/O Error aufgetreten!\n" + ioex.getMessage());
         }
-        System.out.println("readPostHasTagTag() mit "+ (failures)+ " Fehlern abgeschlossen.");
-
+        //System.out.println("readPostHasTagTag() mit "+ (failures)+ " Fehlern abgeschlossen.");
+        Utils.showProgress();
     }
 }

@@ -11,8 +11,6 @@ import java.text.SimpleDateFormat;
     //TODO: Itemnummerierung nach Datensatzangabe
     //TODO: Skip first line in every csv file
     //TODO: check if Strings are correctly escaped
-    //TODO: copypaste the creationDate parser where needed
-    //TODO: Cooler Ladebalken per System.out.println
     // TODO: Forum Probleme künstlich?
     // TODO: Filler überarbeiten?
 public class Main {
@@ -20,14 +18,18 @@ public class Main {
     public static void main(String[] args) {
     // Use/test the data input reader functions
 
+        // Ladebalken
+        System.out.println("Work: >>>>>>>>>>>>>>>>>>>>>>");
+        System.out.print("Done: ");
+
         // Start with the Entities
         EntityReader er = new EntityReader();
 
-//        er.readPlace();
-//        er.readPerson();
-//        er.readTag();
-//        er.readTagClass();
-//        er.readOrganisation();
+        er.readPlace();
+        er.readPerson();
+        er.readTag();
+        er.readTagClass();
+        er.readOrganisation();
 //        er.readForum();
         // Fehler werden durch die nicht vorhandenen Forums erzeugt
 //        er.readPost();
@@ -58,5 +60,6 @@ public class Main {
             // Post noch leer
 //        rr.readPostHasTagTag();
 
+        System.out.println("\nEinlesen der Daten abgeschlossen.");
     }
 }

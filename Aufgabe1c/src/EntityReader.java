@@ -33,7 +33,6 @@ public class EntityReader {
                 // Obviously we have to Split the Lines by '|'
                 String[] items = currentLine.split("\\|");
 
-
                 String timestamp = Utils.getTimestamp(items[5]);
 
                 // Sprachen werden nachgeholt also einfach Filler verwenden
@@ -59,7 +58,8 @@ public class EntityReader {
         } catch (IOException ioex) {
             System.out.println("I/O Error aufgetreten!\n" + ioex.getMessage());
         }
-        System.out.println("readPlaces() mit " + failures  + " Fehlern abgeschlossen."); //
+        //System.out.println("readPlaces() mit " + failures  + " Fehlern abgeschlossen.");
+        Utils.showProgress();
     }
     void readPlace() {
         // TODO: Soweit 100% fertig
@@ -169,8 +169,8 @@ public class EntityReader {
         } catch (IOException ioex) {
             System.out.println("I/O Error aufgetreten!\n" + ioex.getMessage());
         }
-
-        System.out.println("readPlaces() mit " + (continentFailures) + " Fehlern bei den Kontinenten und " + (otherFailures) + " anderen Fehlern abgeschlossen."); // 7 Fehler ist normal wegen 1. Zeile und 6 Kontinenten die schon da sind
+        //System.out.println("readPlaces() mit " + (continentFailures) + " Fehlern bei den Kontinenten und " + (otherFailures) + " anderen Fehlern abgeschlossen."); // 7 Fehler ist normal wegen 1. Zeile und 6 Kontinenten die schon da sind
+        Utils.showProgress();
     }
     void readTag() {
         // TODO: search for Facefucker
@@ -219,10 +219,11 @@ public class EntityReader {
         } catch (IOException ioex) {
             System.out.println("I/O Error aufgetreten!\n" + ioex.getMessage());
         }
-        System.out.println("readTags() mit " + (failures) + " Fehlern abgeschlossen. \n");
+        /*System.out.println("readTags() mit " + (failures) + " Fehlern abgeschlossen. \n");
         if (failString != null) {
             System.out.println("Fehler bei: " + failString);
-        }
+        }*/
+        Utils.showProgress();
     }
     void readTagClass() {
 
@@ -262,12 +263,13 @@ public class EntityReader {
                     failures++;
                 }
 
-                System.out.println(currentLine); // --Debug
+                //System.out.println(currentLine); // --Debug
             }
         } catch (IOException ioex) {
             System.out.println("I/O Error aufgetreten!\n" + ioex.getMessage());
         }
-        System.out.println("readTagClasses() mit " + (failures) + " Fehlern abgeschlossen.");
+        //System.out.println("readTagClasses() mit " + (failures) + " Fehlern abgeschlossen.");
+        Utils.showProgress();
     }
     void readOrganisation() {
 
@@ -289,7 +291,7 @@ public class EntityReader {
                     iteration++;
                     continue;
                 }
-                System.out.println(currentLine); // --Debug
+                //System.out.println(currentLine); // --Debug
                 // Hier die momentane Eingabezeile verarbeiten
                 // Obviously we have to Split the Lines by '|'
                 String[] items = currentLine.split("\\|");
@@ -319,7 +321,8 @@ public class EntityReader {
         } catch (IOException ioex) {
             System.out.println("I/O Error aufgetreten!\n" + ioex.getMessage());
         }
-        System.out.println("readOrganisations() mit " + (failures) + " Fehlern abgeschlossen.");
+        //System.out.println("readOrganisations() mit " + (failures) + " Fehlern abgeschlossen.");
+        Utils.showProgress();
     }
     void readForum() {
         // TODO: Testen
@@ -365,7 +368,8 @@ public class EntityReader {
         } catch (IOException ioex) {
             System.out.println("I/O Error aufgetreten!\n" + ioex.getMessage());
         }
-        System.out.println("readForums() mit  " + (failures) + " Fehlern abgeschlossen.");
+        //System.out.println("readForums() mit  " + (failures) + " Fehlern abgeschlossen.");
+        Utils.showProgress();
     }
     void readPost() {
         //TODO: recheck method
@@ -395,7 +399,6 @@ public class EntityReader {
 
                 String clearContent = Utils.getNormalizedString(items[6]);
 
-
                 insertStatement = "INSERT INTO post(id, imageFile, creationDate, locationIP, browserUsed, language, content, length, author_id, forum_id, country_id) VALUES ("
                         + items[0] + ", \'" + items[1] + "\', \'" + timestamp + "\', \'" + items[3] + "\', \'" + items[4] + "\', \'" + items[5] + "\', \'" + clearContent + "\', " + items[7] + ", " + items[8] + ", " + items[9] + ", " + items[10] + ");";
 
@@ -414,7 +417,8 @@ public class EntityReader {
         } catch (IOException ioex) {
             System.out.println("I/O Error aufgetreten!\n" + ioex.getMessage());
         }
-        System.out.println("readPost() mit " + (failures) + " Fehlern abgeschlossen.");
+        //System.out.println("readPost() mit " + (failures) + " Fehlern abgeschlossen.");
+        Utils.showProgress();
     }
     void readComment() {
 
@@ -469,6 +473,7 @@ public class EntityReader {
         } catch (IOException ioex) {
             System.out.println("I/O Error aufgetreten!\n" + ioex.getMessage());
         }
-        System.out.println("readComment() mit " + (failures) + " Fehlern abgeschlossen.");
+        // System.out.println("readComment() mit " + (failures) + " Fehlern abgeschlossen.");
+        Utils.showProgress();
     }
 }
