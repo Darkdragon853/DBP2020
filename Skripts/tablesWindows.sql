@@ -96,8 +96,7 @@ create table forum(
     id BIGSERIAL PRIMARY KEY,
     title VARCHAR(200) NOT NULL,
     creationDate TIMESTAMP NOT NULL, 
-    moderator BIGINT NOT NULL REFERENCES person(id) ON DELETE CASCADE ON UPDATE CASCADE,
-    UNIQUE (moderator) -- eine Person kann nur in einem oder keinem Forum Moderator sein
+    moderator BIGINT NOT NULL REFERENCES person(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 
