@@ -10,7 +10,6 @@ public class RelationReader {
     DBConnection con = new DBConnection();
 
     void readPersonStudyAtOrganisation() {
-        // TODO: Testen
 
         int failures = 0;
         File file = new File("./../Ressources/social_network/person_studyAt_organisation_0_0.csv");
@@ -54,7 +53,6 @@ public class RelationReader {
         Utils.showProgress();
     }
     void readPersonWorkAtOrganisation() {
-        // TODO: Testen
 
         int failures = 0;
         File file = new File("./../Ressources/social_network/person_workAt_organisation_0_0.csv");
@@ -80,7 +78,7 @@ public class RelationReader {
 
                 insertStatement = "INSERT INTO person_workAt_company(person_id, company_id, workFrom) VALUES (" + items[0] + ", " + items[1] +", " + items[2] + ");";
 
-                System.out.println(currentLine); // -- Debug
+                // System.out.println(currentLine); // -- Debug
 
                 Statement statement = null;
                 try {
@@ -98,9 +96,8 @@ public class RelationReader {
         Utils.showProgress();
     }
     void readTagClassIsSubclassOfTagClass() {
-        // TODO: Testen
-        int failures = 0;
 
+        int failures = 0;
         File file = new File("./../Ressources/social_network/tagclass_isSubclassOf_tagclass_0_0.csv");
         BufferedReader br = null;
         try {
@@ -142,7 +139,6 @@ public class RelationReader {
         Utils.showProgress();
     }
     void readTagHasTypeTagClass() {
-        // TODO: Testen
 
         int failures = 0;
         File file = new File("./../Ressources/social_network/tag_hasType_tagclass_0_0.csv");
@@ -264,7 +260,6 @@ public class RelationReader {
         Utils.showProgress();
     }
     void readCommentHasTagTag() {
-        // TODO: Testen
 
         int failures = 0;
         File file = new File("./../Ressources/social_network/comment_hasTag_tag_0_0.csv");
@@ -299,16 +294,15 @@ public class RelationReader {
                     failures++;
                 }
 
-                System.out.println(currentLine); // --Debug
+                // System.out.println(currentLine); // --Debug
             }
         } catch(IOException ioex) {
             System.out.println("I/O Error aufgetreten!\n" + ioex.getMessage());
         }
-        //System.out.println("readCommentHasTagTag() mit "+ (failures)+ " Fehlern abgeschlossen.");
+        // System.out.println("readCommentHasTagTag() mit "+ (failures)+ " Fehlern abgeschlossen.");
         Utils.showProgress();
     }
     void readForumHasMemberPerson() {
-        // TODO: Testen
 
         int failures = 0;
         File file = new File("./../Ressources/social_network/forum_hasMember_person_0_0.csv");
@@ -344,7 +338,7 @@ public class RelationReader {
                     failures++;
                 }
 
-                System.out.println(currentLine); // --Debug
+                // System.out.println(currentLine); // --Debug
             }
         } catch(IOException ioex) {
             System.out.println("I/O Error aufgetreten!\n" + ioex.getMessage());
@@ -353,7 +347,6 @@ public class RelationReader {
         Utils.showProgress();
     }
     void readForumHasTagTag() {
-        // TODO: Testen
 
         int failures = 0;
         File file = new File("./../Ressources/social_network/forum_hasTag_tag_0_0.csv");
@@ -388,7 +381,7 @@ public class RelationReader {
                     failures++;
                 }
 
-                System.out.println(currentLine); // --Debug
+                // System.out.println(currentLine); // --Debug
             }
         } catch(IOException ioex) {
             System.out.println("I/O Error aufgetreten!\n" + ioex.getMessage());
@@ -592,16 +585,15 @@ public class RelationReader {
                     failures++;
                 }
 
-                System.out.println(currentLine); // --Debug
+                // System.out.println(currentLine); // --Debug
             }
         } catch(IOException ioex) {
             System.out.println("I/O Error aufgetreten!\n" + ioex.getMessage());
         }
-        //System.out.println("readPersonLikesComment() mit "+ (failures)+ " Fehlern abgesclossen.");
+        // System.out.println("readPersonLikesComment() mit "+ (failures)+ " Fehlern abgesclossen.");
         Utils.showProgress();
     }
     void readPersonLikesPost() {
-        // TODO: Testen
 
         int failures = 0;
         File file = new File("./../Ressources/social_network/person_likes_post_0_0.csv");
@@ -637,16 +629,15 @@ public class RelationReader {
                     failures++;
                 }
 
-                System.out.println(currentLine); // --Debug
+                // System.out.println(currentLine); // --Debug
             }
         } catch(IOException ioex) {
             System.out.println("I/O Error aufgetreten!\n" + ioex.getMessage());
         }
-        //System.out.println("readPersonLikesPost() mit "+ (failures) + " Fehlern abgesclossen.");
+        // System.out.println("readPersonLikesPost() mit "+ (failures) + " Fehlern abgesclossen.");
         Utils.showProgress();
     }
     void readPostHasTagTag() {
-        // TODO: Testen
 
         int failures = 0;
         File file = new File("./../Ressources/social_network/post_hasTag_Tag_0_0.csv");
@@ -681,7 +672,7 @@ public class RelationReader {
                     failures++;
                 }
 
-                System.out.println(currentLine); // --Debug
+                // System.out.println(currentLine); // --Debug
             }
         } catch(IOException ioex) {
             System.out.println("I/O Error aufgetreten!\n" + ioex.getMessage());
