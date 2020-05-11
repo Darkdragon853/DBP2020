@@ -640,7 +640,7 @@ public class RelationReader {
     void readPostHasTagTag() {
 
         int failures = 0;
-        File file = new File("./../Ressources/social_network/post_hasTag_Tag_0_0.csv");
+        File file = new File("./../Ressources/social_network/post_hasTag_tag_0_0.csv");
         BufferedReader br = null;
         try {
             br = new BufferedReader(new FileReader(file));

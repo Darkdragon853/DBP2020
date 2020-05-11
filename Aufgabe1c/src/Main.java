@@ -7,17 +7,14 @@ import java.text.SimpleDateFormat;
 /**
  * Main Class, entry point of the input reader function tool to build the database and fill it with given data
  */
-    // TODO: Nomenklatur: Befehle CAPSLOCK, tablenames klein, Attribute in lowercaseCamelCase, foreign keys als Parent.child
-    //TODO: Itemnummerierung nach Datensatzangabe
-    //TODO: check if Strings are correctly escaped
-    // TODO: Filler überarbeiten?
+    // Nomenklatur: Befehle CAPSLOCK, tablenames klein, Attribute in lowercaseCamelCase, foreign keys als Parent.child
 public class Main {
 
     public static void main(String[] args) {
     // Use/test the data input reader functions
 
         // Ladebalken
-        System.out.println("Work: >>>>>>>>>>>>>>>>>>>>>>");
+        System.out.println("Work: >>>>>>>>>>>>>>>>>>>>>>>");
         System.out.print("Done: ");
 
         // Start with the Entities -- 100% done
@@ -32,7 +29,6 @@ public class Main {
          er.readForum();
          er.readPost();
          er.readComment();
-
         // Continue with the relations
 
         RelationReader rr = new RelationReader();
@@ -51,7 +47,7 @@ public class Main {
         rr.readPersonLikesPost();
         rr.readPostHasTagTag();
         rr.readPersonEmailEmailAddress(); // <- Verwirft 2 EInträge da dort doppel @ vorkommt.
-
+        er.cleanPerson();
 
         System.out.println("\nEinlesen der Daten abgeschlossen.");
     }

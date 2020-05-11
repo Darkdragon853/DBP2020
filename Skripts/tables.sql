@@ -10,7 +10,7 @@
 CREATE FUNCTION valid_email(b boolean, v VARCHAR) 
     RETURNS boolean
     AS $$ 
-    SELECT $2 ~ '^[\w\.]+@[\w+\.]+\.[\w]{2,4}$' as result $$
+    SELECT $2 ~ '^[\w\.-]+@[\w+\.-]+\.[\w]{2,4}$' as result $$
     LANGUAGE sql;
 
 
@@ -105,7 +105,7 @@ create table forum(
     id BIGSERIAL PRIMARY KEY,
     title VARCHAR(200) NOT NULL,
     creationDate TIMESTAMP NOT NULL, 
-    moderator BIGINT NOT NULL REFERENCES person(id) ON DELETE CASCADE ON UPDATE CASCADE
+    moderator BIGINT REFERENCES person(id) ON DELETE SET NULL ON UPDATE CASCADE
 );
 
 
@@ -120,7 +120,7 @@ create table post(
     content TEXT, -- Achtung, hier soll Null erlaubt sein
     length INT NOT NULL,
     forum_id BIGINT NOT NULL REFERENCES forum(id) ON DELETE CASCADE ON UPDATE CASCADE,
-    author_id BIGINT NOT NULL REFERENCES person(id) ON DELETE SET NULL ON UPDATE CASCADE,
+    author_id BIGINT REFERENCES person(id) ON DELETE SET NULL ON UPDATE CASCADE,
     country_id BIGINT NOT NULL REFERENCES country(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
@@ -133,7 +133,7 @@ create table comment(
     locationIP VARCHAR(40) NOT NULL,
     content TEXT, -- Achtung, hier soll Null erlaubt sein
     length INT NOT NULL,
-    author_id BIGINT NOT NULL REFERENCES person(id) ON DELETE SET NULL ON UPDATE CASCADE,
+    author_id BIGINT REFERENCES person(id) ON DELETE SET NULL ON UPDATE CASCADE,
     country_id BIGINT NOT NULL REFERENCES country(id) ON DELETE CASCADE ON UPDATE CASCADE,
     reply_to_post_id BIGINT REFERENCES post(id) ON DELETE SET NULL ON UPDATE CASCADE,
     reply_to_comment_id BIGINT REFERENCES comment(id) ON DELETE SET NULL ON UPDATE CASCADE,

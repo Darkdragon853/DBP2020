@@ -172,7 +172,6 @@ public class EntityReader {
         Utils.showProgress();
     }
     void readTag() {
-        // TODO: search for Facefucker
 
         int failures = 0;
         File file = new File("./../Ressources/social_network/tag_0_0.csv");
@@ -497,6 +496,24 @@ public class EntityReader {
             System.out.println("I/O Error aufgetreten!\n" + ioex.getMessage());
         }
         // System.out.println("readComment() mit " + (failures) + " Fehlern abgeschlossen.");
+        Utils.showProgress();
+    }
+    void cleanPerson() {
+        // TODO: NOCH TESTEN
+            String deleteStatement = "DELETE FROM person WHERE (email = \'{filler@gmx.de}\' OR speaks = \'{filler}\') ;";
+                //System.out.println(currentLine);
+                //System.out.println(insertStatement);
+
+                Statement statement = null;
+                int result = -1;
+                try {
+                    statement = con.database.createStatement();
+                    result = statement.executeUpdate(deleteStatement);
+                } catch (SQLException sqle) {
+                    System.out.println("Fehler beim Statement erzeugen oder Befehl ausführen: " + sqle.getMessage());
+                }
+                // System.out.println("Antwort auf SQL Befehl: " + result);
+            //System.out.println("readPlaces() mit " + failures  + " Fehlern abgeschlossen.");
         Utils.showProgress();
     }
 }
