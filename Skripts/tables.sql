@@ -13,24 +13,27 @@ CREATE FUNCTION valid_email(b boolean, v VARCHAR)
     SELECT $2 ~ '^[\w\.]+@[\w+\.]+\.[\w]{2,4}$' as result $$
     LANGUAGE sql;
 
--- Operator =%= wird für die Email-Constraint gebraucht um alle Elemente aus dem Array zu vergleichen
+
 CREATE OPERATOR =%= (
     PROCEDURE = valid_email,
     LEFTARG = boolean,
     RIGHTARG = varchar
 );
 
+
 -- Tabelle Tag
 create table tag(
     id BIGSERIAL PRIMARY KEY,
-    name VARCHAR(150) NOT NULL
+    name VARCHAR(150) NOT NULL,
+    url TEXT
 );
 
 
 -- Tabelle TagClass 
 create table tagclass(
     id BIGSERIAL PRIMARY KEY,
-    name VARCHAR(150) NOT NULL
+    name VARCHAR(150) NOT NULL,
+    url TEXT
 );
 
 
@@ -83,6 +86,7 @@ create table person(
 create table company(
     id BIGSERIAL PRIMARY KEY,
     name VARCHAR(200) NOT NULL,
+    url TEXT,
     country_id BIGINT NOT NULL REFERENCES country(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
@@ -91,6 +95,7 @@ create table company(
 create table university(
     id BIGSERIAL PRIMARY KEY,
     name VARCHAR(200) NOT NULL,
+    url TEXT,
     city_id BIGINT NOT NULL REFERENCES city(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
@@ -100,8 +105,7 @@ create table forum(
     id BIGSERIAL PRIMARY KEY,
     title VARCHAR(200) NOT NULL,
     creationDate TIMESTAMP NOT NULL, 
-    moderator BIGINT NOT NULL REFERENCES person(id) ON DELETE CASCADE ON UPDATE CASCADE,
-    UNIQUE (moderator) -- eine Person kann nur in einem oder keinem Forum Moderator sein
+    moderator BIGINT NOT NULL REFERENCES person(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 
@@ -116,7 +120,7 @@ create table post(
     content TEXT, -- Achtung, hier soll Null erlaubt sein
     length INT NOT NULL,
     forum_id BIGINT NOT NULL REFERENCES forum(id) ON DELETE CASCADE ON UPDATE CASCADE,
-    author_id BIGINT NOT NULL REFERENCES person(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    author_id BIGINT NOT NULL REFERENCES person(id) ON DELETE SET NULL ON UPDATE CASCADE,
     country_id BIGINT NOT NULL REFERENCES country(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
@@ -129,10 +133,10 @@ create table comment(
     locationIP VARCHAR(40) NOT NULL,
     content TEXT, -- Achtung, hier soll Null erlaubt sein
     length INT NOT NULL,
-    author_id BIGINT NOT NULL REFERENCES person(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    author_id BIGINT NOT NULL REFERENCES person(id) ON DELETE SET NULL ON UPDATE CASCADE,
     country_id BIGINT NOT NULL REFERENCES country(id) ON DELETE CASCADE ON UPDATE CASCADE,
-    reply_to_post_id BIGINT REFERENCES post(id) ON DELETE CASCADE ON UPDATE CASCADE,
-    reply_to_comment_id BIGINT REFERENCES comment(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    reply_to_post_id BIGINT REFERENCES post(id) ON DELETE SET NULL ON UPDATE CASCADE,
+    reply_to_comment_id BIGINT REFERENCES comment(id) ON DELETE SET NULL ON UPDATE CASCADE,
 
     CONSTRAINT belongs_to_message_or_post CHECK (((reply_to_comment_id IS NOT NULL) AND (reply_to_post_id IS NULL)) OR ((reply_to_comment_id IS NULL) AND (reply_to_post_id IS NOT NULL))) -- noch schauen ob das so geht, besser XOR!
 );
@@ -249,3 +253,4 @@ create table person_hasInterest_Tag(
 
 -- Was ist mit Ländern, die auf mehreren Kontinenten liegen?
 -- Macht es Sinn, wenn eine Firma keine Mitarbeiter hat bzw eine Universität keine Studenten?
+-- kommentare usw nicht löschen wenn der Author weg ist

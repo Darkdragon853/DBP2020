@@ -450,7 +450,7 @@ public class EntityReader {
 
 
 
-                insertStatement = "INSERT INTO comment(id, creationDate, locationIP, browserUsed,  content, length, author_id, country_id, replyOfPost, replyOfComment) VALUES ("
+                insertStatement = "INSERT INTO comment(id, creationDate, locationIP, browserUsed,  content, length, author_id, country_id, reply_to_post_id, reply_to_comment_id) VALUES ("
                         + items[0] + ", \'" + timestamp + "\', \'" + items[2] + "\', \'" + items[3] + "\', \'" + items[4] + "\', " + items[5] + ", " + clearContent + ", " + items[7] + ", " + items[8] + ");";
 
 

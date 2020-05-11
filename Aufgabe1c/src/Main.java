@@ -16,39 +16,39 @@ public class Main {
         // Start with the Entities
         EntityReader er = new EntityReader();
 
-        er.readPlace();
-        er.readPerson();
-        er.readTag();
-        er.readTagClass();
-        er.readOrganisation();
+//        er.readPlace();
+//        er.readPerson();
+//        er.readTag();
+//        er.readTagClass();
+//        er.readOrganisation();
 //        er.readForum();
-        // Fehler werden durch die nicht vorhandenen Forums erzeugt
+//        // Fehler werden durch die nicht vorhandenen Forums erzeugt
 //        er.readPost();
         // Problem: Wenn der letzte Eintrag in der csv nicht gefüllt ist, kommt durch split das letzte item nicht. Mache Fallunterscheidung.
-        //       er.readComment();
+        er.readComment();
 
         // Continue with the relations
 
-        RelationReader rr = new RelationReader();
-
-        rr.readPersonStudyAtOrganisation();
-        rr.readPersonWorkAtOrganisation();
-        rr.readTagClassIsSubclassOfTagClass();
-        rr.readTagHasTypeTagClass();
-        rr.readPersonSpeaksLanguage();
-        // Comment ist noch leer
+//        RelationReader rr = new RelationReader();
+//
+//        rr.readPersonStudyAtOrganisation();
+//        rr.readPersonWorkAtOrganisation();
+//        rr.readTagClassIsSubclassOfTagClass();
+//        rr.readTagHasTypeTagClass();
+//        rr.readPersonSpeaksLanguage();
+//        // Comment ist noch leer
 //        rr.readCommentHasTagTag();
 //        rr.readForumHasMemberPerson();
 //        rr.readForumHasTagTag();
 
-        rr.readPersonEmailEmailAddress();
-        rr.readPersonHasInterestTag();
-        rr.readPersonKnowsPerson();
-        // Noch ist Comments leer
+//        rr.readPersonEmailEmailAddress();
+//        rr.readPersonHasInterestTag();
+//        rr.readPersonKnowsPerson();
+//        // Noch ist Comments leer
 //        rr.readPersonLikesComment();
-        // Noch ist Posts leer
+//        // Noch ist Posts leer
 //        rr.readPersonLikesPost();
-        // Post noch leer
+//        // Post noch leer
 //        rr.readPostHasTagTag();
 
         System.out.println("\nEinlesen der Daten abgeschlossen.");

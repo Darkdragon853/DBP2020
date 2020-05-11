@@ -111,7 +111,7 @@ create table post(
     content TEXT, -- Achtung, hier soll Null erlaubt sein
     length INT NOT NULL,
     forum_id BIGINT NOT NULL REFERENCES forum(id) ON DELETE CASCADE ON UPDATE CASCADE,
-    author_id BIGINT NOT NULL REFERENCES person(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    author_id BIGINT NOT NULL REFERENCES person(id) ON DELETE SET NULL ON UPDATE CASCADE,
     country_id BIGINT NOT NULL REFERENCES country(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
@@ -124,10 +124,10 @@ create table comment(
     locationIP VARCHAR(40) NOT NULL,
     content TEXT, -- Achtung, hier soll Null erlaubt sein
     length INT NOT NULL,
-    author_id BIGINT NOT NULL REFERENCES person(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    author_id BIGINT NOT NULL REFERENCES person(id) ON DELETE SET NULL ON UPDATE CASCADE,
     country_id BIGINT NOT NULL REFERENCES country(id) ON DELETE CASCADE ON UPDATE CASCADE,
-    reply_to_post_id BIGINT REFERENCES post(id) ON DELETE CASCADE ON UPDATE CASCADE,
-    reply_to_comment_id BIGINT REFERENCES comment(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    reply_to_post_id BIGINT REFERENCES post(id) ON DELETE SET NULL ON UPDATE CASCADE,
+    reply_to_comment_id BIGINT REFERENCES comment(id) ON DELETE SET NULL ON UPDATE CASCADE,
 
     CONSTRAINT belongs_to_message_or_post CHECK (((reply_to_comment_id IS NOT NULL) AND (reply_to_post_id IS NULL)) OR ((reply_to_comment_id IS NULL) AND (reply_to_post_id IS NOT NULL))) -- noch schauen ob das so geht, besser XOR!
 );
