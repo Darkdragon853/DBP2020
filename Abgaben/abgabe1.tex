@@ -4,7 +4,7 @@
 
 \input{titlepage}
 
-\section*{Relationenmodell}
+\section{Relationenmodell}
 Legende:
 \begin{itemize}
   \item \primary{primary key}
@@ -40,15 +40,13 @@ Tabellen:
   \item \emph{Person\_hasInterest\_Tag} (\both{person\_id}, \both{tag\_id});
 \end{itemize}
 %\end{spacing}
-\section*{Check-Constraints}
-~
 
-\section*{Tabellen als SQL-Datei}
+\section{Tabellen (SQL) incl. Constraints}
 \begin{lstlisting}[language=sql]
 CREATE FUNCTION valid_email(b boolean, v VARCHAR)
     RETURNS boolean
     AS $$
-    SELECT $2 ~ '^[\w\.]+@[\w+\.]+\.[\w]{2,4}$' as result $$
+    SELECT $2 ~ '^[\w\.-]+@[\w+\.-]+\.[\w]{2,4}$' AS result $$
     LANGUAGE sql;
 
 CREATE OPERATOR =%= (
@@ -57,37 +55,39 @@ CREATE OPERATOR =%= (
     RIGHTARG = varchar
 );
 
-create table tag(
+CREATE TABLE tag(
     id BIGSERIAL PRIMARY KEY,
-    name VARCHAR(150) NOT NULL
+    name VARCHAR(150) NOT NULL,
+    url TEXT
 );
 
-create table tagclass(
+CREATE TABLE tagclass(
     id BIGSERIAL PRIMARY KEY,
-    name VARCHAR(150) NOT NULL
+    name VARCHAR(150) NOT NULL,
+    url TEXT
 );
 
-create table continent(
+CREATE TABLE continent(
     id BIGSERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     url TEXT
 );
 
-create table country(
+CREATE TABLE country(
     id BIGSERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     continent_id BIGINT NOT NULL REFERENCES continent(id) ON DELETE CASCADE ON UPDATE CASCADE,
     url TEXT
 );
 
-create table city(
+CREATE TABLE city(
     id BIGSERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     country_id BIGINT NOT NULL REFERENCES country(id) ON DELETE CASCADE ON UPDATE CASCADE,
     url TEXT
 );
 
-create table person(
+CREATE TABLE person(
     id BIGSERIAL PRIMARY KEY,
     creationDate TIMESTAMP NOT NULL,
     firstName VARCHAR(50) NOT NULL,
@@ -104,27 +104,28 @@ create table person(
     CONSTRAINT vaild_email CHECK (TRUE =%= ALL(email))
 );
 
-create table company(
+CREATE TABLE company(
     id BIGSERIAL PRIMARY KEY,
     name VARCHAR(200) NOT NULL,
+    url TEXT,
     country_id BIGINT NOT NULL REFERENCES country(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-create table university(
+CREATE TABLE university(
     id BIGSERIAL PRIMARY KEY,
     name VARCHAR(200) NOT NULL,
+    url TEXT,
     city_id BIGINT NOT NULL REFERENCES city(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-create table forum(
+CREATE TABLE forum(
     id BIGSERIAL PRIMARY KEY,
     title VARCHAR(200) NOT NULL,
     creationDate TIMESTAMP NOT NULL,
-    moderator BIGINT NOT NULL REFERENCES person(id) ON DELETE CASCADE ON UPDATE CASCADE,
-    UNIQUE (moderator) -- eine Person kann nur in einem oder keinem Forum Moderator sein
+    moderator BIGINT REFERENCES person(id) ON DELETE SET NULL ON UPDATE CASCADE
 );
 
-create table post(
+CREATE TABLE post(
     id BIGSERIAL PRIMARY KEY,
     language VARCHAR(2), -- Achtung, hier soll Null erlaubt sein
     imageFile VARCHAR(150), -- Achtung, hier soll Null erlaubt sein
@@ -134,104 +135,104 @@ create table post(
     content TEXT, -- Achtung, hier soll Null erlaubt sein
     length INT NOT NULL,
     forum_id BIGINT NOT NULL REFERENCES forum(id) ON DELETE CASCADE ON UPDATE CASCADE,
-    author_id BIGINT NOT NULL REFERENCES person(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    author_id BIGINT REFERENCES person(id) ON DELETE SET NULL ON UPDATE CASCADE,
     country_id BIGINT NOT NULL REFERENCES country(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-create table comment(
+CREATE TABLE comment(
     id BIGSERIAL PRIMARY KEY,
     creationDate TIMESTAMP NOT NULL,
     browserUsed VARCHAR(50) NOT NULL,
     locationIP VARCHAR(40) NOT NULL,
     content TEXT, -- Achtung, hier soll Null erlaubt sein
     length INT NOT NULL,
-    author_id BIGINT NOT NULL REFERENCES person(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    author_id BIGINT REFERENCES person(id) ON DELETE SET NULL ON UPDATE CASCADE,
     country_id BIGINT NOT NULL REFERENCES country(id) ON DELETE CASCADE ON UPDATE CASCADE,
-    reply_to_post_id BIGINT REFERENCES post(id) ON DELETE CASCADE ON UPDATE CASCADE,
-    reply_to_comment_id BIGINT REFERENCES comment(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    reply_to_post_id BIGINT REFERENCES post(id) ON DELETE SET NULL ON UPDATE CASCADE,
+    reply_to_comment_id BIGINT REFERENCES comment(id) ON DELETE SET NULL ON UPDATE CASCADE,
 
     CONSTRAINT belongs_to_message_or_post CHECK (((reply_to_comment_id IS NOT NULL) AND (reply_to_post_id IS NULL)) OR ((reply_to_comment_id IS NULL) AND (reply_to_post_id IS NOT NULL))) -- noch schauen ob das so geht, besser XOR!
 );
 
-create table forum_hasMember_person(
+CREATE TABLE forum_hasMember_person(
     person_id BIGINT NOT NULL REFERENCES person(id) ON DELETE CASCADE ON UPDATE CASCADE,
     forum_id BIGINT NOT NULL REFERENCES forum(id) ON DELETE CASCADE ON UPDATE CASCADE,
     joinDate TIMESTAMP NOT NULL,
     PRIMARY KEY (person_id, forum_id)
 );
 
-create table forum_hasTag_tag(
+CREATE TABLE forum_hasTag_tag(
     forum_id BIGINT NOT NULL REFERENCES forum(id) ON DELETE CASCADE ON UPDATE CASCADE,
     tag_id BIGINT NOT NULL REFERENCES tag(id) ON DELETE CASCADE ON UPDATE CASCADE,
     PRIMARY KEY (forum_id, tag_id)
 );
 
-create table tag_hasType_tagclass(
+CREATE TABLE tag_hasType_tagclass(
     tag_id BIGINT NOT NULL REFERENCES tag(id) ON DELETE CASCADE ON UPDATE CASCADE,
     tagclass_id BIGINT NOT NULL REFERENCES tagclass(id) ON DELETE CASCADE ON UPDATE CASCADE,
     PRIMARY KEY (tag_id, tagclass_id)
 );
 
-create table tagclass_isSubclassOf_tagclass(
+CREATE TABLE tagclass_isSubclassOf_tagclass(
     tag_parent_id BIGINT NOT NULL REFERENCES tag(id) ON DELETE CASCADE ON UPDATE CASCADE,
     tag_child_id BIGINT NOT NULL REFERENCES tag(id) ON DELETE CASCADE ON UPDATE CASCADE,
     PRIMARY KEY (tag_parent_id, tag_child_id)
 );
 
-create table post_hasTag_tag(
+CREATE TABLE post_hasTag_tag(
     post_id BIGINT NOT NULL REFERENCES post(id) ON DELETE CASCADE ON UPDATE CASCADE,
     tag_id BIGINT NOT NULL REFERENCES tag(id) ON DELETE CASCADE ON UPDATE CASCADE,
     PRIMARY KEY (post_id, tag_id)
 );
 
-create table comment_hasTag_tag(
+CREATE TABLE comment_hasTag_tag(
     comment_id BIGINT NOT NULL REFERENCES comment(id) ON DELETE CASCADE ON UPDATE CASCADE,
     tag_id BIGINT NOT NULL REFERENCES tag(id) ON DELETE CASCADE ON UPDATE CASCADE,
     PRIMARY KEY (comment_id, tag_id)
 );
 
-create table person_knows_person(
+CREATE TABLE person_knows_person(
     person_1_id BIGINT NOT NULL REFERENCES person(id) ON DELETE CASCADE ON UPDATE CASCADE,
     person_2_id BIGINT NOT NULL REFERENCES person(id) ON DELETE CASCADE ON UPDATE CASCADE,
     creationDate TIMESTAMP NOT NULL,
     PRIMARY KEY (person_1_id, person_2_id)
 );
 
-create table person_studyAt_university(
+CREATE TABLE person_studyAt_university(
     person_id BIGINT NOT NULL REFERENCES person(id) ON DELETE CASCADE ON UPDATE CASCADE,
     university_id BIGINT NOT NULL REFERENCES university(id) ON DELETE CASCADE ON UPDATE CASCADE,
     classYear INT NOT NULL,
     PRIMARY KEY (person_id, university_id)
 );
 
-create table person_workAt_company(
+CREATE TABLE person_workAt_company(
     person_id BIGINT NOT NULL REFERENCES person(id) ON DELETE CASCADE ON UPDATE CASCADE,
     company_id BIGINT NOT NULL REFERENCES company(id) ON DELETE CASCADE ON UPDATE CASCADE,
     workFrom INT NOT NULL,
     PRIMARY KEY (person_id, company_id)
 );
 
-create table person_likes_post(
+CREATE TABLE person_likes_post(
     person_id BIGINT NOT NULL REFERENCES person(id) ON DELETE CASCADE ON UPDATE CASCADE,
     post_id BIGINT NOT NULL REFERENCES post(id) ON DELETE CASCADE ON UPDATE CASCADE,
     creationDate TIMESTAMP NOT NULL,
     PRIMARY KEY (person_id, post_id)
 );
 
-create table person_likes_comment(
+CREATE TABLE person_likes_comment(
     person_id BIGINT NOT NULL REFERENCES person(id) ON DELETE CASCADE ON UPDATE CASCADE,
     comment_id BIGINT NOT NULL REFERENCES comment(id) ON DELETE CASCADE ON UPDATE CASCADE,
     creationDate TIMESTAMP NOT NULL,
     PRIMARY KEY (person_id, comment_id)
 );
 
-create table person_hasInterest_Tag(
+CREATE TABLE person_hasInterest_Tag(
     person_id BIGINT NOT NULL REFERENCES person(id) ON DELETE CASCADE ON UPDATE CASCADE,
     tag_id BIGINT NOT NULL REFERENCES tag(id) ON DELETE CASCADE ON UPDATE CASCADE,
     PRIMARY KEY (person_id, tag_id)
 );
 \end{lstlisting}
 
-\section*{UML-Diagramm}
-~
+\section{UML-Diagramm}
+\includegraphics[angle=90,width=0.95\textwidth]{img/schema.png}
 \end{document}
