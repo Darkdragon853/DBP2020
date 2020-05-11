@@ -324,7 +324,6 @@ public class EntityReader {
         Utils.showProgress();
     }
     void readForum() {
-        // TODO: Testen
 
         int failures = 0;
         File file = new File("./../Ressources/social_network/forum_0_0.csv");
@@ -353,7 +352,7 @@ public class EntityReader {
 
                 insertStatement = "INSERT INTO forum(id, title, creationDate, moderator) VALUES (" + items[0] + ", \'" + clearTitle + "\', \'" + timestamp + "\', " + items[3] + ");";
 
-                System.out.println(currentLine); // -- Debug
+                // System.out.println(currentLine); // -- Debug
 
                 Statement statement = null;
                 try {
@@ -367,7 +366,7 @@ public class EntityReader {
         } catch (IOException ioex) {
             System.out.println("I/O Error aufgetreten!\n" + ioex.getMessage());
         }
-        //System.out.println("readForums() mit  " + (failures) + " Fehlern abgeschlossen.");
+        // System.out.println("readForums() mit  " + (failures) + " Fehlern abgeschlossen.");
         Utils.showProgress();
     }
     void readPost() {
@@ -410,13 +409,13 @@ public class EntityReader {
                     System.out.println("Fehler beim Statement erzeugen oder Befehl ausführen: " + sqle.getMessage());
                     failures++;
                 }
-                System.out.println("Antwort auf SQL Befehl: " + result);
-                System.out.println(currentLine);
+                // System.out.println("Antwort auf SQL Befehl: " + result); -- Debug
+                // System.out.println(currentLine); -- Debug
             }
         } catch (IOException ioex) {
             System.out.println("I/O Error aufgetreten!\n" + ioex.getMessage());
         }
-        //System.out.println("readPost() mit " + (failures) + " Fehlern abgeschlossen.");
+        // System.out.println("readPost() mit " + (failures) + " Fehlern abgeschlossen.");
         Utils.showProgress();
     }
     void readComment() {
@@ -442,20 +441,47 @@ public class EntityReader {
                 // Hier die momentane Eingabezeile verarbeiten
                 // Obviously we have to Split the Lines by '|'
                 String[] items = currentLine.split("\\|");
+
                 String timestamp = Utils.getTimestamp(items[1]);
-
-                String clearContent = Utils.getNormalizedString(items[6]);
-
-                // Fallunterscheidung über Länge:
+                String clearContent = Utils.getNormalizedString(items[4]);
 
 
+                // Vorletzten Eintrag checken
+                boolean replyPostEntryExists = true;
+                if(items[8].trim().equals("")) {
+                    //    System.out.println("Post entry Fehlt."); -- Debug
+                    replyPostEntryExists = false;
+                }
 
-                insertStatement = "INSERT INTO comment(id, creationDate, locationIP, browserUsed,  content, length, author_id, country_id, reply_to_post_id, reply_to_comment_id) VALUES ("
-                        + items[0] + ", \'" + timestamp + "\', \'" + items[2] + "\', \'" + items[3] + "\', \'" + items[4] + "\', " + items[5] + ", " + clearContent + ", " + items[7] + ", " + items[8] + ");";
+                // Fallunterscheidung über Länge für den replyCommentEntry:
+                if((items.length == 9) && replyPostEntryExists) {
+                    // Letzter Eintrag für replyOfComment ist leer aber vorletzter gefüllt
+                    insertStatement = "INSERT INTO comment(id, creationDate, locationIP, browserUsed,  content, length, author_id, country_id, reply_to_post_id) VALUES ("
+                            + items[0] + ", \'" + timestamp + "\', \'" + items[2] + "\', \'" + items[3] + "\', \'" + clearContent + "\', " + items[5] + ", " + items[6] + ", " + items[7] + ", " + items[8] + ");";
+                }
+                // Wenn beides fehlt ist es kein normaler Kommentar, also raus
+                else if((items.length == 9) && !replyPostEntryExists) {
+                    // Muss raus da nicht gültig laut UML
+                    System.out.println("\nNicht gültig da beide letzte Einträge fehlen:\n" + currentLine);
+                    break;
+                }
+                else if((items.length == 10) && !replyPostEntryExists) {
+                // ReplyOfComment drin aber ReplyofPost nicht
+                    insertStatement = "INSERT INTO comment(id, creationDate, locationIP, browserUsed,  content, length, author_id, country_id, reply_to_comment_id) VALUES ("
+                            + items[0] + ", \'" + timestamp + "\', \'" + items[2] + "\', \'" + items[3] + "\', \'" + clearContent + "\', " + items[5] + ", " + items[6] + ", " + items[7] + ", " + items[9] + ");";
+                }
+                else if((items.length == 10) && replyPostEntryExists) {
+                    //  Vollständiger Eintrag
+                    insertStatement = "INSERT INTO comment(id, creationDate, locationIP, browserUsed,  content, length, author_id, country_id, reply_to_post_id, reply_of_comment_id) VALUES ("
+                            + items[0] + ", \'" + timestamp + "\', \'" + items[2] + "\', \'" + items[3] + "\', \'" + clearContent + "\', " + items[5] + ", " + items[6] + ", " + items[7] + ", " + items[8] + ", " + items[9] + ");";
+                }
+                else {
+                    // MUss ein Spezialfall sein
+                    System.out.println("\nSpezialfall der nicht abgefangen wurde! Line:\n" + currentLine);
+                }
 
-
-                System.out.println(currentLine);
-                System.out.println(insertStatement);
+                //System.out.println(currentLine);
+                //System.out.println(insertStatement);
                 Statement statement = null;
                 int result = -1;
                 try {
@@ -465,7 +491,7 @@ public class EntityReader {
                     System.out.println("Fehler beim Statement erzeugen oder Befehl ausführen: " + sqle.getMessage());
                     failures++;
                 }
-                System.out.println("Antwort auf SQL Befehl: " + result);
+                // System.out.println("Antwort auf SQL Befehl: " + result);
             }
         } catch (IOException ioex) {
             System.out.println("I/O Error aufgetreten!\n" + ioex.getMessage());
