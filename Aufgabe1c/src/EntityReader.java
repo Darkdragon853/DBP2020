@@ -36,9 +36,9 @@ public class EntityReader {
                 String timestamp = Utils.getTimestamp(items[5]);
 
                 // Sprachen werden nachgeholt also einfach Filler verwenden
-                insertStatement = "INSERT INTO person(id,  firstName, lastName, gender, birthday, creationDate, locationIP, browserUsed, city_id, email, speaks) VALUES ("
+                insertStatement = "INSERT INTO person(id,  firstName, lastName, gender, birthday, creationDate, locationIP, browserUsed, city_id, speaks) VALUES ("
                         + items[0] + ", \'"  + items[1] + "\', \'" + items[2] + "\',\' " + items[3] + "\',\' " + items[4] + "\', \'" +
-                timestamp + "\', \'" + items[6] + "\', \'" + items[7] + "\', " + items[8] + ", \'" + "{filler@gmx.de}" + "\', \'" + "{filler}" + "\');";
+                timestamp + "\', \'" + items[6] + "\', \'" + items[7] + "\', " + items[8] + ", \'" + "{filler}" + "\');";
 
 
                 //System.out.println(currentLine);

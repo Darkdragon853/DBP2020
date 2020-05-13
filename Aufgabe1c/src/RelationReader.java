@@ -425,10 +425,11 @@ public class RelationReader {
                         String currentString = currentMails.getString(1);
                         // System.out.println(currentString);
 
-                        if(currentString.equals("{filler@gmx.de}")) {
-                            // Erster Eintrag der Sprache
+                        if(currentString == null) {
+                            // Erster Eintrag der Mail
                             knownEmails = "{";
-                        } else {
+                        }
+                        else {
                             // Schon Einträge drin
                             knownEmails = currentString.substring(0, currentString.length()-1) + ",";
                             // System.out.println("String von 0 bis Length -1 : " + knownEmails);

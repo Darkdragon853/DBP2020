@@ -71,7 +71,7 @@ create table person(
     lastName VARCHAR(100) NOT NULL,
     gender VARCHAR(7) NOT NULL,
     birthday Date NOT NULL,
-    email VARCHAR[] NOT NULL, -- ArrayType bc [1..*]
+    email VARCHAR[], -- ArrayType bc [1..*]
     speaks VARCHAR[] NOT NULL, -- ArrayType bc [1..*]
     browserUsed VARCHAR(50) NOT NULL,
     locationIP VARCHAR(40) NOT NULL,
@@ -105,7 +105,7 @@ create table forum(
     id BIGSERIAL PRIMARY KEY,
     title VARCHAR(200) NOT NULL,
     creationDate TIMESTAMP NOT NULL, 
-    moderator BIGINT REFERENCES person(id) ON DELETE SET NULL ON UPDATE CASCADE
+    moderator BIGINT NOT NULL REFERENCES person(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 
