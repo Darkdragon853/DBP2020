@@ -20,34 +20,34 @@ public class Main {
         // Start with the Entities -- 100% done
         EntityReader er = new EntityReader();
 
+        er.readPlace();
+        er.readPerson();
+        er.readTag();
+        er.readTagClass();
+        er.readOrganisation();
+        er.readForum();
+        er.readPost();
+        er.readComment();
 
-//         er.readPlace();
-//         er.readPerson();
-//         er.readTag();
-//         er.readTagClass();
-//         er.readOrganisation();
-//         er.readForum();
-//         er.readPost();
-//         er.readComment();
-//        // Continue with the relations
-//
+        // Continue with the relations
+
         RelationReader rr = new RelationReader();
-//
-//        rr.readPersonStudyAtOrganisation();
-//        rr.readPersonWorkAtOrganisation();
-//        rr.readTagClassIsSubclassOfTagClass();
-//        rr.readTagHasTypeTagClass();
-//        rr.readPersonSpeaksLanguage();
-//        rr.readCommentHasTagTag();
-//        rr.readForumHasMemberPerson();
-//        rr.readForumHasTagTag();
-//        rr.readPersonHasInterestTag();
-//        rr.readPersonKnowsPerson();
-//        rr.readPersonLikesComment();
-//        rr.readPersonLikesPost();
-//        rr.readPostHasTagTag();
+
+        rr.readPersonStudyAtOrganisation();
+        rr.readPersonWorkAtOrganisation();
+        rr.readTagClassIsSubclassOfTagClass();
+        rr.readTagHasTypeTagClass();
+        rr.readPersonSpeaksLanguage();
+        rr.readCommentHasTagTag();
+        rr.readForumHasMemberPerson();
+        rr.readForumHasTagTag();
+        rr.readPersonHasInterestTag();
+        rr.readPersonKnowsPerson();
+        rr.readPersonLikesComment();
+        rr.readPersonLikesPost();
+        rr.readPostHasTagTag();
         rr.readPersonEmailEmailAddress(); // <- Verwirft 2 EInträge da dort doppel @ vorkommt.
-//        er.cleanPerson();
+        er.cleanPerson();
 
         System.out.println("\nEinlesen der Daten abgeschlossen.");
     }
