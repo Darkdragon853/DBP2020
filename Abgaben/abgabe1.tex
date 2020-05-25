@@ -5,6 +5,8 @@
 \input{titlepage}
 
 \section{Relationenmodell}
+Bei der Angabe der Relationen verzichteten wir aus Übersichtlichkeitsgründen auf die Angabe der Datentypen sowie auf die referenzierten Tabellen. Diese Informationen können aus dem DDL-Skript oder unter Punkt 2 dieses Dokumentes nachgelesen werden.\\
+
 Legende:
 \begin{itemize}
   \item \primary{primary key}
@@ -15,17 +17,17 @@ Legende:
 Tabellen:
 %\begin{spacing}{1.5}
 \begin{itemize}
-  \item \emph{Tag} (\primary{id}, name);
-  \item \emph{TagClass} (\primary{id}, name);
-  \item \emph{Continent} (\primary{id}, name);
-  \item \emph{Country} (\primary{id}, name, \foreign{continent\_id});
-  \item \emph{City} (\primary{id}, name, \foreign{country\_id});
-  \item \emph{Person} (\primary{id}, firstName, lastName, gender, birthday, email, speaks, browserUsed, locationIP, \foreign{city\_id});
-  \item \emph{Company} (\primary{id}, name, \foreign{country\_id});
-  \item \emph{University} (\primary{id}, name, \foreign{city\_id});
+  \item \emph{Tag} (\primary{id}, name, url);
+  \item \emph{TagClass} (\primary{id}, name, url);
+  \item \emph{Continent} (\primary{id}, name, url);
+  \item \emph{Country} (\primary{id}, name, \foreign{continent\_id}, url);
+  \item \emph{City} (\primary{id}, name, \foreign{country\_id}, url);
+  \item \emph{Person} (\primary{id}, creationDate, firstName, lastName, gender, birthday, email, speaks, browserUsed, locationIP, \foreign{city\_id});
+  \item \emph{Company} (\primary{id}, name, url, \foreign{country\_id});
+  \item \emph{University} (\primary{id}, name, url, \foreign{city\_id});
   \item \emph{Forum} (\primary{id}, title, creationDate, moderator);
   \item \emph{Post} (\primary{id}, language, imageFile, creationDate, browserUsed, locationIP, content, length, \foreign{forum\_id}, \foreign{author\_id}, \foreign{country\_id});
-  \item \emph{Comment} (\primary{id}, creationDate, browserUsed, locationIP, content, length, author\_id, country\_id, reply\_to\_post\_id, reply\_to\_comment\_id);
+  \item \emph{Comment} (\primary{id}, creationDate, browserUsed, locationIP, content, length, \foreign{author\_id}, \foreign{country\_id}, \foreign{reply\_to\_post\_id}, \foreign{reply\_to\_comment\_id});
   \item \emph{Forum\_hasMember\_Person} (\both{person\_id}, \both{forum\_id}, joinDate);
   \item \emph{Forum\_hasTag\_Tag} (\both{forum\_id}, \both{tag\_id});
   \item \emph{Tag\_hasType\_TagClass} (\both{tag\_id}, \both{tagClass\_id});
@@ -46,8 +48,9 @@ Tabellen:
 CREATE FUNCTION valid_email(b boolean, v VARCHAR)
     RETURNS boolean
     AS $$
-    SELECT $2 ~ '^[\w\.-]+@[\w+\.-]+\.[\w]{2,4}$' AS result $$
+    SELECT $2 ~ '^[\w\.-]+@[\w+\.-]+\.[\w]{2,4}$' as result $$
     LANGUAGE sql;
+
 
 CREATE OPERATOR =%= (
     PROCEDURE = valid_email,
@@ -55,11 +58,13 @@ CREATE OPERATOR =%= (
     RIGHTARG = varchar
 );
 
+
 CREATE TABLE tag(
     id BIGSERIAL PRIMARY KEY,
     name VARCHAR(150) NOT NULL,
     url TEXT
 );
+
 
 CREATE TABLE tagclass(
     id BIGSERIAL PRIMARY KEY,
@@ -67,11 +72,13 @@ CREATE TABLE tagclass(
     url TEXT
 );
 
+
 CREATE TABLE continent(
     id BIGSERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     url TEXT
 );
+
 
 CREATE TABLE country(
     id BIGSERIAL PRIMARY KEY,
@@ -80,12 +87,14 @@ CREATE TABLE country(
     url TEXT
 );
 
+
 CREATE TABLE city(
     id BIGSERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     country_id BIGINT NOT NULL REFERENCES country(id) ON DELETE CASCADE ON UPDATE CASCADE,
     url TEXT
 );
+
 
 CREATE TABLE person(
     id BIGSERIAL PRIMARY KEY,
@@ -94,7 +103,7 @@ CREATE TABLE person(
     lastName VARCHAR(100) NOT NULL,
     gender VARCHAR(7) NOT NULL,
     birthday Date NOT NULL,
-    email VARCHAR[] NOT NULL, -- ArrayType bc [1..*]
+    email VARCHAR[], -- ArrayType bc [1..*]
     speaks VARCHAR[] NOT NULL, -- ArrayType bc [1..*]
     browserUsed VARCHAR(50) NOT NULL,
     locationIP VARCHAR(40) NOT NULL,
@@ -104,12 +113,14 @@ CREATE TABLE person(
     CONSTRAINT vaild_email CHECK (TRUE =%= ALL(email))
 );
 
+
 CREATE TABLE company(
     id BIGSERIAL PRIMARY KEY,
     name VARCHAR(200) NOT NULL,
     url TEXT,
     country_id BIGINT NOT NULL REFERENCES country(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
+
 
 CREATE TABLE university(
     id BIGSERIAL PRIMARY KEY,
@@ -118,12 +129,14 @@ CREATE TABLE university(
     city_id BIGINT NOT NULL REFERENCES city(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
+
 CREATE TABLE forum(
     id BIGSERIAL PRIMARY KEY,
     title VARCHAR(200) NOT NULL,
     creationDate TIMESTAMP NOT NULL,
-    moderator BIGINT REFERENCES person(id) ON DELETE SET NULL ON UPDATE CASCADE
+    moderator BIGINT NOT NULL REFERENCES person(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
+
 
 CREATE TABLE post(
     id BIGSERIAL PRIMARY KEY,
@@ -139,6 +152,7 @@ CREATE TABLE post(
     country_id BIGINT NOT NULL REFERENCES country(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
+
 CREATE TABLE comment(
     id BIGSERIAL PRIMARY KEY,
     creationDate TIMESTAMP NOT NULL,
@@ -151,8 +165,9 @@ CREATE TABLE comment(
     reply_to_post_id BIGINT REFERENCES post(id) ON DELETE SET NULL ON UPDATE CASCADE,
     reply_to_comment_id BIGINT REFERENCES comment(id) ON DELETE SET NULL ON UPDATE CASCADE,
 
-    CONSTRAINT belongs_to_message_or_post CHECK (((reply_to_comment_id IS NOT NULL) AND (reply_to_post_id IS NULL)) OR ((reply_to_comment_id IS NULL) AND (reply_to_post_id IS NOT NULL))) -- noch schauen ob das so geht, besser XOR!
+    CONSTRAINT belongs_to_message_or_post CHECK (((reply_to_comment_id IS NOT NULL) AND (reply_to_post_id IS NULL)) OR ((reply_to_comment_id IS NULL) AND (reply_to_post_id IS NOT NULL)))
 );
+
 
 CREATE TABLE forum_hasMember_person(
     person_id BIGINT NOT NULL REFERENCES person(id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -161,11 +176,13 @@ CREATE TABLE forum_hasMember_person(
     PRIMARY KEY (person_id, forum_id)
 );
 
+
 CREATE TABLE forum_hasTag_tag(
     forum_id BIGINT NOT NULL REFERENCES forum(id) ON DELETE CASCADE ON UPDATE CASCADE,
     tag_id BIGINT NOT NULL REFERENCES tag(id) ON DELETE CASCADE ON UPDATE CASCADE,
     PRIMARY KEY (forum_id, tag_id)
 );
+
 
 CREATE TABLE tag_hasType_tagclass(
     tag_id BIGINT NOT NULL REFERENCES tag(id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -173,11 +190,13 @@ CREATE TABLE tag_hasType_tagclass(
     PRIMARY KEY (tag_id, tagclass_id)
 );
 
+
 CREATE TABLE tagclass_isSubclassOf_tagclass(
     tag_parent_id BIGINT NOT NULL REFERENCES tag(id) ON DELETE CASCADE ON UPDATE CASCADE,
     tag_child_id BIGINT NOT NULL REFERENCES tag(id) ON DELETE CASCADE ON UPDATE CASCADE,
     PRIMARY KEY (tag_parent_id, tag_child_id)
 );
+
 
 CREATE TABLE post_hasTag_tag(
     post_id BIGINT NOT NULL REFERENCES post(id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -185,11 +204,13 @@ CREATE TABLE post_hasTag_tag(
     PRIMARY KEY (post_id, tag_id)
 );
 
+
 CREATE TABLE comment_hasTag_tag(
     comment_id BIGINT NOT NULL REFERENCES comment(id) ON DELETE CASCADE ON UPDATE CASCADE,
     tag_id BIGINT NOT NULL REFERENCES tag(id) ON DELETE CASCADE ON UPDATE CASCADE,
     PRIMARY KEY (comment_id, tag_id)
 );
+
 
 CREATE TABLE person_knows_person(
     person_1_id BIGINT NOT NULL REFERENCES person(id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -198,12 +219,14 @@ CREATE TABLE person_knows_person(
     PRIMARY KEY (person_1_id, person_2_id)
 );
 
+
 CREATE TABLE person_studyAt_university(
     person_id BIGINT NOT NULL REFERENCES person(id) ON DELETE CASCADE ON UPDATE CASCADE,
     university_id BIGINT NOT NULL REFERENCES university(id) ON DELETE CASCADE ON UPDATE CASCADE,
     classYear INT NOT NULL,
     PRIMARY KEY (person_id, university_id)
 );
+
 
 CREATE TABLE person_workAt_company(
     person_id BIGINT NOT NULL REFERENCES person(id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -212,12 +235,14 @@ CREATE TABLE person_workAt_company(
     PRIMARY KEY (person_id, company_id)
 );
 
+
 CREATE TABLE person_likes_post(
     person_id BIGINT NOT NULL REFERENCES person(id) ON DELETE CASCADE ON UPDATE CASCADE,
     post_id BIGINT NOT NULL REFERENCES post(id) ON DELETE CASCADE ON UPDATE CASCADE,
     creationDate TIMESTAMP NOT NULL,
     PRIMARY KEY (person_id, post_id)
 );
+
 
 CREATE TABLE person_likes_comment(
     person_id BIGINT NOT NULL REFERENCES person(id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -226,13 +251,24 @@ CREATE TABLE person_likes_comment(
     PRIMARY KEY (person_id, comment_id)
 );
 
+
 CREATE TABLE person_hasInterest_Tag(
     person_id BIGINT NOT NULL REFERENCES person(id) ON DELETE CASCADE ON UPDATE CASCADE,
     tag_id BIGINT NOT NULL REFERENCES tag(id) ON DELETE CASCADE ON UPDATE CASCADE,
     PRIMARY KEY (person_id, tag_id)
 );
+
+
 \end{lstlisting}
 
-\section{UML-Diagramm}
+\section{Programm zum Einlesen der Daten}
+
+Wir haben ein Java-Tool geschrieben, was die gegebenen Daten parsed und entsprechend einliest.
+Dies wird am Testattermin (28.5.2020) präsentiert.
+
+Der Source-Code ist der Abgabe beigefügt.
+
+\section{UML-Diagramm (war vorgegeben)}
 \includegraphics[angle=90,width=0.95\textwidth]{img/schema.png}
+
 \end{document}
