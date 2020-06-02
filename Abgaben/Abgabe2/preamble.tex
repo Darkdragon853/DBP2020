@@ -1,0 +1,80 @@
+\documentclass[11pt,titlepage]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[ngerman]{babel}
+\usepackage{graphicx}
+\usepackage{comment}
+\usepackage{appendix}
+\usepackage{caption, subcaption}
+\usepackage[T1]{fontenc}
+\usepackage{multirow}
+
+\usepackage{pdfpages}
+% für Unterstreichungen
+\usepackage[normalem]{ulem}
+%\usepackage{environ}
+\usepackage{fancyhdr}
+% \usepackage[
+%   sorting=none
+%   %backend=biber,
+%   %style=numeric,
+% ]{biblatex}
+
+\usepackage[
+  a4paper,
+  includeheadfoot,
+  left=20mm,
+  right=20mm,
+  top=20mm,
+  bottom=20mm
+]{geometry}
+
+\usepackage{csquotes}
+\usepackage{wrapfig}
+\usepackage{longtable}
+\usepackage{siunitx}
+
+\usepackage{tabularx}
+\usepackage{hyperref}
+\usepackage{setspace}
+
+\pagestyle{fancy}
+\setlength{\headheight}{16pt}
+\lhead{Lukas Hempel \& Thomas Pause}
+\chead{Abgabe Aufgabe 2}
+\rhead{\today}%{Matrikelnummer: 3720245}
+\cfoot{\thepage}
+\setlength{\parindent}{0pt}
+%\addbibresource{bibliography.bib}
+
+\newcommand{\primary}[1]{$\uline{\texttt{#1}}$}
+\newcommand{\foreign}[1]{$\dashuline{\smash{\texttt{#1}}}$}
+\newcommand{\both}[1]{$\dashuline{\uline{\texttt{#1}}}$}
+
+%for sql syntax
+\usepackage{listings}
+\lstset{
+    numberbychapter=false,
+    numbers=none,
+    float=htb,
+    numberblanklines=true,%specified even when numbers=none here for the case that numbers are explicitly activated for a single listing
+    %numbers=left,
+    %numberstyle=\tiny,
+    %basicstyle=\ttfamily\fontsize{11}{11}\selectfont,
+    basicstyle=\normalfont\ttfamily,
+    tabsize=2,
+    framexleftmargin=2pt,
+    captionpos=b,
+    %frame=single,
+    breaklines=true,
+    %keywordstyle=\color{cyan}, % screen version
+    keywordstyle=\color{blue}, % print version
+    %stringstyle=\color{listkeyword}, % print version % does not seem to work correctly
+    aboveskip=1.5em
+}
+\lstset{language=sql,breaklines=true}
+\lstdefinelanguage{sql}{
+sensitive=true,
+morekeywords={TABLE, ON, UPDATE, DELETE, CREATE, OPERATOR, FUNCTION, SELECT,DISTINCT, FROM, WHERE, FILTER, ORDER, GROUP, BY, HAVING, IN, AS, CONSTRAINT, GRAPH, SERVICE, PREFIX, ASC, DESC, LIMIT, SUM, MIN, MAX}
+}

@@ -1,0 +1,38 @@
+\input{preamble}
+
+\begin{document}
+
+\input{titlepage}
+
+\section*{2a) Sichtenerstellung}
+Die Freundschaftsbeziehung ist als gerichtete Beziehung gespeichert, um Anfragen bzgl. der Freundschaftsbeziehung komfortabel zu lösen sollen die Beziehungen ungerichtet gespeichert werden.
+Diesbezüglich sollen Sie eine Sicht \enquote{pkp\_symmetric} erstellen, die beide Richtungen enthält.
+
+\section*{2b) Anfragen an die Datenbank}
+Formulieren Sie SQL-Anfragen, um folgende Fragen zu beantworten.
+
+\begin{enumerate}
+    \item In wie vielen verschiedenen afrikanischen Städten gibt es eine Universität?
+    \item Wie viele Forenbeiträge (Posts) hat die älteste Person verfasst (Ausgabe: Name, \#Forenbeiträge)?
+    \item Wie viele Kommentare zu Posts gibt es aus jedem Land (Ausgabe aufsteigend sortiert nach Kommentaranzahl)? Die Liste soll auch Länder enthalten, für die keine Post-Kommentare existieren, d.h. die Kommentaranzahl = 0 ist! (Funktion Coalesce)
+    \item Aus welchen Städten stammen die meisten Nutzer (Ausgabe Name + Einwohnerzahl)?
+    \item Mit wem ist \enquote{Hans Johansson} befreundet?
+    \item Wer sind die \enquote{echten} Freundesfreunde von \enquote{Hans Johansson}? \enquote{Echte} Freundesfreunde dürfen nicht gleichzeitig direkte Freunde von \enquote{Hans Johansson} sein. Sortieren Sie die Ausgabe alphabetisch nach dem Nachnamen.
+    \item Welche Nutzer sind Mitglied in allen Foren, in denen auch \enquote{Mehmet Koksal} Mitglied ist (Angabe Name)?
+    \item Geben Sie die prozentuale Verteilung der Nutzer bzgl. ihrer Herkunft aus verschiedenen Kontinenten an!
+    \item Zu welchen Themen (\texttt{tag classes}) gibt es die meisten Posts? Geben Sie die Namen der Top 10 \texttt{tag classes} mit ihrer Häufigkeit aus!
+    \item Welche Personen haben noch nie ein \enquote{Like} für einen Kommentar oder Post bekommen? Sortieren Sie die Ausgabe alphabetisch nach dem Nachnamen.
+    \item Welche Foren enthalten mehr Posts als die durchschnittliche Anzahl von Posts in Foren (Ausgabe alphabetisch sortiert nach Forumtitel)?
+    \item Welche Personen sind mit der Person befreundet, die die meisten Likes auf einen Post bekommen hat? Sortieren Sie die Ausgabe alphabetisch nach dem Nachnamen.
+    \item Welche Personen sind direkt oder indirekt mit \enquote{Jun Hu} (id 94) verbunden (befreundet)? Geben Sie für jede Person die Distanz zu Jun an.
+    \item Erweitern Sie die Anfrage zu Aufgabe 13 indem Sie zusätzlich zur Distanz den Pfad zwischen den Nutzern ausgeben.
+\end{enumerate}
+
+\section*{2c) Änderungen in der erzeugten Datenbank}
+Es soll ein Mechanismus umgesetzt werden, um die Beendigung eines Arbeitsverhältnisses zu dokumentieren.
+Der entsprechende Eintrag in \texttt{person\_workAt\_company} soll mittels SQL-Anweisung gelöscht werden.
+Um die Datenmanipulation nachvollziehen zu können, soll der Löschvorgang in einer separaten Tabelle protokolliert werden.
+Dabei soll zusätzlich hinterlegt werden, wann das Arbeitsverhältnis beendet wurde (orientieren Sie sich am Löschzeitpunkt).
+Die Protokollierung soll automatisch erfolgen, wenn ein Mitarbeiter sein Arbeitsverhältnis bei einem Unternehmen beendet (Löschung in \texttt{person\_workAt\_company}).
+
+\end{document}
