@@ -12,20 +12,88 @@ Diesbezüglich sollen Sie eine Sicht \enquote{pkp\_symmetric} erstellen, die bei
 Formulieren Sie SQL-Anfragen, um folgende Fragen zu beantworten.
 
 \begin{enumerate}
-    \item In wie vielen verschiedenen afrikanischen Städten gibt es eine Universität?
+    %\item In wie vielen verschiedenen afrikanischen Städten gibt es eine Universität?
     \item Wie viele Forenbeiträge (Posts) hat die älteste Person verfasst (Ausgabe: Name, \#Forenbeiträge)?
+
+    \uline{Query:}\\
+    SELECT Name, Count(Post) AS \#Forenbeiträge \\
+    FROM bla JOIN blubb \\
+    WHERE namenszuordnung AND MAX(age)\\
+    \uline{Ausgabe:}\\
+
     \item Wie viele Kommentare zu Posts gibt es aus jedem Land (Ausgabe aufsteigend sortiert nach Kommentaranzahl)? Die Liste soll auch Länder enthalten, für die keine Post-Kommentare existieren, d.h. die Kommentaranzahl = 0 ist! (Funktion Coalesce)
+
+    \uline{Query:}\\
+    SELECT ...\\
+    \uline{Ausgabe:}\\
+
     \item Aus welchen Städten stammen die meisten Nutzer (Ausgabe Name + Einwohnerzahl)?
+
+    \uline{Query:}\\
+    SELECT ...\\
+    \uline{Ausgabe:}\\
+
     \item Mit wem ist \enquote{Hans Johansson} befreundet?
+
+    \uline{Query:}\\
+    SELECT ...\\
+    \uline{Ausgabe:}\\
+
     \item Wer sind die \enquote{echten} Freundesfreunde von \enquote{Hans Johansson}? \enquote{Echte} Freundesfreunde dürfen nicht gleichzeitig direkte Freunde von \enquote{Hans Johansson} sein. Sortieren Sie die Ausgabe alphabetisch nach dem Nachnamen.
+
+    \uline{Query:}\\
+    SELECT ...\\
+    \uline{Ausgabe:}\\
+
     \item Welche Nutzer sind Mitglied in allen Foren, in denen auch \enquote{Mehmet Koksal} Mitglied ist (Angabe Name)?
+
+    \uline{Query:}\\
+    SELECT ...\\
+    \uline{Ausgabe:}\\
+
     \item Geben Sie die prozentuale Verteilung der Nutzer bzgl. ihrer Herkunft aus verschiedenen Kontinenten an!
+
+    \uline{Query:}\\
+    SELECT ...\\
+    \uline{Ausgabe:}\\
+
     \item Zu welchen Themen (\texttt{tag classes}) gibt es die meisten Posts? Geben Sie die Namen der Top 10 \texttt{tag classes} mit ihrer Häufigkeit aus!
+
+    \uline{Query:}\\
+    SELECT ...\\
+    \uline{Ausgabe:}\\
+
     \item Welche Personen haben noch nie ein \enquote{Like} für einen Kommentar oder Post bekommen? Sortieren Sie die Ausgabe alphabetisch nach dem Nachnamen.
+
+    \uline{Query:}\\
+    SELECT ...\\
+    \uline{Ausgabe:}\\
+
     \item Welche Foren enthalten mehr Posts als die durchschnittliche Anzahl von Posts in Foren (Ausgabe alphabetisch sortiert nach Forumtitel)?
-    \item Welche Personen sind mit der Person befreundet, die die meisten Likes auf einen Post bekommen hat? Sortieren Sie die Ausgabe alphabetisch nach dem Nachnamen.
+
+    \uline{Query:}\\
+    SELECT ...\\
+    \uline{Ausgabe:}\\
+
+    \item Welche Personen sind mit der Person befreundet, die die meisten Likes auf einen Post bekommen hat? Sortieren Sie die
+    Ausgabe alphabetisch nach dem Nachnamen.
+
+    \uline{Query:}\\
+    SELECT ...\\
+    \uline{Ausgabe:}\\
+
     \item Welche Personen sind direkt oder indirekt mit \enquote{Jun Hu} (id 94) verbunden (befreundet)? Geben Sie für jede Person die Distanz zu Jun an.
+
+    \uline{Query:}\\
+    SELECT ...\\
+    \uline{Ausgabe:}\\
+
     \item Erweitern Sie die Anfrage zu Aufgabe 13 indem Sie zusätzlich zur Distanz den Pfad zwischen den Nutzern ausgeben.
+
+    \uline{Query:}\\
+    SELECT ...\\
+    \uline{Ausgabe:}\\
+
 \end{enumerate}
 
 \section*{2c) Änderungen in der erzeugten Datenbank}
