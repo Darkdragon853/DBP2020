@@ -1,6 +1,7 @@
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 
 @Entity
 @Table(name = "banks")
@@ -12,6 +13,9 @@ public class Bank {
     @GeneratedValue(generator = "incrementor")
     @GenericGenerator(name = "incrementator", strategy = "increment")
     private int id;
+
+    
+    private ArrayList<Client> clients = new ArrayList<Client>();
 
     public int getId() {
         return id;
