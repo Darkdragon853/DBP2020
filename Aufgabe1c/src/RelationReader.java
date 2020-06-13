@@ -210,33 +210,8 @@ public class RelationReader {
                 String[] items = currentLine.split("\\|");
                 String knownSpeaks = "";
 
-                // First we use a SELECT statement to get speaks entries and store them in knownSpeaks
-                try{
-                    String checkStatement = "SELECT speaks FROM person WHERE id =" + items[0] + ";";
-                    Statement checkCurrent = con.database.createStatement();
-                    ResultSet currentLangs = checkCurrent.executeQuery(checkStatement);
-                    while (currentLangs.next()) {
-                        String currentString = currentLangs.getString(1);
-                        // System.out.println(currentString);
 
-
-                        if(currentString.equals("{filler}")) {
-                            // Erster Eintrag der Sprache
-                            knownSpeaks = "{";
-                        } else {
-                            // Schon Einträge drin
-                            knownSpeaks = currentString.substring(0, currentString.length()-1) + ",";
-                            //  System.out.println("String von 0 bis Length -1 : " + knownSpeaks);
-                        }
-                    }
-                } catch (Throwable t){
-                    t.printStackTrace();
-                }
-                // Then we construct the new entry
-                String newSpeaks = knownSpeaks + items[1] + "}";
-
-                // And update the Table
-                insertStatement = "UPDATE person SET speaks = \'"+ newSpeaks + "\' WHERE id= "+ items[0] + ";";
+                insertStatement = "INSERT INTO person_speaks_language(person_id, language) VALUES ("+ items[0] + ", \'" + items[1] + "\');";
                 Statement statement = null;
                 try {
                     statement = con.database.createStatement();
@@ -245,6 +220,7 @@ public class RelationReader {
                     System.out.println("Fehler beim Statement erzeugen oder Befehl ausführen: " + sqle.getMessage());
                     failures++;
                     failString=insertStatement;
+                    System.out.println("Fehlerstatement: \n"+insertStatement+"\n Ende Statement");
                 }
 
                 //System.out.println(currentName); // --Debug
@@ -414,35 +390,8 @@ public class RelationReader {
                 // Hier die momentane Eingabezeile verarbeiten
                 // Obviously we have to Split the Lines by '|'
                 String[] items = currentLine.split("\\|");
-                String knownEmails = "";
 
-                // First we use a SELECT statement to get email entries and store them in knownEmails
-                try{
-                    String checkStatement = "SELECT email FROM person WHERE id =" + items[0] + ";";
-                    Statement checkCurrent = con.database.createStatement();
-                    ResultSet currentMails = checkCurrent.executeQuery(checkStatement);
-                    while (currentMails.next()) {
-                        String currentString = currentMails.getString(1);
-                        // System.out.println(currentString);
-
-                        if(currentString == null) {
-                            // Erster Eintrag der Mail
-                            knownEmails = "{";
-                        }
-                        else {
-                            // Schon Einträge drin
-                            knownEmails = currentString.substring(0, currentString.length()-1) + ",";
-                            // System.out.println("String von 0 bis Length -1 : " + knownEmails);
-                        }
-                    }
-                } catch (Throwable t){
-                    t.printStackTrace();
-                }
-
-                // Zusammenfügen
-                String newMails = knownEmails + items[1] + "}";
-
-                insertStatement = "UPDATE person SET email = \'"+ newMails + "\' WHERE id= "+ items[0] + ";";
+                insertStatement = "INSERT INTO person_has_email(person_id, email) VALUES ( "+ items[0] + ", \'" + items[1] + "\');";
                 // System.out.println(insertStatement);
                 Statement statement = null;
                 try {

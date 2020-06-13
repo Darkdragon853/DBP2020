@@ -5,7 +5,6 @@
 ---
 ---
 
-
 -- Funktion valid_email, checkt ein Varchar auf Validität der Email-Adresse
 CREATE FUNCTION valid_email(b boolean, v VARCHAR) 
     RETURNS boolean
@@ -71,14 +70,11 @@ create table person(
     lastName VARCHAR(100) NOT NULL,
     gender VARCHAR(7) NOT NULL,
     birthday Date NOT NULL,
-    email VARCHAR[], -- ArrayType bc [1..*]
-    speaks VARCHAR[] NOT NULL, -- ArrayType bc [1..*]
     browserUsed VARCHAR(50) NOT NULL,
     locationIP VARCHAR(40) NOT NULL,
     city_id BIGINT NOT NULL REFERENCES city(id) ON DELETE CASCADE ON UPDATE CASCADE,
 
-    CONSTRAINT birthday_not_in_future CHECK (birthday <= NOW()::DATE),
-    CONSTRAINT vaild_email CHECK (TRUE =%= ALL(email))
+    CONSTRAINT birthday_not_in_future CHECK (birthday <= NOW()::DATE)
 );
 
 
@@ -243,14 +239,20 @@ create table person_hasInterest_Tag(
     PRIMARY KEY (person_id, tag_id)
 );
 
+-- ArrayType bc [1..*]
+-- Tabelle Person_has_Email
+create table person_has_Email(
+    person_id BIGINT NOT NULL REFERENCES person(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    email VARCHAR(200) NOT NULL,
+    PRIMARY KEY (person_id, email),
 
+    CONSTRAINT vaild_email CHECK (TRUE =%= email)
+);
 
-
-
--- bisherige Implementierung wurde getested, Postgres nimmt das so an.
--- Todo: urls sind noch nicht in den Places mit drin, Forum muss mind. einen Member haben -> Ist in Postgres schwierig zu machen, vielleicht per Java? (checkValidForums)
--- Todo: urls als TEXT bei places einfügen
-
--- Was ist mit Ländern, die auf mehreren Kontinenten liegen?
--- Macht es Sinn, wenn eine Firma keine Mitarbeiter hat bzw eine Universität keine Studenten?
--- kommentare usw nicht löschen wenn der Author weg ist
+-- ArrayType bc [1..*]
+-- Tabelle Person_speaks_language
+create table person_speaks_language(
+    person_id BIGINT NOT NULL REFERENCES person(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    language VARCHAR(10) NOT NULL,
+    PRIMARY KEY(person_id, language)
+);

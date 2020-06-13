@@ -14,7 +14,7 @@ public class Main {
     // Use/test the data input reader functions
 
         // Ladebalken
-        System.out.println("Work: >>>>>>>>>>>>>>>>>>>>>>>");
+        System.out.println("Work: >>>>>>>>>>>>>>>>>>>>>>");
         System.out.print("Done: ");
 
         // Start with the Entities -- 100% done
@@ -47,7 +47,7 @@ public class Main {
         rr.readPersonLikesPost();
         rr.readPostHasTagTag();
         rr.readPersonEmailEmailAddress(); // <- Verwirft 2 EInträge da dort doppel @ vorkommt.
-        er.cleanPerson();
+        // er.cleanPerson(); <- nicht mehr gebraucht da andere Aufteilung
 
         System.out.println("\nEinlesen der Daten abgeschlossen.");
     }
