@@ -11,10 +11,10 @@ public class Forum {
     @Column(name = "id")
     private int id;
 
-    @Column(name = "title")
+    @Column(name = "title", nullable = false, length = 200)
     private String title;
 
-    @Column(name = "creationDate")
+    @Column(name = "creationDate", nullable = false)
     private Timestamp creationDate;
 
     // ForeignKey

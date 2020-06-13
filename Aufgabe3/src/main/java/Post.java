@@ -11,25 +11,25 @@ public class Post {
     @Column(name = "id")
     private int id;
 
-    @Column(name = "language")
+    @Column(name = "language", length = 2)
     private String language;
 
-    @Column(name = "imageFile")
+    @Column(name = "imageFile", length = 150)
     private String imageFile;
 
-    @Column(name = "creationDate")
+    @Column(name = "creationDate", nullable = false)
     private Timestamp creationDate;
 
-    @Column(name = "browserUsed")
+    @Column(name = "browserUsed", nullable = false, length = 50)
     private String browserUsed;
 
-    @Column(name = "locationIP")
+    @Column(name = "locationIP", nullable = false, length = 40)
     private String locationIP;
 
     @Column(name = "content")
     private String content;
 
-    @Column(name = "length")
+    @Column(name = "length", nullable = false)
     private int length;
 
     //ForeignKey

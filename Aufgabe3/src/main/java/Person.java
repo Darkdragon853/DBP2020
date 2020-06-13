@@ -11,7 +11,6 @@ public class Person {
     @Column(name = "id")
     private int id;
 
-    // Passt das so?
     @Column(name = "creationDate", nullable = false)
     private Timestamp creationDate;
 
@@ -24,15 +23,16 @@ public class Person {
     @Column(name = "gender", nullable = false, length = 7)
     private String gender;
 
-    // passt das so?
     @Column(name = "birthday", nullable = false)
     private Date birthday;
 
     // passt das so?
-    @Column(name = "email")
+    @OneToMany
+    @JoinTable(name = "person_has_email")
     private String[] emails;
 
-    @Column(name = "speaks", nullable = false)
+    @OneToMany
+    @JoinTable(name = "person_speaks_language")
     private String[] speaks;
 
     @Column(name = "browserUsed", nullable = false, length = 50)
