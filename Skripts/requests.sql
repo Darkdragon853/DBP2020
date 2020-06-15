@@ -2,17 +2,25 @@
 -- 2.b)
 --
 
--- (1) In wie vielen verschiedenen afrikanischen Städten gibt es eine Universität? 
+-- (1) In wie vielen verschiedenen afrikanischen Städten gibt es eine Universität?
 SELECT COUNT(DISTINCT City.id) AS anzahl
-FROM (University JOIN City ON University.city_id = City.id JOIN Country ON City.country_id = Country.id JOIN Continent ON Country.continent_id = Continent.id) 
+FROM (University JOIN City ON University.city_id = City.id JOIN Country ON City.country_id = Country.id JOIN Continent ON Country.continent_id = Continent.id)
 WHERE Continent.name = 'Africa';
 -- Ergebnis: 100
 
+-- (2) Wie viele Forenbeiträge (Posts) hat die älteste Person verfasst (Ausgabe: Name, #Forenbeiträge)?
+SELECT person.firstname, person.lastname, COUNT(post.id) AS Forenbeitraege
+FROM person LEFT JOIN post ON person.id = post.author_id
+WHERE person.birthday = (SELECT MIN(birthday) FROM person)
+GROUP BY person.lastname, person.lastname;
 
--- (3) Wie viele Kommentare zu Posts gibt es aus jedem Land (Ausgabe aufsteigend sortiert nach Kommentaranzahl)? Die Liste soll auch Länder enthalten, für die keine Post-Kommentare existieren, d.h. die Kommentaranzahl = 0 ist! (Funktion Coalesce) 
-SELECT Country.name, COALESCE(COUNT(Comment.id), 0) AS NumberOfComments 
-FROM (Comment RIGHT JOIN Country on Comment.country_id = Country.id) 
-GROUP BY Country.name 
+-- Ergebnis:
+-- Joakim Larsson 0
+
+-- (3) Wie viele Kommentare zu Posts gibt es aus jedem Land (Ausgabe aufsteigend sortiert nach Kommentaranzahl)? Die Liste soll auch Länder enthalten, für die keine Post-Kommentare existieren, d.h. die Kommentaranzahl = 0 ist! (Funktion Coalesce)
+SELECT Country.name, COALESCE(COUNT(Comment.id), 0) AS NumberOfComments
+FROM (Comment RIGHT JOIN Country on Comment.country_id = Country.id)
+GROUP BY Country.name
 ORDER BY 2 ASC;
 
 -- Ergenis: 111 Zeilen,
@@ -32,15 +40,32 @@ ORDER BY 2 ASC;
 
 
 -- WHERE Comment.reply_to_post_id IS NOT NULL -- Kills the 0 - Countrys
- 
+
+-- (4) Aus welchen Städten stammen die meisten Nutzer (Ausgabe Name + Einwohnerzahl)?
+SELECT City.name, COUNT(Person.id) AS Einwohnerzahl
+FROM Person RIGHT JOIN City ON Person.city_id = City.id
+GROUP BY City.Name
+ORDER BY 2 DESC;
+
+-- Ergebnis: 1349 (so viele wie es Cities gibt)
+-- Ludwigsburg      |   2
+-- Rahim_Yar_Khan   |   2
+-- Chernivtsi	      |   1
+-- Nugegoda	        |   1
+-- Hefei            |   1
+-- Tainan	          |   1
+-- Tlatelolco	      |   1
+-- Xi`an            |   1
+-- Saltillo	        |   1
+-- Baishan	        |   1
 
 
--- (5) Mit wem ist ‘Hans Johansson’ befreundet? 
-SELECT P2.id AS FreundID, P2.firstName AS freundVorname, P2.lastName AS freundNachname 
-FROM (person p2 LEFT JOIN pkp_symmetric ON p2.id = pkp_symmetric.freund1id) 
+-- (5) Mit wem ist ‘Hans Johansson’ befreundet?
+SELECT P2.id AS FreundID, P2.firstName AS freundVorname, P2.lastName AS freundNachname
+FROM (person p2 LEFT JOIN pkp_symmetric ON p2.id = pkp_symmetric.freund1id)
 WHERE pkp_symmetric.person1id = (
-                                SELECT id 
-                                FROM person P1 
+                                SELECT id
+                                FROM person P1
                                 WHERE (P1.firstName = 'Hans') AND (P1.lastName = 'Johansson')
                                 );
 -- Ergebnis: 9
@@ -55,14 +80,17 @@ WHERE pkp_symmetric.person1id = (
 --  7696581394474 | Ali              | Achiou
 
 
+-- (6) Wer sind die echten Freundesfreunde von Hans Johansson?
+-- Echte Freundesfreunde dürfen nicht gleichzeitig direkte Freunde von Hans Johansson sein.
+-- Sortieren Sie die Ausgabe alphabetisch nach dem Nachnamen.
 
 
 
 
 -- (7) Welche Nutzer sind Mitglied in allen Foren, in denen auch ‘Mehmet Koksal’ Mitglied ist (Angabe Name)?
--- first get all Forum ids where Mehmet Koksal is in
+-- first get all Forum ids WHERE Mehmet Koksal is in
 
---      SELECT f1.id 
+--      SELECT f1.id
 --      FROM (forum f1 JOIN forum_hasMember_person fhp1 ON f1.id = fhp1.forum_id JOIN person p1 ON fhp1.person_id = p1.id)
 --      WHERE (p1.firstName = 'Mehmet') AND (p1.lastName = 'Koksal');
 
@@ -78,39 +106,39 @@ WHERE pkp_symmetric.person1id = (
 
 --      SELECT Kreuzprodukt.personid as personid
 --      FROM    (
---              SELECT p2.id as personid, MehemtsForums.id AS Mehmetsforumid 
---              FROM Person p2, 
+--              SELECT p2.id as personid, MehemtsForums.id AS Mehmetsforumid
+--              FROM Person p2,
 --                      (
---                      SELECT f1.id 
+--                      SELECT f1.id
 --                      FROM (forum f1 JOIN forum_hasMember_person fhp1 ON f1.id = fhp1.forum_id JOIN person p1 ON fhp1.person_id = p1.id)
 --                      WHERE (p1.firstName = 'Mehmet') AND (p1.lastName = 'Koksal')
---                      ) 
+--                      )
 --                      AS MehemtsForums
---              ) 
+--              )
 --              AS Kreuzprodukt
 
 
 -- now we wanna do the division:
 
 
-SELECT p4.id, p4.firstName, p4.lastName 
-FROM person p4 
-WHERE NOT EXISTS 
+SELECT p4.id, p4.firstName, p4.lastName
+FROM person p4
+WHERE NOT EXISTS
 (
         SELECT *
         FROM
         (
                 SELECT Kreuzprodukt.personid as personid
                 FROM    (
-                        SELECT p2.id as personid, MehemtsForums.id AS Mehmetsforumid 
-                        FROM Person p2, 
+                        SELECT p2.id as personid, MehemtsForums.id AS Mehmetsforumid
+                        FROM Person p2,
                                 (
-                                SELECT f1.id 
+                                SELECT f1.id
                                 FROM (forum f1 JOIN forum_hasMember_person fhp1 ON f1.id = fhp1.forum_id JOIN person p1 ON fhp1.person_id = p1.id)
                                 WHERE (p1.firstName = 'Mehmet') AND (p1.lastName = 'Koksal')
-                                ) 
+                                )
                                 AS MehemtsForums
-                        ) 
+                        )
                         AS Kreuzprodukt
                 WHERE NOT EXISTS
                         (
@@ -133,15 +161,15 @@ WHERE NOT EXISTS
 -- nicht Teil des Ergebnisses. Seien diese Leute nun Menge C. Dann ziehen wir einfach von allen Personen diese Menge ab und erhalten diejenigen, die in Mehmets Foren Mitglied sind!
 
 
--- (9) Zu welchen Themen (‘tag classes’) gibt es die meisten Posts? Geben Sie die Namen der Top 10 ‘tag classes’ mit ihrer Häufigkeit aus! 
-SELECT tagclass.name, tagclass.id, temp.anzahl 
+-- (9) Zu welchen Themen (‘tag classes’) gibt es die meisten Posts? Geben Sie die Namen der Top 10 ‘tag classes’ mit ihrer Häufigkeit aus!
+SELECT tagclass.name, tagclass.id, temp.anzahl
 FROM (
-        SELECT COUNT(pht1.post_id) AS anzahl, tht1.tagclass_id  
-        FROM post_hastag_tag pht1 JOIN tag_hastype_tagclass tht1 ON pht1.tag_id = tht1.tag_id 
-        GROUP BY tht1.tagclass_id 
-        ORDER BY anzahl DESC 
+        SELECT COUNT(pht1.post_id) AS anzahl, tht1.tagclass_id
+        FROM post_hastag_tag pht1 JOIN tag_hastype_tagclass tht1 ON pht1.tag_id = tht1.tag_id
+        GROUP BY tht1.tagclass_id
+        ORDER BY anzahl DESC
         LIMIT 10
-     ) AS temp JOIN tagclass ON temp.tagclass_id = tagclass.id 
+     ) AS temp JOIN tagclass ON temp.tagclass_id = tagclass.id
 ORDER BY temp.anzahl DESC;
 
 -- Ergebnis: 10
@@ -158,32 +186,32 @@ ORDER BY temp.anzahl DESC;
 
 
 
--- (11) Welche Foren enthalten mehr Posts als die durchschnittliche Anzahl von Posts in Foren (Ausgabe alphabetisch sortiert nach Forumtitel)? 
+-- (11) Welche Foren enthalten mehr Posts als die durchschnittliche Anzahl von Posts in Foren (Ausgabe alphabetisch sortiert nach Forumtitel)?
 -- zuerst die durchschnittliche Anzahl von Posts in Foren
-SELECT AVG(ForumCounts.anzahl) 
+SELECT AVG(ForumCounts.anzahl)
 FROM    (
-        SELECT COUNT(p1.id) AS anzahl 
-        FROM post p1 JOIN forum f1 ON p1.forum_id = f1.id 
+        SELECT COUNT(p1.id) AS anzahl
+        FROM post p1 JOIN forum f1 ON p1.forum_id = f1.id
         GROUP BY f1.id
         ) AS ForumCounts;
-        
+
 -- dann alle die mehr enthalten
-SELECT ForumswithCounts.title, ForumswithCounts.anzahl 
+SELECT ForumswithCounts.title, ForumswithCounts.anzahl
 FROM    (
-        SELECT F2.title, COUNT(P2.id) AS anzahl 
-        FROM Forum F2 JOIN Post P2 ON F2.id = P2.forum_id 
+        SELECT F2.title, COUNT(P2.id) AS anzahl
+        FROM Forum F2 JOIN Post P2 ON F2.id = P2.forum_id
         GROUP BY F2.id
-        ) AS ForumswithCounts 
+        ) AS ForumswithCounts
 WHERE ForumswithCounts.anzahl > (
-        SELECT AVG(ForumCounts.anzahl) 
+        SELECT AVG(ForumCounts.anzahl)
         FROM    (
-                SELECT COUNT(p1.id) AS anzahl 
-                FROM post p1 JOIN forum f1 ON p1.forum_id = f1.id 
+                SELECT COUNT(p1.id) AS anzahl
+                FROM post p1 JOIN forum f1 ON p1.forum_id = f1.id
                 GROUP BY f1.id) AS ForumCounts
-                ) 
+                )
         ORDER BY ForumswithCounts.title;
 
--- Ergebnis: 329 Zeilen 
+-- Ergebnis: 329 Zeilen
 -- Album 0 of Abdul Haris Tobing            |     17
 -- Album 0 of Alejandro Rodriguez           |     20
 -- Album 0 of Ali Abouba                    |     13
@@ -206,19 +234,19 @@ WHERE ForumswithCounts.anzahl > (
 
 
 
--- (12) Welche Personen sind mit der Person befreundet, die die meisten Likes auf einen Post bekommen hat? Sortieren Sie die Ausgabe alphabetisch nach dem Nachnamen. 
+-- (12) Welche Personen sind mit der Person befreundet, die die meisten Likes auf einen Post bekommen hat? Sortieren Sie die Ausgabe alphabetisch nach dem Nachnamen.
 -- zuerst die Person holen welche die meisten Likes bekommen hat
-SELECT tempo.author_id 
+SELECT tempo.author_id
 FROM (
-        SELECT COUNT (p2.id) as anzahl, p2.author_id 
-        FROM post p2 JOIN person_likes_post plp2 ON p2.id = plp2.post_id 
+        SELECT COUNT (p2.id) as anzahl, p2.author_id
+        FROM post p2 JOIN person_likes_post plp2 ON p2.id = plp2.post_id
         GROUP BY p2.author_id
-        ) AS tempo 
+        ) AS tempo
 WHERE tempo.anzahl = (
                      SELECT MAX(temp.anzahl)
                      FROM    (
-                             SELECT COUNT(p1.id) AS anzahl, p1.author_id 
-                             FROM post p1 JOIN person_likes_post plp1 ON p1.id = plp1.post_id 
+                             SELECT COUNT(p1.id) AS anzahl, p1.author_id
+                             FROM post p1 JOIN person_likes_post plp1 ON p1.id = plp1.post_id
                              GROUP BY p1.author_id
                              ) AS temp
                      );
@@ -226,28 +254,28 @@ WHERE tempo.anzahl = (
 
 
 -- dann zugehörige Freunde finden
-SELECT person.lastName, person.firstName, friends.person1id 
+SELECT person.lastName, person.firstName, friends.person1id
 FROM    (
-        SELECT pkp1.person1id, pkp1.freund1id, pkp1.creationDate 
-        FROM pkp_symmetric pkp1 
+        SELECT pkp1.person1id, pkp1.freund1id, pkp1.creationDate
+        FROM pkp_symmetric pkp1
         WHERE pkp1.person1id =  (
-                                SELECT tempo.author_id 
+                                SELECT tempo.author_id
                                 FROM    (
-                                        SELECT COUNT (p2.id) as anzahl, p2.author_id 
-                                        FROM post p2 JOIN person_likes_post plp2 ON p2.id = plp2.post_id 
+                                        SELECT COUNT (p2.id) as anzahl, p2.author_id
+                                        FROM post p2 JOIN person_likes_post plp2 ON p2.id = plp2.post_id
                                         GROUP BY p2.author_id
-                                        ) AS tempo 
+                                        ) AS tempo
                                 WHERE tempo.anzahl = (
                                                      SELECT MAX(temp.anzahl)
                                                      FROM    (
-                                                             SELECT COUNT(p1.id) AS anzahl, p1.author_id 
-                                                             FROM post p1 JOIN person_likes_post plp1 ON p1.id = plp1.post_id 
+                                                             SELECT COUNT(p1.id) AS anzahl, p1.author_id
+                                                             FROM post p1 JOIN person_likes_post plp1 ON p1.id = plp1.post_id
                                                              GROUP BY p1.author_id
                                                              ) AS temp
                                                      )
                                 )
         ) AS friends
-JOIN person ON friends.freund1id = person.id 
+JOIN person ON friends.freund1id = person.id
 ORDER BY person.lastName;
 -- Ergebnis: 9 Zeilen
 -- Achiou   | Ali       | 2199023255611

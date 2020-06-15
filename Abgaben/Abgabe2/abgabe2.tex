@@ -13,13 +13,16 @@ Formulieren Sie SQL-Anfragen, um folgende Fragen zu beantworten.
 
 \begin{enumerate}
     %\item In wie vielen verschiedenen afrikanischen Städten gibt es eine Universität?
+
     \item Wie viele Forenbeiträge (Posts) hat die älteste Person verfasst (Ausgabe: Name, \#Forenbeiträge)?
 
     \uline{Query:}\\
-    SELECT Name, Count(Post) AS \#Forenbeiträge \\
-    FROM bla JOIN blubb \\
-    WHERE namenszuordnung AND MAX(age)\\
+    select person.firstname, person.lastname, count(post.id) as Forenbeitraege \\
+    from person left join post on person.id = post.author_id \\
+    where person.birthday = (select min(birthday) from person) \\
+    group by person.lastname, person.lastname; \\
     \uline{Ausgabe:}\\
+    Joakim Larsson 0 \\
 
     \item Wie viele Kommentare zu Posts gibt es aus jedem Land (Ausgabe aufsteigend sortiert nach Kommentaranzahl)? Die Liste soll auch Länder enthalten, für die keine Post-Kommentare existieren, d.h. die Kommentaranzahl = 0 ist! (Funktion Coalesce)
 
