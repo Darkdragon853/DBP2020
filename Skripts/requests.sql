@@ -12,7 +12,7 @@ WHERE Continent.name = 'Africa';
 SELECT person.firstname, person.lastname, COUNT(post.id) AS Forenbeitraege
 FROM person LEFT JOIN post ON person.id = post.author_id
 WHERE person.birthday = (SELECT MIN(birthday) FROM person)
-GROUP BY person.lastname, person.lastname;
+GROUP BY person.firstname, person.lastname;
 
 -- Ergebnis:
 -- Joakim Larsson 0
@@ -82,9 +82,33 @@ WHERE pkp_symmetric.person1id = (
 
 -- (6) Wer sind die echten Freundesfreunde von Hans Johansson?
 -- Echte Freundesfreunde dürfen nicht gleichzeitig direkte Freunde von Hans Johansson sein.
--- Sortieren Sie die Ausgabe alphabetisch nach dem Nachnamen.
+-- Sortieren Sie die Ausgabe alphabetisch nach dem Nachnamen
 
-
+-- erst alle Freunde und deren Freunde von Hans Johansson und dann alle direkten (siehe 5) abziehen
+SELECT P3.lastname, P3.firstname FROM person P3 JOIN(
+SELECT fid1 FROM
+(WITH RECURSIVE allFriends(fid1) AS (
+  SELECT P2.id AS fid1
+  FROM (person p2 LEFT JOIN pkp_symmetric ON p2.id = pkp_symmetric.freund1id)
+  WHERE pkp_symmetric.person1id = (
+                                  SELECT id
+                                  FROM person P1
+                                  WHERE (P1.firstName = 'Hans') AND (P1.lastName = 'Johansson')
+                                  )
+UNION ALL
+SELECT pkp_symmetric.freund1id FROM allFriends JOIN pkp_symmetric ON allFriends.fid1=pkp_symmetric.person1id
+)
+SELECT DISTINCT(fid1) FROM allFriends) AS friendFriends
+EXCEPT(
+  SELECT P2.id
+  FROM (person p2 LEFT JOIN pkp_symmetric ON p2.id = pkp_symmetric.freund1id)
+  WHERE pkp_symmetric.person1id = (
+                                  SELECT id
+                                  FROM person P4
+                                  WHERE (P4.firstName = 'Hans') AND (P4.lastName = 'Johansson')
+                                  )
+)) AS trueFriendFriends ON P3.id = trueFriendFriends.fid1
+ORDER BY P3.lastname;
 
 
 -- (7) Welche Nutzer sind Mitglied in allen Foren, in denen auch ‘Mehmet Koksal’ Mitglied ist (Angabe Name)?
@@ -160,6 +184,20 @@ WHERE NOT EXISTS
 -- Wir sortieren also aus dem Kreuzprodukt alle Paare von (Person, Forum) die im Datensatz sind. Leute die in allen Foren von Mehmet Mitglieder sind, werden hierdurch aussortiert. Also sind diejenigen, die wir noch haben,
 -- nicht Teil des Ergebnisses. Seien diese Leute nun Menge C. Dann ziehen wir einfach von allen Personen diese Menge ab und erhalten diejenigen, die in Mehmets Foren Mitglied sind!
 
+-- (8) Geben Sie die prozentuale Verteilung der Nutzer bzgl. ihrer Herkunft aus verschiedenen Kontinenten an!
+-- WITH wideTable AS (SELECT COUNT(person.id) AS allPersons FROM person)
+SELECT Continent.id, Continent.name, (COUNT(P2.id)/ (SELECT COUNT(P1.id) FROM Person P1)::float)*100 AS percentage
+FROM Continent JOIN Country ON Continent.id = Country.continent_id
+     JOIN City ON Country.id = City.country_id JOIN Person P2 ON City.id = P2.city_id
+GROUP BY Continent.id, Continent.name
+ORDER BY percentage DESC
+
+-- id 	name 	percentage
+-- 1460 Asia	50
+-- 1462	Europe 25
+-- 1461 Africa	11.363636363636363
+-- 1464 North_America	9.090909090909092
+-- 1463 South_America	4.545454545454546
 
 -- (9) Zu welchen Themen (‘tag classes’) gibt es die meisten Posts? Geben Sie die Namen der Top 10 ‘tag classes’ mit ihrer Häufigkeit aus!
 SELECT tagclass.name, tagclass.id, temp.anzahl
@@ -184,8 +222,22 @@ ORDER BY temp.anzahl DESC;
 -- Philosopher    |  82 |     28
 -- Album          | 182 |     27
 
+-- (10) Welche Personen haben noch nie ein “Like” für einen Kommentar oder Post bekommen? Sortieren Sie die Ausgabe alphabetisch nach dem Nachnamen.
 
+SELECT P2.lastname, P2.firstname, P2.id
+FROM  ( (SELECT P1.id
+        FROM Person P1
+        EXCEPT (
+        SELECT Person_likes_comment.person_id
+        FROM Person_likes_comment
+      ))
+        EXCEPT (
+        SELECT Person_likes_post.person_id
+        FROM Person_likes_post
+      )) AS inglorious JOIN Person P2 ON inglorious.id = P2.id
+ORDER BY P2.lastname
 
+--
 -- (11) Welche Foren enthalten mehr Posts als die durchschnittliche Anzahl von Posts in Foren (Ausgabe alphabetisch sortiert nach Forumtitel)?
 -- zuerst die durchschnittliche Anzahl von Posts in Foren
 SELECT AVG(ForumCounts.anzahl)
