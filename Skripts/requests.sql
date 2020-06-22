@@ -339,3 +339,75 @@ ORDER BY person.lastName;
 -- Loan     | Cam       | 2199023255611
 -- Oliveira | Celso     | 2199023255611
 -- Zhang    | Zhi       | 2199023255611
+
+-- 13 Welche Personen sind direkt oder indirekt mit ‘Jun Hu’ (id 94) verbunden (befreundet)? Geben Sie für jede Person die Distanz zu Jun an.
+SELECT p3.id, p3.firstname, p3.lastname, fidsAndDistances.distance FROM 
+        (WITH tempo AS 
+                (SELECT DISTINCT(friendFriends.fid1), friendFriends.distance FROM
+                        (WITH RECURSIVE allFriends AS (
+                        SELECT P2.id AS fid1, 1 distance 
+                        FROM (person p2 LEFT JOIN pkp_symmetric ON p2.id = pkp_symmetric.freund1id)
+                        WHERE pkp_symmetric.person1id = (
+                                                        SELECT id
+                                                        FROM person P1
+                                                        WHERE (P1.firstName = 'Jun') AND (P1.lastName = 'Hu')
+                                                        )
+                        UNION ALL
+                        SELECT pkp_symmetric.freund1id, distance + 1 FROM allFriends JOIN pkp_symmetric ON allFriends.fid1=pkp_symmetric.person1id
+                        )
+                        SELECT * FROM allFriends) AS friendFriends
+                ORDER BY 1)
+        SELECT * 
+                FROM tempo t1 
+                WHERE distance = 
+                        (SELECT MIN(distance) 
+                        FROM tempo t2
+                        WHERE t1.fid1 = t2.fid1)) 
+        AS fidsAndDistances JOIN Person p3 ON fidsAndDistances.fid1 = p3.id
+ORDER BY 4;
+
+
+-- 14 Erweitern Sie die Anfrage zu Aufgabe 13 indem Sie zusätzlich zur Distanz den Pfad zwischen den Nutzern ausgeben.
+
+
+SELECT p3.id, p3.firstname, p3.lastname, fidsAndDistances.distance, fidsAndDistances.friendPath FROM 
+        (WITH tempo AS
+                (SELECT DISTINCT(friendFriends.fid1), friendFriends.distance, friendFriends.friendPath FROM
+                        (WITH RECURSIVE allFriends AS (
+                        SELECT P2.id AS fid1, 1 distance, 'Jun Hu -> ' || p2.firstName || ' ' || p2.lastName  friendPath 
+                        FROM (person p2 LEFT JOIN pkp_symmetric ON p2.id = pkp_symmetric.freund1id)
+                        WHERE pkp_symmetric.person1id = (
+                                                        SELECT id
+                                                        FROM person P1
+                                                        WHERE (P1.firstName = 'Jun') AND (P1.lastName = 'Hu')
+                                                        )
+                        UNION ALL
+
+                        SELECT pkp_symmetric.freund1id, distance + 1, 
+                        (
+                                friendPath || 
+                                  ' -> ' ||
+                                (SELECT firstName FROM Person p4 WHERE p4.id = pkp_symmetric.freund1id) ||
+                                 ' ' ||
+                                (SELECT lastName FROM Person p4 WHERE p4.id = pkp_symmetric.freund1id) 
+                                
+                        
+                        ) FROM allFriends JOIN pkp_symmetric ON allFriends.fid1=pkp_symmetric.person1id
+                        )
+                        SELECT * FROM allFriends) AS friendFriends
+                ORDER BY 1)
+        SELECT * 
+                FROM tempo t1 
+                WHERE distance = 
+                        (SELECT MIN(distance) 
+                        FROM tempo t2
+                        WHERE t1.fid1 = t2.fid1))
+         AS fidsAndDistances JOIN Person p3 ON fidsAndDistances.fid1 = p3.id
+         ORDER BY 4;
+
+
+-- 53 Datensätze da manche Freunde über mehrere Wege erreichbar sind! #cool
+
+
+
+

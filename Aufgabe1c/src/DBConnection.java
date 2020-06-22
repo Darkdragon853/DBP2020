@@ -10,7 +10,7 @@ public class DBConnection {
             public DBConnection() {
                 try{
                     Class.forName("org.postgresql.Driver"); // Load the Driver
-                    database = DriverManager.getConnection("jdbc:postgresql://193.31.27.151/:dbp2020", "LuMas", "Latarius853");
+                    database = DriverManager.getConnection("jdbc:postgresql:social_network", "postgres", "Latarius853");
                 } catch(ClassNotFoundException cnfe){
                     System.out.println("Driver ist not available!\n" + cnfe.getMessage());
                 } catch(SQLException sqle) {
