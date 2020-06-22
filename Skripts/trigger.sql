@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS deletedWorkers (
 -- 
 CREATE FUNCTION saveEndOfWork() RETURNS trigger AS $endOfWork$
 BEGIN    
-	INSERT INTO del SELECT now(), OLD.person_id, OLD.compny.id;
+	INSERT INTO deletedWorkers SELECT now(), OLD.person_id, OLD.company.id;
 	RETURN OLD;
 END;
 $endOfWork$ LANGUAGE plpgsql;
