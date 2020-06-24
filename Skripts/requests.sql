@@ -6,7 +6,9 @@
 SELECT COUNT(DISTINCT City.id) AS anzahl
 FROM (University JOIN City ON University.city_id = City.id JOIN Country ON City.country_id = Country.id JOIN Continent ON Country.continent_id = Continent.id)
 WHERE Continent.name = 'Africa';
+
 -- Ergebnis: 100
+
 
 -- (2) Wie viele Forenbeiträge (Posts) hat die älteste Person verfasst (Ausgabe: Name, #Forenbeiträge)?
 SELECT person.firstname, person.lastname, COUNT(post.id) AS Forenbeitraege
@@ -16,6 +18,7 @@ GROUP BY person.firstname, person.lastname;
 
 -- Ergebnis:
 -- Joakim Larsson 0
+
 
 -- (3) Wie viele Kommentare zu Posts gibt es aus jedem Land (Ausgabe aufsteigend sortiert nach Kommentaranzahl)? Die Liste soll auch Länder enthalten, für die keine Post-Kommentare existieren, d.h. die Kommentaranzahl = 0 ist! (Funktion Coalesce)
 SELECT Country.name, COALESCE(COUNT(Comment.id), 0) AS NumberOfComments
@@ -37,9 +40,10 @@ ORDER BY 2 ASC;
 -- Hong_Kong                        |               12
 -- France                           |               12
 -- Mauritania                       |               13
-
+-- ...
 
 -- WHERE Comment.reply_to_post_id IS NOT NULL -- Kills the 0 - Countrys
+
 
 -- (4) Aus welchen Städten stammen die meisten Nutzer (Ausgabe Name + Einwohnerzahl)?
 SELECT City.name, COUNT(Person.id) AS Einwohnerzahl
@@ -47,7 +51,7 @@ FROM Person RIGHT JOIN City ON Person.city_id = City.id
 GROUP BY City.Name
 ORDER BY 2 DESC;
 
--- Ergebnis: 1349 (so viele wie es Cities gibt)
+-- Ergebnis: 1349 Zeilen (so viele wie es Cities gibt)
 -- Ludwigsburg      |   2
 -- Rahim_Yar_Khan   |   2
 -- Chernivtsi	      |   1
@@ -58,6 +62,7 @@ ORDER BY 2 DESC;
 -- Xi`an            |   1
 -- Saltillo	        |   1
 -- Baishan	        |   1
+-- ...
 
 
 -- (5) Mit wem ist ‘Hans Johansson’ befreundet?
@@ -68,7 +73,7 @@ WHERE pkp_symmetric.person1id = (
                                 FROM person P1
                                 WHERE (P1.firstName = 'Hans') AND (P1.lastName = 'Johansson')
                                 );
--- Ergebnis: 9
+-- Ergebnis: 9 Zeilen
 -- 12094627905563 | Wojciech         | Ciesla
 -- 12094627905628 | Abdoulaye Khouma | Dia
 --  5497558138940 | Paul             | Becker
@@ -82,7 +87,7 @@ WHERE pkp_symmetric.person1id = (
 
 -- (6) Wer sind die echten Freundesfreunde von Hans Johansson?
 -- Echte Freundesfreunde dürfen nicht gleichzeitig direkte Freunde von Hans Johansson sein.
--- Sortieren Sie die Ausgabe alphabetisch nach dem Nachnamen
+-- Sortieren Sie die Ausgabe alphabetisch nach dem Nachnamen.
 
 -- erst alle Freunde und deren Freunde von Hans Johansson und dann alle direkten (siehe 5) abziehen
 SELECT P3.lastname, P3.firstname FROM person P3 JOIN(
@@ -109,6 +114,14 @@ EXCEPT(
                                   )
 )) AS trueFriendFriends ON P3.id = trueFriendFriends.fid1
 ORDER BY P3.lastname;
+
+-- Ergebnnis: 26 Zeilen
+-- Abouba	Ali
+-- Bazayev	Oleg
+-- Bernal	Pablo
+-- Chen	Amy
+-- Diaz	Roberto
+-- ...
 
 
 -- (7) Welche Nutzer sind Mitglied in allen Foren, in denen auch ‘Mehmet Koksal’ Mitglied ist (Angabe Name)?
@@ -143,7 +156,6 @@ ORDER BY P3.lastname;
 
 
 -- now we wanna do the division:
-
 
 SELECT p4.id, p4.firstName, p4.lastName
 FROM person p4
@@ -180,24 +192,25 @@ WHERE NOT EXISTS
 -- 2199023255611 | Chen      | Yang
 -- 6597069766688 | Miguel    | Gonzalez
 
-
 -- Wir sortieren also aus dem Kreuzprodukt alle Paare von (Person, Forum) die im Datensatz sind. Leute die in allen Foren von Mehmet Mitglieder sind, werden hierdurch aussortiert. Also sind diejenigen, die wir noch haben,
 -- nicht Teil des Ergebnisses. Seien diese Leute nun Menge C. Dann ziehen wir einfach von allen Personen diese Menge ab und erhalten diejenigen, die in Mehmets Foren Mitglied sind!
 
+
 -- (8) Geben Sie die prozentuale Verteilung der Nutzer bzgl. ihrer Herkunft aus verschiedenen Kontinenten an!
--- WITH wideTable AS (SELECT COUNT(person.id) AS allPersons FROM person)
 SELECT Continent.id, Continent.name, (COUNT(P2.id)/ (SELECT COUNT(P1.id) FROM Person P1)::float)*100 AS percentage
 FROM Continent JOIN Country ON Continent.id = Country.continent_id
      JOIN City ON Country.id = City.country_id JOIN Person P2 ON City.id = P2.city_id
 GROUP BY Continent.id, Continent.name
 ORDER BY percentage DESC
 
+-- Ergebnis: 5 Zeilen
 -- id 	name 	percentage
 -- 1460 Asia	50
 -- 1462	Europe 25
 -- 1461 Africa	11.363636363636363
 -- 1464 North_America	9.090909090909092
 -- 1463 South_America	4.545454545454546
+
 
 -- (9) Zu welchen Themen (‘tag classes’) gibt es die meisten Posts? Geben Sie die Namen der Top 10 ‘tag classes’ mit ihrer Häufigkeit aus!
 SELECT tagclass.name, tagclass.id, temp.anzahl
@@ -210,7 +223,7 @@ FROM (
      ) AS temp JOIN tagclass ON temp.tagclass_id = tagclass.id
 ORDER BY temp.anzahl DESC;
 
--- Ergebnis: 10
+-- Ergebnis: 10 Zeilen
 -- Person         | 211 |    110
 -- MusicalArtist  | 115 |     99
 -- OfficeHolder   | 349 |     76
@@ -222,8 +235,8 @@ ORDER BY temp.anzahl DESC;
 -- Philosopher    |  82 |     28
 -- Album          | 182 |     27
 
--- (10) Welche Personen haben noch nie ein “Like” für einen Kommentar oder Post bekommen? Sortieren Sie die Ausgabe alphabetisch nach dem Nachnamen.
 
+-- (10) Welche Personen haben noch nie ein “Like” für einen Kommentar oder Post bekommen? Sortieren Sie die Ausgabe alphabetisch nach dem Nachnamen.
 SELECT P2.lastname, P2.firstname, P2.id
 FROM  ( (SELECT P1.id
         FROM Person P1
@@ -237,7 +250,7 @@ FROM  ( (SELECT P1.id
       )) AS inglorious JOIN Person P2 ON inglorious.id = P2.id
 ORDER BY P2.lastname
 
---
+
 -- (11) Welche Foren enthalten mehr Posts als die durchschnittliche Anzahl von Posts in Foren (Ausgabe alphabetisch sortiert nach Forumtitel)?
 -- zuerst die durchschnittliche Anzahl von Posts in Foren
 SELECT AVG(ForumCounts.anzahl)
@@ -283,8 +296,7 @@ WHERE ForumswithCounts.anzahl > (
 -- Album 1 of Adrian Bravo                  |     11
 -- Album 1 of Alejandro Rodriguez           |     18
 -- Album 1 of Aleksandr Dobrunov            |     19
-
-
+-- ...
 
 -- (12) Welche Personen sind mit der Person befreundet, die die meisten Likes auf einen Post bekommen hat? Sortieren Sie die Ausgabe alphabetisch nach dem Nachnamen.
 -- zuerst die Person holen welche die meisten Likes bekommen hat
@@ -302,8 +314,6 @@ WHERE tempo.anzahl = (
                              GROUP BY p1.author_id
                              ) AS temp
                      );
-
-
 
 -- dann zugehörige Freunde finden
 SELECT person.lastName, person.firstName, friends.person1id
@@ -340,12 +350,13 @@ ORDER BY person.lastName;
 -- Oliveira | Celso     | 2199023255611
 -- Zhang    | Zhi       | 2199023255611
 
--- 13 Welche Personen sind direkt oder indirekt mit ‘Jun Hu’ (id 94) verbunden (befreundet)? Geben Sie für jede Person die Distanz zu Jun an.
-SELECT p3.id, p3.firstname, p3.lastname, fidsAndDistances.distance FROM 
-        (WITH tempo AS 
+
+-- (13) Welche Personen sind direkt oder indirekt mit ‘Jun Hu’ (id 94) verbunden (befreundet)? Geben Sie für jede Person die Distanz zu Jun an.
+SELECT p3.id, p3.firstname, p3.lastname, fidsAndDistances.distance FROM
+        (WITH tempo AS
                 (SELECT DISTINCT(friendFriends.fid1), friendFriends.distance FROM
                         (WITH RECURSIVE allFriends AS (
-                        SELECT P2.id AS fid1, 1 distance 
+                        SELECT P2.id AS fid1, 1 distance
                         FROM (person p2 LEFT JOIN pkp_symmetric ON p2.id = pkp_symmetric.freund1id)
                         WHERE pkp_symmetric.person1id = (
                                                         SELECT id
@@ -357,24 +368,31 @@ SELECT p3.id, p3.firstname, p3.lastname, fidsAndDistances.distance FROM
                         )
                         SELECT * FROM allFriends) AS friendFriends
                 ORDER BY 1)
-        SELECT * 
-                FROM tempo t1 
-                WHERE distance = 
-                        (SELECT MIN(distance) 
+        SELECT *
+                FROM tempo t1
+                WHERE distance =
+                        (SELECT MIN(distance)
                         FROM tempo t2
-                        WHERE t1.fid1 = t2.fid1)) 
+                        WHERE t1.fid1 = t2.fid1))
         AS fidsAndDistances JOIN Person p3 ON fidsAndDistances.fid1 = p3.id
 ORDER BY 4;
 
+--Ergebnis: 37 Zeilen
+-- id 	         firstname 	lastname 	distance
+-- 2199023255625 Cheng      Chen	    1
+-- 96            Anson	    Chen      1
+-- 8796093022217 Alim	      Guliyev   1
+-- 8796093022251 Chen	      Li	      1
+-- 10995116277851Chong	    Liu       1
+-- ...
 
--- 14 Erweitern Sie die Anfrage zu Aufgabe 13 indem Sie zusätzlich zur Distanz den Pfad zwischen den Nutzern ausgeben.
 
-
-SELECT p3.id, p3.firstname, p3.lastname, fidsAndDistances.distance, fidsAndDistances.friendPath FROM 
+-- (14) Erweitern Sie die Anfrage zu Aufgabe 13 indem Sie zusätzlich zur Distanz den Pfad zwischen den Nutzern ausgeben.
+SELECT p3.id, p3.firstname, p3.lastname, fidsAndDistances.distance, fidsAndDistances.friendPath FROM
         (WITH tempo AS
                 (SELECT DISTINCT(friendFriends.fid1), friendFriends.distance, friendFriends.friendPath FROM
                         (WITH RECURSIVE allFriends AS (
-                        SELECT P2.id AS fid1, 1 distance, 'Jun Hu -> ' || p2.firstName || ' ' || p2.lastName  friendPath 
+                        SELECT P2.id AS fid1, 1 distance, 'Jun Hu -> ' || p2.firstName || ' ' || p2.lastName  friendPath
                         FROM (person p2 LEFT JOIN pkp_symmetric ON p2.id = pkp_symmetric.freund1id)
                         WHERE pkp_symmetric.person1id = (
                                                         SELECT id
@@ -383,31 +401,34 @@ SELECT p3.id, p3.firstname, p3.lastname, fidsAndDistances.distance, fidsAndDista
                                                         )
                         UNION ALL
 
-                        SELECT pkp_symmetric.freund1id, distance + 1, 
+                        SELECT pkp_symmetric.freund1id, distance + 1,
                         (
-                                friendPath || 
+                                friendPath ||
                                   ' -> ' ||
                                 (SELECT firstName FROM Person p4 WHERE p4.id = pkp_symmetric.freund1id) ||
                                  ' ' ||
-                                (SELECT lastName FROM Person p4 WHERE p4.id = pkp_symmetric.freund1id) 
-                                
-                        
+                                (SELECT lastName FROM Person p4 WHERE p4.id = pkp_symmetric.freund1id)
+
+
                         ) FROM allFriends JOIN pkp_symmetric ON allFriends.fid1=pkp_symmetric.person1id
                         )
                         SELECT * FROM allFriends) AS friendFriends
                 ORDER BY 1)
-        SELECT * 
-                FROM tempo t1 
-                WHERE distance = 
-                        (SELECT MIN(distance) 
+        SELECT *
+                FROM tempo t1
+                WHERE distance =
+                        (SELECT MIN(distance)
                         FROM tempo t2
                         WHERE t1.fid1 = t2.fid1))
          AS fidsAndDistances JOIN Person p3 ON fidsAndDistances.fid1 = p3.id
          ORDER BY 4;
 
 
--- 53 Datensätze da manche Freunde über mehrere Wege erreichbar sind! #cool
-
-
-
-
+-- Ergebnis: 53 Zeilen (da manche Freunde über mehrere Wege erreichbar sind!)
+-- id 	         firstname 	lastname 	distance 	friendpath
+-- 3298534883365 Wei	      Wei	      1         Jun Hu -> Wei Wei
+-- 2199023255625 Cheng	    Chen	    1         Jun Hu -> Cheng Chen
+-- 96            Anson	    Chen      1        	Jun Hu -> Anson Chen
+-- 8796093022217 Alim	      Guliyev   1         Jun Hu -> Alim Guliyev
+-- 8796093022251 Chen	      Li	      1        	Jun Hu -> Chen Li
+-- ...
