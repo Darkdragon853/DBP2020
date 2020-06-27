@@ -1,4 +1,4 @@
--- Funktion valid_email, checkt ein Varchar auf Validität der Email-Adresse
+﻿-- Funktion valid_email, checkt ein Varchar auf Validität der Email-Adresse
 CREATE FUNCTION valid_email(b boolean, v VARCHAR) 
     RETURNS boolean
     AS $$ 
@@ -63,14 +63,11 @@ create table person(
     lastName VARCHAR(100) NOT NULL,
     gender VARCHAR(7) NOT NULL,
     birthday Date NOT NULL,
-    email VARCHAR[], -- ArrayType bc [1..*]
-    speaks VARCHAR[] NOT NULL, -- ArrayType bc [1..*]
     browserUsed VARCHAR(50) NOT NULL,
     locationIP VARCHAR(40) NOT NULL,
     city_id BIGINT NOT NULL REFERENCES city(id) ON DELETE CASCADE ON UPDATE CASCADE,
 
-    CONSTRAINT birthday_not_in_future CHECK (birthday <= NOW()::DATE),
-    CONSTRAINT vaild_email CHECK (TRUE =%= ALL(email))
+    CONSTRAINT birthday_not_in_future CHECK (birthday <= NOW()::DATE)
 );
 
 
@@ -233,4 +230,22 @@ create table person_hasInterest_Tag(
     person_id BIGINT NOT NULL REFERENCES person(id) ON DELETE CASCADE ON UPDATE CASCADE,
     tag_id BIGINT NOT NULL REFERENCES tag(id) ON DELETE CASCADE ON UPDATE CASCADE,
     PRIMARY KEY (person_id, tag_id)
+);
+
+-- ArrayType bc [1..*]
+-- Tabelle Person_has_Email
+create table person_has_Email(
+    person_id BIGINT NOT NULL REFERENCES person(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    email VARCHAR(200) NOT NULL,
+    PRIMARY KEY (person_id, email),
+
+    CONSTRAINT vaild_email CHECK (TRUE =%= email)
+);
+
+-- ArrayType bc [1..*]
+-- Tabelle Person_speaks_language
+create table person_speaks_language(
+    person_id BIGINT NOT NULL REFERENCES person(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    language VARCHAR(10) NOT NULL,
+    PRIMARY KEY(person_id, language)
 );

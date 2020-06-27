@@ -11,7 +11,7 @@ public class Tag {
     @Column(name = "id")
     private int id;
 
-    @Column(name = "name")
+    @Column(name = "name", nullable = false, length = 150)
     private String name;
 
     @Column(name = "url")

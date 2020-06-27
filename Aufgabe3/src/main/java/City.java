@@ -11,7 +11,7 @@ public class City {
     @Column(name = "id")
     private int id;
 
-    @Column(name = "name")
+    @Column(name = "name", nullable = false, length = 100)
     private String name;
 
     // ForeignKey

@@ -11,34 +11,34 @@ public class Person {
     @Column(name = "id")
     private int id;
 
-    // Passt das so?
-    @Column(name = "creationDate")
+    @Column(name = "creationDate", nullable = false)
     private Timestamp creationDate;
 
-    @Column(name = "firstName")
+    @Column(name = "firstName", nullable = false, length = 50)
     private String firstName;
 
-    @Column(name = "lastName")
+    @Column(name = "lastName", nullable = false, length = 100)
     private String lastName;
 
-    @Column(name = "gender")
+    @Column(name = "gender", nullable = false, length = 7)
     private String gender;
 
-    // passt das so?
-    @Column(name = "birthday")
+    @Column(name = "birthday", nullable = false)
     private Date birthday;
 
     // passt das so?
-    @Column(name = "email")
+    @OneToMany
+    @JoinTable(name = "person_has_email")
     private String[] emails;
 
-    @Column(name = "speaks")
+    @OneToMany
+    @JoinTable(name = "person_speaks_language")
     private String[] speaks;
 
-    @Column(name = "browserUsed")
+    @Column(name = "browserUsed", nullable = false, length = 50)
     private String browserUsed;
 
-    @Column(name = "locationIP")
+    @Column(name = "locationIP", nullable = false, length = 40)
     private String locationIP;
 
     // ForeignKey
