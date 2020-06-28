@@ -1,56 +1,75 @@
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "country")
-public class Country {
-    @Id
-    @Column(name = "id")
-    private int id;
-
-    @Column(name = "name", nullable = false, length = 100)
-    private String name;
-
-    // ForeignKey
-    @Column(name = "continent_id")
-    private int continent_id;
+public class Country extends Place {
 
     @Column(name = "url")
     private String url;
 
+    @ManyToOne
+    private Continent continent;
+
+    @OneToMany(mappedBy = "country")
+    private List<City> cities;
+
+    @OneToMany(mappedBy = "country")
+    private List<Company> companies;
+
+    @OneToMany(mappedBy = "country")
+    private List<Post> posts;
+
+    @OneToMany(mappedBy = "country")
+    private List<Comment> comments;
+
+
     // Getter und Setters
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public int getContinent_id() {
-        return continent_id;
-    }
-
-    public void setContinent_id(int continent_id) {
-        this.continent_id = continent_id;
-    }
-
     public String getUrl() {
         return url;
     }
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public Continent getContinent() {
+        return continent;
+    }
+
+    public void setContinent(Continent continent) {
+        this.continent = continent;
+    }
+
+    public List<City> getCities() {
+        return cities;
+    }
+
+    public void setCities(List<City> cities) {
+        this.cities = cities;
+    }
+
+    public List<Company> getCompanies() {
+        return companies;
+    }
+
+    public void setCompanies(List<Company> companies) {
+        this.companies = companies;
+    }
+
+    public List<Post> getPosts() {
+        return posts;
+    }
+
+    public void setPosts(List<Post> posts) {
+        this.posts = posts;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
     }
 }

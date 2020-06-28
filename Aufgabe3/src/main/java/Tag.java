@@ -1,15 +1,15 @@
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "tag")
 public class Tag {
 
     @Id
-    @Column(name = "id")
-    private int id;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "tagid_generator")
+    @SequenceGenerator(name = "tagid_generator", sequenceName = "tagid_seq", allocationSize = 10)
+    @Column(name = "id", updatable = false, nullable = false)
+    private Long id;
 
     @Column(name = "name", nullable = false, length = 150)
     private String name;
@@ -17,13 +17,33 @@ public class Tag {
     @Column(name = "url")
     private String url;
 
+    @ManyToMany(mappedBy = "tags")
+    private List<Forum> forums;
+
+    @ManyToMany
+    @JoinTable(
+            name = "Tag_hasType_TagClass",
+            joinColumns = { @JoinColumn(name = "tag_id")},
+            inverseJoinColumns = { @JoinColumn(name = "tagclass_id")}
+            )
+    private List<TagClass> tagclasses;
+
+    @ManyToMany(mappedBy = "tags")
+    private List<Post> posts;
+
+    @ManyToMany(mappedBy = "tags")
+    private List<Comment> comments;
+
+    @ManyToMany(mappedBy = "interestedTags")
+    private List<Person> interestedPersons;
+
 
     // Getter and Setters
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -41,5 +61,45 @@ public class Tag {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public List<Forum> getForums() {
+        return forums;
+    }
+
+    public void setForums(List<Forum> forums) {
+        this.forums = forums;
+    }
+
+    public List<TagClass> getTagclasses() {
+        return tagclasses;
+    }
+
+    public void setTagclasses(List<TagClass> tagclasses) {
+        this.tagclasses = tagclasses;
+    }
+
+    public List<Post> getPosts() {
+        return posts;
+    }
+
+    public void setPosts(List<Post> posts) {
+        this.posts = posts;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
+    }
+
+    public List<Person> getInterestedPersons() {
+        return interestedPersons;
+    }
+
+    public void setInterestedPersons(List<Person> interestedPersons) {
+        this.interestedPersons = interestedPersons;
     }
 }
