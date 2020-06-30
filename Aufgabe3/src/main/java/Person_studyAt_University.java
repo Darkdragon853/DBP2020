@@ -16,7 +16,7 @@ public class Person_studyAt_University {
     @JoinColumn(name = "university_id")
     private University university;
 
-    @Column(name = "classYear")
+    @Column(name = "classYear", nullable = false)
     private int classYear;
 
 

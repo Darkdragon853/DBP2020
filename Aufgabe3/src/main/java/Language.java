@@ -1,7 +1,8 @@
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
-public class Speak {
+public class Language {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "speakid_generator")
     @SequenceGenerator(name = "speakid_generator", sequenceName = "speakid_seq", allocationSize = 10)
@@ -11,8 +12,8 @@ public class Speak {
     @Column(name = "language")
     private String language;
 
-    @ManyToOne
-    private Person speaker;
+    @ManyToMany(mappedBy = "languages")
+    private List<Person> speakers;
 
 
     // Getters and Setters
@@ -33,11 +34,11 @@ public class Speak {
         this.language = language;
     }
 
-    public Person getSpeaker() {
-        return speaker;
+    public List<Person> getSpeakers() {
+        return speakers;
     }
 
-    public void setSpeaker(Person speaker) {
-        this.speaker = speaker;
+    public void setSpeakers(List<Person> speakers) {
+        this.speakers = speakers;
     }
 }

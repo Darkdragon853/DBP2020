@@ -1,5 +1,6 @@
 import javax.persistence.*;
 import java.sql.Date;
+import java.sql.Timestamp;
 
 @Entity
 public class Person_likes_Post  {
@@ -18,7 +19,7 @@ public class Person_likes_Post  {
     private Post post;
 
     @Column(name = "creationDate")
-    private Date creationDate;
+    private Timestamp creationDate;
 
 
     // Getter and Setters
@@ -46,11 +47,11 @@ public class Person_likes_Post  {
         this.post = post;
     }
 
-    public Date getCreationDate() {
+    public Timestamp getCreationDate() {
         return creationDate;
     }
 
-    public void setCreationDate(Date creationDate) {
+    public void setCreationDate(Timestamp creationDate) {
         this.creationDate = creationDate;
     }
 }

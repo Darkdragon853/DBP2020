@@ -16,7 +16,7 @@ public class Person_workAt_Company {
     @JoinColumn(name = "company_id")
     private Company company;
 
-    @Column(name = "workFrom")
+    @Column(name = "workFrom", nullable = false)
     private int workFrom;
 
 

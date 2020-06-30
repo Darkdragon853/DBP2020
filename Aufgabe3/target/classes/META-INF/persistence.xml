@@ -7,7 +7,7 @@
 
         <properties>
             <property name="hibernate.connection.driver_class" value="org.postgresql.Driver"/>
-            <property name="hibernate.connection.url" value="jdbc:postgresql:network"/>
+            <property name="hibernate.connection.url" value="jdbc:postgresql:social_network_v2"/>
             <property name="hibernate.connection.autocommit" value="false"/>
             <property name="hibernate.connection.username" value="postgres"/>
             <property name="hibernate.connection.password" value="Latarius853"/>

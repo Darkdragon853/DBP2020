@@ -142,11 +142,20 @@ public class Person {
     )
     private List<Tag> interestedTags;
 
+
+
+
+
     @OneToMany(mappedBy = "owner")
     private List<Email> emails;
 
-    @OneToMany(mappedBy = "language")
-    private List<Speak> speaks;
+    @ManyToMany
+    @JoinTable(
+            name = "Person_speaks_Language",
+            joinColumns = { @JoinColumn(name = "person_id")},
+            inverseJoinColumns = { @JoinColumn(name = "language_id")}
+    )
+    private List<Language> languages;
 
 
 
@@ -289,12 +298,12 @@ public class Person {
         this.emails = emails;
     }
 
-    public List<Speak> getSpeaks() {
-        return speaks;
+    public List<Language> getLanguages() {
+        return languages;
     }
 
-    public void setSpeaks(List<Speak> speaks) {
-        this.speaks = speaks;
+    public void setLanguages(List<Language> languages) {
+        this.languages = languages;
     }
 
     public List<Forum_hasMember_Person> getRelatedForums() {

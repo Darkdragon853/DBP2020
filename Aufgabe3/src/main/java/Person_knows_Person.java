@@ -17,7 +17,7 @@ public class Person_knows_Person {
     @JoinColumn(name = "person_2_id")
     private Person person2;
 
-    @Column(name = "creationDate")
+    @Column(name = "creationDate", nullable = false)
     private Date creationDate;
 
 

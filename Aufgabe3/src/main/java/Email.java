@@ -8,7 +8,7 @@ public class Email {
     @Column(name = "id", updatable = false, nullable = false)
     private Long id;
 
-    @Column(name = "email")
+    @Column(name = "email", nullable = false, length = 200)
     private String email;
 
     @ManyToOne

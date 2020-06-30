@@ -4,7 +4,7 @@ import java.util.List;
 @Entity
 public class Company extends Organisation {
 
-    @Column(name = "url")
+    @Column(name = "url", nullable = false)
     private String url;
 
     @ManyToOne

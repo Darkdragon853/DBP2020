@@ -17,7 +17,7 @@ public class Forum_hasMember_Person {
     @JoinColumn(name = "person_id")
     private Person member;
 
-    @Column(name = "joinDate")
+    @Column(name = "joinDate", nullable = false)
     private Date joinDate;
 
 
