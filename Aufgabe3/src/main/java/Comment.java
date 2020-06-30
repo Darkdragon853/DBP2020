@@ -7,8 +7,7 @@ import java.util.List;
 public class Comment {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "commentid_generator")
-    @SequenceGenerator(name = "commentid_generator", sequenceName = "commentid_seq", allocationSize = 10)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", updatable = false, nullable = false)
     private Long id;
 
@@ -34,10 +33,10 @@ public class Comment {
     private Country country;
 
     @OneToOne
-    private Post repliedPost;
+    private Post reply_to_post;
 
     @OneToOne
-    private Comment repliedComment;
+    private Comment reply_to_comment;
 
     @ManyToMany
     @JoinTable(
@@ -127,20 +126,20 @@ public class Comment {
         this.country = country;
     }
 
-    public Post getRepliedPost() {
-        return repliedPost;
+    public Post getReply_to_post() {
+        return reply_to_post;
     }
 
-    public void setRepliedPost(Post repliedPost) {
-        this.repliedPost = repliedPost;
+    public void setReply_to_post(Post reply_to_post) {
+        this.reply_to_post = reply_to_post;
     }
 
-    public Comment getRepliedComment() {
-        return repliedComment;
+    public Comment getReply_to_comment() {
+        return reply_to_comment;
     }
 
-    public void setRepliedComment(Comment repliedComment) {
-        this.repliedComment = repliedComment;
+    public void setReply_to_comment(Comment reply_to_comment) {
+        this.reply_to_comment = reply_to_comment;
     }
 
     public List<Tag> getTags() {

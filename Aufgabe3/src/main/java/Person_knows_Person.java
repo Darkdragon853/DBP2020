@@ -4,8 +4,7 @@ import java.sql.Date;
 @Entity
 public class Person_knows_Person {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "personKnowsPersonid_generator")
-    @SequenceGenerator(name = "personKnowsPersonid_generator", sequenceName = "personKnowsPersonid_seq", allocationSize = 10)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", updatable = false, nullable = false)
     private Long id;
 

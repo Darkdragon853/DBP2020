@@ -3,8 +3,7 @@ import javax.persistence.*;
 @Entity
 public class Email {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "emailid_generator")
-    @SequenceGenerator(name = "emailid_generator", sequenceName = "emailid_seq", allocationSize = 10)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", updatable = false, nullable = false)
     private Long id;
 

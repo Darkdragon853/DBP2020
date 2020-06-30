@@ -5,8 +5,7 @@ import java.sql.Timestamp;
 @Entity
 public class Person_likes_Comment  {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "personLikesCommentid_generator")
-    @SequenceGenerator(name = "personLikesCommentid_generator", sequenceName = "personLikesCommentid_seq", allocationSize = 10)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", updatable = false, nullable = false)
     private Long id;
 

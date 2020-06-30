@@ -6,8 +6,7 @@ import java.util.List;
 public class Tag {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "tagid_generator")
-    @SequenceGenerator(name = "tagid_generator", sequenceName = "tagid_seq", allocationSize = 10)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", updatable = false, nullable = false)
     private Long id;
 

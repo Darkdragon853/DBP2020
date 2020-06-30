@@ -9,8 +9,8 @@ import java.sql.Statement;
 public class RelationReader {
     DBConnection con = new DBConnection();
 
-    void readPersonStudyAtOrganisation() {
-
+    void readPersonStudyAtUniversity() {
+        // Hier musste ich künstliche ids verwenden
         int failures = 0;
         File file = new File("./../Ressources/social_network/person_studyAt_organisation_0_0.csv");
         BufferedReader br = null;
@@ -33,7 +33,7 @@ public class RelationReader {
                 // Obviously we have to Split the Lines by '|'
                 String[] items = currentLine.split("\\|");
 
-                insertStatement = "INSERT INTO person_studyAt_university(person_id, university_id, classYear) VALUES (" + items[0] + ", " + items[1] +", " + items[2] + ");";
+                insertStatement = "INSERT INTO person_studyAt_university(person_id, university_id, classYear)  VALUES (" + items[0] + ", " + items[1] +", " + items[2] + ");";
 
                 //System.out.println(currentLine); // -- Debug
 
@@ -53,7 +53,6 @@ public class RelationReader {
         Utils.showProgress();
     }
     void readPersonWorkAtOrganisation() {
-
         int failures = 0;
         File file = new File("./../Ressources/social_network/person_workAt_organisation_0_0.csv");
         BufferedReader br = null;
@@ -75,7 +74,6 @@ public class RelationReader {
                 // Hier die momentane Eingabezeile verarbeiten
                 // Obviously we have to Split the Lines by '|'
                 String[] items = currentLine.split("\\|");
-
                 insertStatement = "INSERT INTO person_workAt_company(person_id, company_id, workFrom) VALUES (" + items[0] + ", " + items[1] +", " + items[2] + ");";
 
                 // System.out.println(currentLine); // -- Debug
@@ -204,14 +202,30 @@ public class RelationReader {
                     continue;
                 }
 
+
                 // Hier die momentane Eingabezeile verarbeiten
                 // Obviously we have to Split the Lines by '|'
 
                 String[] items = currentLine.split("\\|");
                 String knownSpeaks = "";
+                // an Stelle 1 steht die jeweilige Sprache. Wir brauchen die ID davon.
 
+                Long currentID = null;
+                try {
+                    String selectStatement = "SELECT id FROM language WHERE language = \'" + items[1] + "\';";
+                    Statement checkCurrent = con.database.createStatement();
+                    ResultSet currentLang = checkCurrent.executeQuery(selectStatement);
 
-                insertStatement = "INSERT INTO person_speaks_language(person_id, language) VALUES ("+ items[0] + ", \'" + items[1] + "\');";
+                    while(currentLang.next()) {
+                       // System.out.println("\n Debug; \n");
+                         currentID = currentLang.getLong(1);
+                    }
+
+                } catch (Throwable t) {
+                    t.printStackTrace();
+                }
+
+                insertStatement = "INSERT INTO person_speaks_language(person_id, language_id) VALUES ("+ items[0] + ", " + currentID+ ");";
                 Statement statement = null;
                 try {
                     statement = con.database.createStatement();
@@ -387,9 +401,33 @@ public class RelationReader {
                     iteration++;
                     continue;
                 }
+
                 // Hier die momentane Eingabezeile verarbeiten
                 // Obviously we have to Split the Lines by '|'
                 String[] items = currentLine.split("\\|");
+
+                Long currentID = null;
+                try {
+                    String selectStatement = "SELECT id FROM email WHERE value = \'" + items[1] + "\';";
+                    Statement checkCurrent = con.database.createStatement();
+                    ResultSet currentLang = checkCurrent.executeQuery(selectStatement);
+
+                    while(currentLang.next()) {
+                        // System.out.println("\n Debug; \n");
+                        currentID = currentLang.getLong(1);
+                    }
+
+                } catch (Throwable t) {
+                    t.printStackTrace();
+                }
+
+
+
+
+
+
+
+
 
                 insertStatement = "INSERT INTO person_has_email(person_id, email) VALUES ( "+ items[0] + ", \'" + items[1] + "\');";
                 // System.out.println(insertStatement);

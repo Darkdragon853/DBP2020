@@ -3,8 +3,7 @@ import javax.persistence.*;
 @Entity
 public class Person_workAt_Company {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "personWorksAtCompanyid_generator")
-    @SequenceGenerator(name = "personWorksAtCompanyid_generator", sequenceName = "personWorksAtCompanyid_seq", allocationSize = 10)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", updatable = false, nullable = false)
     private Long id;
 

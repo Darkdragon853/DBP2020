@@ -9,8 +9,7 @@ import java.util.List;
 public class Person {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "personid_generator")
-    @SequenceGenerator(name = "personid_generator", sequenceName = "personid_seq", allocationSize = 10)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", updatable = false, nullable = false)
     private Long id;
 

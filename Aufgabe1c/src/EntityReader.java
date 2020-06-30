@@ -349,7 +349,7 @@ public class EntityReader {
 
                 String clearTitle = Utils.getNormalizedString(items[1]);
 
-                insertStatement = "INSERT INTO forum(id, title, creationDate, moderator) VALUES (" + items[0] + ", \'" + clearTitle + "\', \'" + timestamp + "\', " + items[3] + ");";
+                insertStatement = "INSERT INTO forum(id, title, creationDate, moderator_id) VALUES (" + items[0] + ", \'" + clearTitle + "\', \'" + timestamp + "\', " + items[3] + ");";
 
                 // System.out.println(currentLine); // -- Debug
 
@@ -498,6 +498,104 @@ public class EntityReader {
         // System.out.println("readComment() mit " + (failures) + " Fehlern abgeschlossen.");
         Utils.showProgress();
     }
+    void readEmail() {
+        // TODO: Do it, only copypasted!
+        int failures = 0;
+        File file = new File("./../Ressources/social_network/person_email_emailaddress_0_0.csv");
+        BufferedReader br = null;
+        try {
+            br = new BufferedReader(new FileReader(file));
+        } catch (FileNotFoundException fnfe) {
+            System.out.println("Datei nicht gefunden!\n" + fnfe.getMessage());
+        }
+
+        String currentLine;
+        String insertStatement = ("");
+        int iteration = 0;
+        try {
+            while ((currentLine = br.readLine()) != null) {
+                if (iteration == 0) {
+                    iteration++;
+                    continue;
+                }
+                // Hier die momentane Eingabezeile verarbeiten
+                // Obviously we have to Split the Lines by '|'
+                String[] items = currentLine.split("\\|");
+
+                insertStatement = "INSERT INTO email(value, owner_id) VALUES (\'" + items[1] + "\', " + items[0] + ");";
+                //System.out.println(currentLine);
+                //System.out.println(insertStatement);
+                Statement statement = null;
+                int result = -1;
+                try {
+                    statement = con.database.createStatement();
+                    result = statement.executeUpdate(insertStatement);
+                } catch (SQLException sqle) {
+                    System.out.println("Fehler beim Statement erzeugen oder Befehl ausführen: " + sqle.getMessage());
+                    failures++;
+                }
+                // System.out.println("Antwort auf SQL Befehl: " + result);
+            }
+        } catch (IOException ioex) {
+            System.out.println("I/O Error aufgetreten!\n" + ioex.getMessage());
+        }
+        // System.out.println("readComment() mit " + (failures) + " Fehlern abgeschlossen.");
+        Utils.showProgress();
+    }
+    void readLanguages() {
+
+        int failures = 0;
+        File file = new File("./../Ressources/social_network/person_speaks_language_0_0.csv");
+        BufferedReader br = null;
+        try {
+            br = new BufferedReader(new FileReader(file));
+        } catch (FileNotFoundException fnfe) {
+            System.out.println("Datei nicht gefunden!\n" + fnfe.getMessage());
+        }
+
+        String currentLine;
+        String insertStatement = ("");
+        int iteration = 0;
+        try {
+            while ((currentLine = br.readLine()) != null) {
+                if (iteration == 0) {
+                    iteration++;
+                    continue;
+                }
+                // Hier die momentane Eingabezeile verarbeiten
+                // Obviously we have to Split the Lines by '|'
+                String[] items = currentLine.split("\\|");
+
+                insertStatement = "INSERT INTO language(language) VALUES ( \'" + items[1] + "\');";
+
+                //System.out.println(currentLine);
+                //System.out.println(insertStatement);
+                Statement statement = null;
+                int result = -1;
+                try {
+                    statement = con.database.createStatement();
+                    result = statement.executeUpdate(insertStatement);
+                } catch (SQLException sqle) {
+                    // System.out.println("Fehler beim Statement erzeugen oder Befehl ausführen: " + sqle.getMessage());
+                    failures++;
+                }
+                // System.out.println("Antwort auf SQL Befehl: " + result);
+            }
+        } catch (IOException ioex) {
+            System.out.println("I/O Error aufgetreten!\n" + ioex.getMessage());
+        }
+        // System.out.println("readComment() mit " + (failures) + " Fehlern abgeschlossen.");
+        Utils.showProgress();
+    }
+
+
+
+
+
+
+
+
+
     void cleanPerson() {
         // TODO: NOCH TESTEN
             String deleteStatement = "DELETE FROM person WHERE (email = \'{filler@gmx.de}\' OR speaks = \'{filler}\') ;";

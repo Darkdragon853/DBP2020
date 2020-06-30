@@ -7,8 +7,7 @@ import java.util.List;
  public class TagClass {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "tagclassid_generator")
-    @SequenceGenerator(name = "tagclassid_generator", sequenceName = "tagclassid_seq", allocationSize = 10)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", updatable = false, nullable = false)
     private Long id;
 

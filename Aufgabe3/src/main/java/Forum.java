@@ -7,8 +7,7 @@ import java.util.List;
 public class Forum {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "forumid_generator")
-    @SequenceGenerator(name = "forumid_generator", sequenceName = "forumid_seq", allocationSize = 10)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", updatable = false, nullable = false)
     private Long id;
 

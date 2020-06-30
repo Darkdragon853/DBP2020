@@ -5,8 +5,7 @@ import javax.persistence.*;
 public class Place {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "placeid_generator")
-    @SequenceGenerator(name = "placeid_generator", sequenceName = "placeid_seq", allocationSize = 10)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "id", updatable = false, nullable = false)
     private Long id;
 

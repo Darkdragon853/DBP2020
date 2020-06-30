@@ -1,9 +1,3 @@
-import javax.management.relation.Relation;
-import java.sql.Date;
-import java.sql.Timestamp;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-
 /**
  * Main Class, entry point of the input reader function tool to build the database and fill it with given data
  */
@@ -14,10 +8,9 @@ public class Main {
     // Use/test the data input reader functions
 
         // Ladebalken
-        System.out.println("Work: >>>>>>>>>>>>>>>>>>>>>>");
+        System.out.println("Work: >>>>>>>>>>>>>>>>>>>>>>>");
         System.out.print("Done: ");
 
-        // Start with the Entities -- 100% done
         EntityReader er = new EntityReader();
 
         er.readPlace();
@@ -29,15 +22,19 @@ public class Main {
         er.readPost();
         er.readComment();
 
+        // Neu
+        er.readEmail();
+        er.readLanguages();
+
         // Continue with the relations
 
         RelationReader rr = new RelationReader();
 
-        rr.readPersonStudyAtOrganisation();
+        rr.readPersonStudyAtUniversity();
         rr.readPersonWorkAtOrganisation();
         rr.readTagClassIsSubclassOfTagClass();
         rr.readTagHasTypeTagClass();
- //       rr.readPersonSpeaksLanguage();
+        rr.readPersonSpeaksLanguage();
         rr.readCommentHasTagTag();
         rr.readForumHasMemberPerson();
         rr.readForumHasTagTag();
@@ -46,8 +43,9 @@ public class Main {
         rr.readPersonLikesComment();
         rr.readPersonLikesPost();
         rr.readPostHasTagTag();
- //       rr.readPersonEmailEmailAddress(); // <- Verwirft 2 EInträge da dort doppel @ vorkommt.
 
         System.out.println("\nEinlesen der Daten abgeschlossen.");
+
+
     }
 }

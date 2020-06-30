@@ -255,7 +255,7 @@ create table email(
 -- Tabelle Speak
 create table language(
     id BIGSERIAL PRIMARY KEY,
-    language VARCHAR(2)
+    language VARCHAR(2) UNIQUE
 );
 
 

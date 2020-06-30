@@ -6,8 +6,7 @@ import java.util.List;
 @Table(name = "post")
 public class Post {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "postid_generator")
-    @SequenceGenerator(name = "postid_generator", sequenceName = "postid_seq", allocationSize = 10)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", updatable = false, nullable = false)
     private Long id;
 

@@ -4,12 +4,11 @@ import java.util.List;
 @Entity
 public class Language {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "speakid_generator")
-    @SequenceGenerator(name = "speakid_generator", sequenceName = "speakid_seq", allocationSize = 10)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", updatable = false, nullable = false)
     private Long id;
 
-    @Column(name = "language")
+    @Column(name = "language", unique = true)
     private String language;
 
     @ManyToMany(mappedBy = "languages")
