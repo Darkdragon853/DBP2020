@@ -300,20 +300,20 @@ WHERE ForumswithCounts.anzahl > (
 
 -- (12) Welche Personen sind mit der Person befreundet, die die meisten Likes auf einen Post bekommen hat? Sortieren Sie die Ausgabe alphabetisch nach dem Nachnamen.
 -- zuerst die Person holen welche die meisten Likes bekommen hat
-SELECT tempo.author_id
-FROM (
-        SELECT COUNT (p2.id) as anzahl, p2.author_id
-        FROM post p2 JOIN person_likes_post plp2 ON p2.id = plp2.post_id
-        GROUP BY p2.author_id
-        ) AS tempo
-WHERE tempo.anzahl = (
-                     SELECT MAX(temp.anzahl)
-                     FROM    (
-                             SELECT COUNT(p1.id) AS anzahl, p1.author_id
-                             FROM post p1 JOIN person_likes_post plp1 ON p1.id = plp1.post_id
-                             GROUP BY p1.author_id
-                             ) AS temp
-                     );
+-- SELECT tempo.author_id
+-- FROM (
+--         SELECT COUNT (p2.id) as anzahl, p2.author_id
+--         FROM post p2 JOIN person_likes_post plp2 ON p2.id = plp2.post_id
+--         GROUP BY p2.author_id
+--         ) AS tempo
+-- WHERE tempo.anzahl = (
+--                      SELECT MAX(temp.anzahl)
+--                      FROM    (
+--                              SELECT COUNT(p1.id) AS anzahl, p1.author_id
+--                              FROM post p1 JOIN person_likes_post plp1 ON p1.id = plp1.post_id
+--                              GROUP BY p1.author_id
+--                             ) AS temp
+--                     );
 
 -- dann zugehörige Freunde finden
 SELECT person.lastName, person.firstName, friends.person1id
@@ -388,10 +388,7 @@ ORDER BY 4;
 
 
 -- (14) Erweitern Sie die Anfrage zu Aufgabe 13 indem Sie zusätzlich zur Distanz den Pfad zwischen den Nutzern ausgeben.
-SELECT p3.id, p3.firstname, p3.lastname, fidsAndDistances.distance, fidsAndDistances.friendPath FROM
-        (WITH tempo AS
-                (SELECT DISTINCT(friendFriends.fid1), friendFriends.distance, friendFriends.friendPath FROM
-                        (WITH RECURSIVE allFriends AS (
+WITH RECURSIVE allFriends AS (
                         SELECT P2.id AS fid1, 1 distance, 'Jun Hu -> ' || p2.firstName || ' ' || p2.lastName  friendPath
                         FROM (person p2 LEFT JOIN pkp_symmetric ON p2.id = pkp_symmetric.freund1id)
                         WHERE pkp_symmetric.person1id = (
@@ -400,8 +397,7 @@ SELECT p3.id, p3.firstname, p3.lastname, fidsAndDistances.distance, fidsAndDista
                                                         WHERE (P1.firstName = 'Jun') AND (P1.lastName = 'Hu')
                                                         )
                         UNION ALL
-
-                        SELECT pkp_symmetric.freund1id, distance + 1,
+                        SELECT pkp_symmetric.freund1id, distance + 1,                         
                         (
                                 friendPath ||
                                   ' -> ' ||
@@ -411,24 +407,29 @@ SELECT p3.id, p3.firstname, p3.lastname, fidsAndDistances.distance, fidsAndDista
 
 
                         ) FROM allFriends JOIN pkp_symmetric ON allFriends.fid1=pkp_symmetric.person1id
-                        )
-                        SELECT * FROM allFriends) AS friendFriends
-                ORDER BY 1)
-        SELECT *
-                FROM tempo t1
-                WHERE distance =
-                        (SELECT MIN(distance)
-                        FROM tempo t2
-                        WHERE t1.fid1 = t2.fid1))
-         AS fidsAndDistances JOIN Person p3 ON fidsAndDistances.fid1 = p3.id
-         ORDER BY 4;
+)
+SELECT p5.id, p5.firstName, p5.lastName, allFriends.distance, allFriends.friendPath FROM allFriends JOIN Person p5 on allfriends.fid1 = p5.id;
 
-
--- Ergebnis: 53 Zeilen (da manche Freunde über mehrere Wege erreichbar sind!)
--- id 	         firstname 	lastname 	distance 	friendpath
--- 3298534883365 Wei	      Wei	      1         Jun Hu -> Wei Wei
--- 2199023255625 Cheng	    Chen	    1         Jun Hu -> Cheng Chen
--- 96            Anson	    Chen      1        	Jun Hu -> Anson Chen
--- 8796093022217 Alim	      Guliyev   1         Jun Hu -> Alim Guliyev
--- 8796093022251 Chen	      Li	      1        	Jun Hu -> Chen Li
--- ...
+-- Ergebnis: 552 Zeilen (da manche Freunde über mehrere Wege erreichbar sind!)
+--             96 | Anson            | Chen       |        1 | Jun Hu -> Anson Chen
+--  2199023255625 | Cheng            | Chen       |        1 | Jun Hu -> Cheng Chen
+--  8796093022251 | Chen             | Li         |        1 | Jun Hu -> Chen Li
+--  8796093022217 | Alim             | Guliyev    |        1 | Jun Hu -> Alim Guliyev
+-- 10995116277851 | Chong            | Liu        |        1 | Jun Hu -> Chong Liu
+--  3298534883365 | Wei              | Wei        |        1 | Jun Hu -> Wei Wei
+--  9895604649984 | Yang             | Li         |        2 | Jun Hu -> Cheng Chen -> Yang Li
+--  8796093022217 | Alim             | Guliyev    |        2 | Jun Hu -> Cheng Chen -> Alim Guliyev
+-- 15393162788888 | Jie              | Yang       |        2 | Jun Hu -> Cheng Chen -> Jie Yang
+--  9895604650020 | Yang             | Liu        |        2 | Jun Hu -> Cheng Chen -> Yang Liu
+-- 16492674416689 | Lin              | Zhang      |        2 | Jun Hu -> Cheng Chen -> Lin Zhang
+--  7696581394520 | Chong            | Zhang      |        2 | Jun Hu -> Cheng Chen -> Chong Zhang
+-- 10995116277851 | Chong            | Liu        |        2 | Jun Hu -> Cheng Chen -> Chong Liu
+--  7696581394474 | Ali              | Achiou     |        2 | Jun Hu -> Anson Chen -> Ali Achiou
+--  7696581394490 | Amy              | Chen       |        2 | Jun Hu -> Anson Chen -> Amy Chen
+-- 10995116277764 | Bryn             | Davies     |        2 | Jun Hu -> Alim Guliyev -> Bryn Davies
+-- 12094627905550 | Hossein          | Forouhar   |        2 | Jun Hu -> Alim Guliyev -> Hossein Forouhar
+-- 13194139533342 | Joakim           | Larsson    |        2 | Jun Hu -> Alim Guliyev -> Joakim Larsson
+-- 12094627905580 | Alexei           | Kahnovich  |        2 | Jun Hu -> Alim Guliyev -> Alexei Kahnovich
+--  8796093022253 | Ali              | Abouba     |        2 | Jun Hu -> Alim Guliyev -> Ali Abouba
+-- 16492674416689 | Lin              | Zhang      |        2 | Jun Hu -> Alim Guliyev -> Lin Zhang
+--  9895604650036 | Akira            | Yamamoto   |        2 | Jun Hu -> Alim Guliyev -> Akira Yamamoto
