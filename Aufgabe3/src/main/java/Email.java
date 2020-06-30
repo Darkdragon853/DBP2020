@@ -8,8 +8,8 @@ public class Email {
     @Column(name = "id", updatable = false, nullable = false)
     private Long id;
 
-    @Column(name = "email", nullable = false, length = 200)
-    private String email;
+    @Column(name = "value", nullable = false, length = 200)
+    private String value;
 
     @ManyToOne
     private Person owner;
@@ -24,12 +24,12 @@ public class Email {
         this.id = id;
     }
 
-    public String getEmail() {
-        return email;
+    public String getValue() {
+        return value;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setValue(String value) {
+        this.value = value;
     }
 
     public Person getOwner() {

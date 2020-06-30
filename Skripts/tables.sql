@@ -246,10 +246,10 @@ create table person_hasInterest_Tag(
 -- Tabelle Email
 create table email(
     id BIGSERIAL PRIMARY KEY,
-    name VARCHAR(200) NOT NULL,
+    value VARCHAR(200) NOT NULL,
     owner_id BIGINT NOT NULL REFERENCES person(id) ON DELETE CASCADE ON UPDATE CASCADE,
 
-    CONSTRAINT vaild_email CHECK (TRUE =%= name)
+    CONSTRAINT vaild_email CHECK (TRUE =%= value)
 );
 
 -- Tabelle Speak

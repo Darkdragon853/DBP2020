@@ -37,7 +37,7 @@ public class Main {
         rr.readPersonWorkAtOrganisation();
         rr.readTagClassIsSubclassOfTagClass();
         rr.readTagHasTypeTagClass();
-        rr.readPersonSpeaksLanguage();
+ //       rr.readPersonSpeaksLanguage();
         rr.readCommentHasTagTag();
         rr.readForumHasMemberPerson();
         rr.readForumHasTagTag();
@@ -46,8 +46,7 @@ public class Main {
         rr.readPersonLikesComment();
         rr.readPersonLikesPost();
         rr.readPostHasTagTag();
-        rr.readPersonEmailEmailAddress(); // <- Verwirft 2 EInträge da dort doppel @ vorkommt.
-        // er.cleanPerson(); <- nicht mehr gebraucht da andere Aufteilung
+ //       rr.readPersonEmailEmailAddress(); // <- Verwirft 2 EInträge da dort doppel @ vorkommt.
 
         System.out.println("\nEinlesen der Daten abgeschlossen.");
     }
