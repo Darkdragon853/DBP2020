@@ -5,21 +5,19 @@ import org.hibernate.cfg.Configuration;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import java.util.List;
 
-// TODO: Alle ManyToManyTabellen mit mehr als zwei Spalten: Jeweils eigene Entitys mit 2 One-To-Many Assoziationen.
+// TODO: Temporal types
 
 
 public class Main {
 
     public static void main(String[] args) {
+        DBConnection database = new DBConnection();
+        database.startTransaction();
 
-        // Init
-        EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("org.hibernate.network.jpa");
-        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
-        // Start Transaktion
-        entityManager.getTransaction().begin();
-        System.out.println("\nTransaction starts...\n\n");
+
 
 
         /*Person person = new Person();
@@ -43,7 +41,7 @@ public class Main {
 
 */
         // Inhalt
-
+/*
         Place place1 = new Place();
         place1.setName("Meppen");
        // place1.setId(new Long(5));
@@ -62,16 +60,39 @@ public class Main {
         city1.setName("Erfurt");
         city1.setUrl("https://www.erfurt.de");
 
+        // Persist
+        System.out.println("\nBefore persist:\n\n");
+        database.persist(place1);
+        System.out.println("\nAfter persist:\n\n");
 
-        System.out.println("\nBefore persist\n\n");
-        entityManager.persist(place1);
-        System.out.println("\nAfter persist\n\n");
+        // Commit
+        System.out.println("\nBefore commit:\n\n");
+        database.commitTransaction();
+        System.out.println("\nAfter commit:\n\n");
+
+*/
+
+        Person person = getPersonById(database, new Long(94));
+        System.out.println("\nFirstName: "+ person.getFirstName() + " LastName: " + person.getLastName());
 
 
-        // Closing
-        System.out.println("\nTransaction commits...\n");
-        entityManager.getTransaction().commit();
-        System.out.println("\nDone!\n");
-        entityManagerFactory.close();
+        int count = 0;
+        List<Person> allPersons = database.getList("FROM Person", Person.class); // Achtung ist case-sensitive
+        for(Person currentPerson  : allPersons) {
+            System.out.println(currentPerson.getFirstName() + ", " + currentPerson.getLastName());
+            ++count;
+        }
+        System.out.println("\nAnzahl aller Personen: " + count);
+
+
+
+        database.commitTransaction();
+        database.endConnection();
+    }
+
+    public static Person getPersonById(DBConnection database, Long id) {
+        EntityManager em = database.getEntityManager();
+        Person result = em.find(Person.class, id);
+        return result;
     }
 }
