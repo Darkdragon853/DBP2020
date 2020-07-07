@@ -1,15 +1,15 @@
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.List;
 
 @Entity
 @Table(name = "forum")
 public class Forum {
+
     @Id
-    @Column(name = "id")
-    private int id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", updatable = false, nullable = false)
+    private Long id;
 
     @Column(name = "title", nullable = false, length = 200)
     private String title;
@@ -17,16 +17,29 @@ public class Forum {
     @Column(name = "creationDate", nullable = false)
     private Timestamp creationDate;
 
-    // ForeignKey
-    @Column(name = "moderator")
-    private int moderator;
+    @ManyToOne
+    private Person moderator;
+
+    @OneToMany(mappedBy = "forum")
+    private List<Post> posts;
+
+    @OneToMany(mappedBy = "forum")
+    private List<Forum_hasMember_Person> relatePersons;
+
+    @ManyToMany
+    @JoinTable(
+            name = "Forum_hasTag_Tag",
+            joinColumns = { @JoinColumn(name = "forum_id")},
+            inverseJoinColumns = { @JoinColumn(name = "tag_id")}
+            )
+    private List<Tag> tags;
 
     // Getter und Setter
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -46,11 +59,35 @@ public class Forum {
         this.creationDate = creationDate;
     }
 
-    public int getModerator() {
+    public Person getModerator() {
         return moderator;
     }
 
-    public void setModerator(int moderator) {
+    public void setModerator(Person moderator) {
         this.moderator = moderator;
+    }
+
+    public List<Post> getPosts() {
+        return posts;
+    }
+
+    public void setPosts(List<Post> posts) {
+        this.posts = posts;
+    }
+
+    public List<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<Tag> tags) {
+        this.tags = tags;
+    }
+
+    public List<Forum_hasMember_Person> getRelatePersons() {
+        return relatePersons;
+    }
+
+    public void setRelatePersons(List<Forum_hasMember_Person> relatePersons) {
+        this.relatePersons = relatePersons;
     }
 }

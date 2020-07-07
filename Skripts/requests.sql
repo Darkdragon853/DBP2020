@@ -300,20 +300,20 @@ WHERE ForumswithCounts.anzahl > (
 
 -- (12) Welche Personen sind mit der Person befreundet, die die meisten Likes auf einen Post bekommen hat? Sortieren Sie die Ausgabe alphabetisch nach dem Nachnamen.
 -- zuerst die Person holen welche die meisten Likes bekommen hat
-SELECT tempo.author_id
-FROM (
-        SELECT COUNT (p2.id) as anzahl, p2.author_id
-        FROM post p2 JOIN person_likes_post plp2 ON p2.id = plp2.post_id
-        GROUP BY p2.author_id
-        ) AS tempo
-WHERE tempo.anzahl = (
-                     SELECT MAX(temp.anzahl)
-                     FROM    (
-                             SELECT COUNT(p1.id) AS anzahl, p1.author_id
-                             FROM post p1 JOIN person_likes_post plp1 ON p1.id = plp1.post_id
-                             GROUP BY p1.author_id
-                             ) AS temp
-                     );
+-- SELECT tempo.author_id
+-- FROM (
+--         SELECT COUNT (p2.id) as anzahl, p2.author_id
+--         FROM post p2 JOIN person_likes_post plp2 ON p2.id = plp2.post_id
+--         GROUP BY p2.author_id
+--         ) AS tempo
+-- WHERE tempo.anzahl = (
+--                      SELECT MAX(temp.anzahl)
+--                      FROM    (
+--                              SELECT COUNT(p1.id) AS anzahl, p1.author_id
+--                              FROM post p1 JOIN person_likes_post plp1 ON p1.id = plp1.post_id
+--                              GROUP BY p1.author_id
+--                             ) AS temp
+--                     );
 
 -- dann zugehörige Freunde finden
 SELECT person.lastName, person.firstName, friends.person1id

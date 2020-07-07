@@ -1,15 +1,15 @@
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.List;
 
 @Entity
 @Table(name = "comment")
 public class Comment {
+
     @Id
-    @Column(name = "id")
-    private int id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", updatable = false, nullable = false)
+    private Long id;
 
     @Column(name = "creationDate", nullable = false)
     private Timestamp creationDate;
@@ -26,31 +26,47 @@ public class Comment {
     @Column(name = "length", nullable = false)
     private int length;
 
-    //ForeignKey
-    @Column(name = "author_id")
-    private int author_id;
+    @ManyToOne
+    private Person author;
 
-    //ForeignKey
-    @Column(name = "country_id")
-    private int country_id;
+    @ManyToOne
+    private Country country;
 
-    //ForeignKey
-    @Column(name = "reply_to_post_id")
-    private int reply_to_post_id;
+    @OneToOne
+    private Post reply_to_post;
 
-    //ForeignKey
-    @Column(name = "reply_to_comment_id")
-    private int reply_to_comment_id;
+    @OneToOne
+    private Comment reply_to_comment;
+
+    @ManyToMany
+    @JoinTable(
+            name = "Comment_hasTag_Tag",
+            joinColumns = { @JoinColumn(name = "comment_id")},
+            inverseJoinColumns = { @JoinColumn(name = "tag_id")}
+    )
+    private List<Tag> tags;
+
+
+
+    @OneToMany(mappedBy = "comment")
+    private List<Person_likes_Comment> persons;
+    /*
+    @ManyToMany(mappedBy = "likedComments")
+    private List<Person> likers;
+    */
+
+
+
 
     // Constraints fehlen noch
 
 
     // Getter und Setter
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -94,35 +110,51 @@ public class Comment {
         this.length = length;
     }
 
-    public int getAuthor_id() {
-        return author_id;
+    public Person getAuthor() {
+        return author;
     }
 
-    public void setAuthor_id(int author_id) {
-        this.author_id = author_id;
+    public void setAuthor(Person author) {
+        this.author = author;
     }
 
-    public int getCountry_id() {
-        return country_id;
+    public Country getCountry() {
+        return country;
     }
 
-    public void setCountry_id(int country_id) {
-        this.country_id = country_id;
+    public void setCountry(Country country) {
+        this.country = country;
     }
 
-    public int getReply_to_post_id() {
-        return reply_to_post_id;
+    public Post getReply_to_post() {
+        return reply_to_post;
     }
 
-    public void setReply_to_post_id(int reply_to_post_id) {
-        this.reply_to_post_id = reply_to_post_id;
+    public void setReply_to_post(Post reply_to_post) {
+        this.reply_to_post = reply_to_post;
     }
 
-    public int getReply_to_comment_id() {
-        return reply_to_comment_id;
+    public Comment getReply_to_comment() {
+        return reply_to_comment;
     }
 
-    public void setReply_to_comment_id(int reply_to_comment_id) {
-        this.reply_to_comment_id = reply_to_comment_id;
+    public void setReply_to_comment(Comment reply_to_comment) {
+        this.reply_to_comment = reply_to_comment;
+    }
+
+    public List<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<Tag> tags) {
+        this.tags = tags;
+    }
+
+    public List<Person_likes_Comment> getPersons() {
+        return persons;
+    }
+
+    public void setPersons(List<Person_likes_Comment> persons) {
+        this.persons = persons;
     }
 }

@@ -1,43 +1,23 @@
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.List;
 
 @Entity
-@Table(name = "company")
-public class Company {
-    @Id
-    @Column(name = "id")
-    private int id;
+public class Company extends Organisation {
 
-    @Column(name = "name", nullable = false, length = 200)
-    private String name;
-
-    @Column(name = "url")
+    @Column(name = "url", nullable = false)
     private String url;
 
-    //ForeignKey
-    @Column(name = "country_id")
-    private int country_id;
+    @ManyToOne
+    private Country country;
 
+    @OneToMany(mappedBy = "company")
+    private List<Person_workAt_Company> persons;
+
+
+    /*@ManyToMany(mappedBy = "companies")
+    private List<Person> workers;
+    */
     // Getter und Setter
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getUrl() {
         return url;
     }
@@ -46,11 +26,19 @@ public class Company {
         this.url = url;
     }
 
-    public int getCountry_id() {
-        return country_id;
+    public Country getCountry() {
+        return country;
     }
 
-    public void setCountry_id(int country_id) {
-        this.country_id = country_id;
+    public void setCountry(Country country) {
+        this.country = country;
+    }
+
+    public List<Person_workAt_Company> getPersons() {
+        return persons;
+    }
+
+    public void setPersons(List<Person_workAt_Company> persons) {
+        this.persons = persons;
     }
 }

@@ -1,15 +1,14 @@
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.List;
 
 @Entity
 @Table(name = "post")
 public class Post {
     @Id
-    @Column(name = "id")
-    private int id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", updatable = false, nullable = false)
+    private Long id;
 
     @Column(name = "language", length = 2)
     private String language;
@@ -32,24 +31,39 @@ public class Post {
     @Column(name = "length", nullable = false)
     private int length;
 
-    //ForeignKey
-    @Column(name = "forum_id")
-    private int forum_id;
+    @ManyToOne
+    private Forum forum;
 
-    //ForeignKey
-    @Column(name = "author_id")
-    private int author_id;
+    @ManyToOne
+    private Person author;
 
-    //ForeignKey
-    @Column(name = "country_id")
-    private int country_id;
+    @ManyToOne
+    private Country country;
+
+    @ManyToMany
+    @JoinTable(
+            name = "Post_hasTag_Tag",
+            joinColumns = { @JoinColumn(name = "post_id")},
+            inverseJoinColumns = { @JoinColumn(name = "tag_id")}
+    )
+    private List<Tag> tags;
+
+
+    @OneToMany(mappedBy = "post")
+    private List<Person_likes_Post> persons;
+    /*
+    @ManyToMany(mappedBy = "likedPosts")
+    private List<Person> likers;
+    */
+
+
 
     // Getter und Setter
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -109,19 +123,43 @@ public class Post {
         this.length = length;
     }
 
-    public int getAuthor_id() {
-        return author_id;
+    public Forum getForum() {
+        return forum;
     }
 
-    public void setAuthor_id(int author_id) {
-        this.author_id = author_id;
+    public void setForum(Forum forum) {
+        this.forum = forum;
     }
 
-    public int getCountry_id() {
-        return country_id;
+    public Person getAuthor() {
+        return author;
     }
 
-    public void setCountry_id(int country_id) {
-        this.country_id = country_id;
+    public void setAuthor(Person author) {
+        this.author = author;
+    }
+
+    public Country getCountry() {
+        return country;
+    }
+
+    public void setCountry(Country country) {
+        this.country = country;
+    }
+
+    public List<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<Tag> tags) {
+        this.tags = tags;
+    }
+
+    public List<Person_likes_Post> getPersons() {
+        return persons;
+    }
+
+    public void setPersons(List<Person_likes_Post> persons) {
+        this.persons = persons;
     }
 }

@@ -1,56 +1,44 @@
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.List;
 
 @Entity
-@Table(name = "university")
-public class University {
-    @Id
-    @Column(name = "id")
-    private int id;
+public class University extends Organisation {
 
-    @Column(name = "name", nullable = false, length = 200)
-    private String name;
-
-    // ForeignKey
-    @Column(name = "city_id")
-    private int city_id;
-
-    @Column(name = "url")
+    @Column(name = "url", nullable = false)
     private String url;
 
+    @ManyToOne
+    private City city;
+
+    @OneToMany(mappedBy = "university")
+    private List<Person_studyAt_University> students;
+
+    /*@ManyToMany(mappedBy = "universities")
+    private List<Person> students;
+    */
 
     // Getter und Setter
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public int getCity_id() {
-        return city_id;
-    }
-
-    public void setCity_id(int city_id) {
-        this.city_id = city_id;
-    }
-
     public String getUrl() {
         return url;
     }
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public City getCity() {
+        return city;
+    }
+
+    public void setCity(City city) {
+        this.city = city;
+    }
+
+    public List<Person_studyAt_University> getStudents() {
+        return students;
+    }
+
+    public void setStudents(List<Person_studyAt_University> students) {
+        this.students = students;
     }
 }

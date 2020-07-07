@@ -1,16 +1,15 @@
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.List;
 
 
- @Entity
+@Entity
  @Table(name = "tagclass")
  public class TagClass {
 
-     @Id
-     @Column(name = "id")
-     private int id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", updatable = false, nullable = false)
+    private Long id;
 
      @Column(name = "name", nullable = false, length = 150)
      private String name;
@@ -18,15 +17,22 @@ import javax.persistence.Table;
      @Column(name = "url")
      private String url;
 
+     @ManyToMany
+     @JoinTable(
+             name = "tagclass_isSubclassOf_tagclass",
+             joinColumns = { @JoinColumn(name = "tag_parent_id" )},
+             inverseJoinColumns = { @JoinColumn(name = "tag_child_id" )}
+            )
+     private List<TagClass> subTagclasses;
 
      // Getter and Setters
-     public int getId() {
-         return id;
-     }
+     public Long getId() {
+        return id;
+    }
 
-     public void setId(int id) {
-         this.id = id;
-     }
+     public void setId(Long id) {
+        this.id = id;
+    }
 
      public String getName() {
          return name;
@@ -44,4 +50,11 @@ import javax.persistence.Table;
          this.url = url;
      }
 
+    public List<TagClass> getSubTagclasses() {
+        return subTagclasses;
+    }
+
+    public void setSubTagclasses(List<TagClass> subTagclasses) {
+        this.subTagclasses = subTagclasses;
+    }
 }
