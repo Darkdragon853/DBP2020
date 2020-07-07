@@ -54,14 +54,14 @@ ORDER BY 2 DESC;
 -- Ergebnis: 1349 Zeilen (so viele wie es Cities gibt)
 -- Ludwigsburg      |   2
 -- Rahim_Yar_Khan   |   2
--- Chernivtsi	      |   1
--- Nugegoda	        |   1
+-- Chernivtsi	    |   1
+-- Nugegoda	    |   1
 -- Hefei            |   1
--- Tainan	          |   1
--- Tlatelolco	      |   1
+-- Tainan	    |   1
+-- Tlatelolco	    |   1
 -- Xi`an            |   1
--- Saltillo	        |   1
--- Baishan	        |   1
+-- Saltillo	    |   1
+-- Baishan	    |   1
 -- ...
 
 
@@ -198,10 +198,10 @@ WHERE NOT EXISTS
 
 -- (8) Geben Sie die prozentuale Verteilung der Nutzer bzgl. ihrer Herkunft aus verschiedenen Kontinenten an!
 SELECT Continent.id, Continent.name, (COUNT(P2.id)/ (SELECT COUNT(P1.id) FROM Person P1)::float)*100 AS percentage
-FROM Continent JOIN Country ON Continent.id = Country.continent_id
+FROM Continent LEFT JOIN Country ON Continent.id = Country.continent_id
      JOIN City ON Country.id = City.country_id JOIN Person P2 ON City.id = P2.city_id
 GROUP BY Continent.id, Continent.name
-ORDER BY percentage DESC
+ORDER BY percentage DESC;
 
 -- Ergebnis: 5 Zeilen
 -- id 	name 	percentage
@@ -213,7 +213,7 @@ ORDER BY percentage DESC
 
 
 -- (9) Zu welchen Themen (‘tag classes’) gibt es die meisten Posts? Geben Sie die Namen der Top 10 ‘tag classes’ mit ihrer Häufigkeit aus!
-SELECT tagclass.name, tagclass.id, temp.anzahl
+SELECT tagclass.name as tagclass_name, tagclass.id as tagclass_id, temp.anzahl as anzahl_posts
 FROM (
         SELECT COUNT(pht1.post_id) AS anzahl, tht1.tagclass_id
         FROM post_hastag_tag pht1 JOIN tag_hastype_tagclass tht1 ON pht1.tag_id = tht1.tag_id
@@ -248,7 +248,7 @@ FROM  ( (SELECT P1.id
         SELECT Person_likes_post.person_id
         FROM Person_likes_post
       )) AS inglorious JOIN Person P2 ON inglorious.id = P2.id
-ORDER BY P2.lastname
+ORDER BY P2.lastname;
 
 
 -- (11) Welche Foren enthalten mehr Posts als die durchschnittliche Anzahl von Posts in Foren (Ausgabe alphabetisch sortiert nach Forumtitel)?
